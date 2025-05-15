@@ -1,4 +1,4 @@
-﻿namespace Frondendmonitoring.Shared
+﻿namespace FrontendMonitoring.Shared
 {
 
         

@@ -1,4 +1,4 @@
-using Frondendmonitoring.Components;
+using FrontendMonitoring.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor.Services;
 using static System.Net.Mime.MediaTypeNames;
