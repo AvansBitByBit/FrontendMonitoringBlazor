@@ -1,10 +1,19 @@
 using Frondendmonitoring.Components;
+using Microsoft.AspNetCore.Components.Web;
+using MudBlazor.Services;
+using static System.Net.Mime.MediaTypeNames;
+using Microsoft.AspNetCore.Components.WebAssembly.Server;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+
+// Add MudBlazor services
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 
