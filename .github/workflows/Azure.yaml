@@ -1,99 +1,57 @@
-name: Build, Test and Deploy Blazor/WebAPI to Azure App Service
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
 
-env:
-  DOTNET_CORE_VERSION: 9.0.x
-  PUBLISH_DIRECTORY: "./out/publish"
-  ARTIFACT_NAME: WebApp
+name: Build and deploy ASP.Net Core app to Azure Web App - BitByBit
 
 on:
   push:
     branches:
-      - main
-      - deployment
       - master
-
   workflow_dispatch:
 
 jobs:
-  check-secrets:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check required secrets
-        run: |
-          if [ -z "${{ secrets.AZURE_CLIENT_ID }}" ]; then
-            echo "❌ Secret 'AZURE_CLIENT_ID' is missing!"
-            exit 1
-          fi
-          if [ -z "${{ secrets.AZURE_TENANT_ID }}" ]; then
-            echo "❌ Secret 'AZURE_TENANT_ID' is missing!"
-            exit 1
-          fi
-          if [ -z "${{ secrets.AZURE_SUBSCRIPTION_ID }}" ]; then
-            echo "❌ Secret 'AZURE_SUBSCRIPTION_ID' is missing!"
-            exit 1
-          fi
-          if [ -z "${{ secrets.AZURE_CLIENT_SECRET }}" ]; then
-            echo "❌ Secret 'AZURE_CLIENT_SECRET' is missing!"
-            exit 1
-          fi
-          if [ -z "${{ secrets.WEBAPI_PROJECT_NAME }}" ]; then
-            echo "❌ Secret 'WEBAPI_PROJECT_NAME' is missing!"
-            exit 1
-          fi
-          if [ -z "${{ secrets.AZURE_WEBAPP_NAME }}" ]; then
-            echo "❌ Secret 'AZURE_WEBAPP_NAME' is missing!"
-            exit 1
-          fi
-
   build:
-    runs-on: ubuntu-latest
-    needs: check-secrets
+    runs-on: windows-latest
     permissions:
-      contents: read
+      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up .NET
+      - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+          dotnet-version: '9.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
 
-      - name: Build
-        run: dotnet build --no-restore
+      - name: dotnet publish
+        run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
 
-      - name: Test
-        run: dotnet test --no-build --verbosity normal
-
-      - name: Publish
-        run: dotnet publish ./${{ secrets.WEBAPI_PROJECT_NAME }} --configuration Release --output ${{ env.PUBLISH_DIRECTORY }}
-
-      - name: Upload publish artifact
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.PUBLISH_DIRECTORY }}
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     environment:
-      name: Production
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write
-      contents: read
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
 
     steps:
-      - name: Download artifact
+      - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.PUBLISH_DIRECTORY }}
-
-      - name: Azure Login (OIDC)
+          name: .net-app
+      
+      - name: Login to Azure
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -104,7 +62,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          slot-name: Production
-          package: ${{ env.PUBLISH_DIRECTORY }}
-        
+          app-name: 'BitByBit'
+          slot-name: 'Production'
+          package: .
