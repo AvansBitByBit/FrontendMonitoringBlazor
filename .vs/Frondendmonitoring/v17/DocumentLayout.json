@@ -3,36 +3,44 @@
   "WorkspaceRootPath": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|c:\\users\\yazan\\desktop\\ict1.4\\frondendmonitoringblazor\\frondendmonitoring\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|solutionrelative:frondendmonitoring\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7D2D596A-2B22-4706-82D2-D1E460417014}|FrontendMonitoring\\FrontendMonitoring.csproj|c:\\users\\yazan\\desktop\\ict1.4\\frondendmonitoringblazor\\frontendmonitoring\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7D2D596A-2B22-4706-82D2-D1E460417014}|FrontendMonitoring\\FrontendMonitoring.csproj|solutionrelative:frontendmonitoring\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|c:\\users\\yazan\\desktop\\ict1.4\\frondendmonitoringblazor\\frondendmonitoring\\components\\pages\\error.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|solutionrelative:frondendmonitoring\\components\\pages\\error.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{7D2D596A-2B22-4706-82D2-D1E460417014}|FrontendMonitoring\\FrontendMonitoring.csproj|c:\\users\\yazan\\desktop\\ict1.4\\frondendmonitoringblazor\\frontendmonitoring\\frontendmonitoring.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{7D2D596A-2B22-4706-82D2-D1E460417014}|FrontendMonitoring\\FrontendMonitoring.csproj|solutionrelative:frontendmonitoring\\frontendmonitoring.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|c:\\users\\yazan\\desktop\\ict1.4\\frondendmonitoringblazor\\frondendmonitoring\\components\\pages\\counter.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|solutionrelative:frondendmonitoring\\components\\pages\\counter.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Frondendmonitoring\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|c:\\users\\yazan\\desktop\\ict1.4\\frondendmonitoringblazor\\frondendmonitoring\\components\\pages\\weather.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|solutionrelative:frondendmonitoring\\components\\pages\\weather.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Pages\\Error.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Frondendmonitoring\\Components\\Pages\\Error.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|c:\\users\\yazan\\desktop\\ict1.4\\frondendmonitoringblazor\\frondendmonitoring\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|solutionrelative:frondendmonitoring\\components\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Pages\\Counter.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Frondendmonitoring\\Components\\Pages\\Counter.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|c:\\users\\yazan\\desktop\\ict1.4\\frondendmonitoringblazor\\frondendmonitoring\\components\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|solutionrelative:frondendmonitoring\\components\\layout\\mainlayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Pages\\Weather.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Frondendmonitoring\\Components\\Pages\\Weather.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|c:\\users\\yazan\\desktop\\ict1.4\\frondendmonitoringblazor\\frondendmonitoring\\components\\layout\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|solutionrelative:frondendmonitoring\\components\\layout\\navmenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Pages\\Home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Frondendmonitoring\\Components\\Pages\\Home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|c:\\users\\yazan\\desktop\\ict1.4\\frondendmonitoringblazor\\frondendmonitoring\\components\\app.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}|Frondendmonitoring\\Frondendmonitoring.csproj|solutionrelative:frondendmonitoring\\components\\app.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Layout\\NavMenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Frondendmonitoring\\Components\\Layout\\NavMenu.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\App.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Frondendmonitoring\\Components\\App.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Layout\\MainLayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Frondendmonitoring\\Components\\Layout\\MainLayout.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,7 +50,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -58,7 +66,33 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\FrontendMonitoring\\Program.cs",
+              "RelativeDocumentMoniker": "FrontendMonitoring\\Program.cs",
+              "ToolTip": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\FrontendMonitoring\\Program.cs",
+              "RelativeToolTip": "FrontendMonitoring\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-19T10:40:52.707Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "FrontendMonitoring",
+              "DocumentMoniker": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\FrontendMonitoring\\FrontendMonitoring.csproj",
+              "RelativeDocumentMoniker": "FrontendMonitoring\\FrontendMonitoring.csproj",
+              "ToolTip": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\FrontendMonitoring\\FrontendMonitoring.csproj",
+              "RelativeToolTip": "FrontendMonitoring\\FrontendMonitoring.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-05-19T10:40:21.344Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Error.razor",
               "DocumentMoniker": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Pages\\Error.razor",
               "RelativeDocumentMoniker": "Frondendmonitoring\\Components\\Pages\\Error.razor",
@@ -66,12 +100,11 @@
               "RelativeToolTip": "Frondendmonitoring\\Components\\Pages\\Error.razor",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAACQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-15T20:41:28.692Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T20:41:28.692Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Counter.razor",
               "DocumentMoniker": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Pages\\Counter.razor",
               "RelativeDocumentMoniker": "Frondendmonitoring\\Components\\Pages\\Counter.razor",
@@ -79,12 +112,11 @@
               "RelativeToolTip": "Frondendmonitoring\\Components\\Pages\\Counter.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-15T20:41:22.838Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T20:41:22.838Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "Weather.razor",
               "DocumentMoniker": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Pages\\Weather.razor",
               "RelativeDocumentMoniker": "Frondendmonitoring\\Components\\Pages\\Weather.razor",
@@ -92,12 +124,11 @@
               "RelativeToolTip": "Frondendmonitoring\\Components\\Pages\\Weather.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-15T20:41:14.157Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T20:41:14.157Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Home.razor",
               "DocumentMoniker": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Pages\\Home.razor",
               "RelativeDocumentMoniker": "Frondendmonitoring\\Components\\Pages\\Home.razor",
@@ -105,12 +136,11 @@
               "RelativeToolTip": "Frondendmonitoring\\Components\\Pages\\Home.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-15T20:41:06.408Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T20:41:06.408Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "NavMenu.razor",
               "DocumentMoniker": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Layout\\NavMenu.razor",
               "RelativeDocumentMoniker": "Frondendmonitoring\\Components\\Layout\\NavMenu.razor",
@@ -118,12 +148,11 @@
               "RelativeToolTip": "Frondendmonitoring\\Components\\Layout\\NavMenu.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-15T20:39:54.842Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T20:39:54.842Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "App.razor",
               "DocumentMoniker": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\App.razor",
               "RelativeDocumentMoniker": "Frondendmonitoring\\Components\\App.razor",
@@ -131,12 +160,11 @@
               "RelativeToolTip": "Frondendmonitoring\\Components\\App.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-15T20:38:31.968Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T20:38:31.968Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "MainLayout.razor",
               "DocumentMoniker": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Components\\Layout\\MainLayout.razor",
               "RelativeDocumentMoniker": "Frondendmonitoring\\Components\\Layout\\MainLayout.razor",
@@ -144,21 +172,18 @@
               "RelativeToolTip": "Frondendmonitoring\\Components\\Layout\\MainLayout.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-15T20:38:24.907Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T20:38:24.907Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Program.cs",
               "RelativeDocumentMoniker": "Frondendmonitoring\\Program.cs",
               "ToolTip": "C:\\Users\\yazan\\Desktop\\ICT1.4\\FrondendMonitoringBlazor\\Frondendmonitoring\\Program.cs",
               "RelativeToolTip": "Frondendmonitoring\\Program.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAAA8AAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-15T12:58:24.591Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-15T12:58:24.591Z"
             }
           ]
         }
