@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frondendmonitoring", "Frondendmonitoring\Frondendmonitoring.csproj", "{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontendMonitoring", "FrontendMonitoring\FrontendMonitoring.csproj", "{79B053F2-8698-4ACF-81A0-27A04BA06B8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +8,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{957C14B9-94A5-4EFB-8C82-3CEC87B2F61F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79B053F2-8698-4ACF-81A0-27A04BA06B8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79B053F2-8698-4ACF-81A0-27A04BA06B8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79B053F2-8698-4ACF-81A0-27A04BA06B8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79B053F2-8698-4ACF-81A0-27A04BA06B8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
