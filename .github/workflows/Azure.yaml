@@ -20,12 +20,22 @@ jobs:
     steps:
       - name: Check required secrets
         run: |
-          for secret in AZURE_CLIENT_ID AZURE_TENANT_ID AZURE_SUBSCRIPTION_ID WEBAPI_PROJECT_NAME; do
-            if [ -z "${{ secrets[$secret] }}" ]; then
-              echo "❌ Secret '$secret' is missing!"
-              exit 1
-            fi
-          done
+          if [ -z "${{ secrets.AZURE_CLIENT_ID }}" ]; then
+            echo "❌ Secret 'AZURE_CLIENT_ID' is missing!"
+            exit 1
+          fi
+          if [ -z "${{ secrets.AZURE_TENANT_ID }}" ]; then
+            echo "❌ Secret 'AZURE_TENANT_ID' is missing!"
+            exit 1
+          fi
+          if [ -z "${{ secrets.AZURE_SUBSCRIPTION_ID }}" ]; then
+            echo "❌ Secret 'AZURE_SUBSCRIPTION_ID' is missing!"
+            exit 1
+          fi
+          if [ -z "${{ secrets.WEBAPI_PROJECT_NAME }}" ]; then
+            echo "❌ Secret 'WEBAPI_PROJECT_NAME' is missing!"
+            exit 1
+          fi
 
   build:
     runs-on: ubuntu-latest
