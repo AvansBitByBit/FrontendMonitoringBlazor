@@ -11,7 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-
+builder.Services.AddScoped<HttpRequester.HttpRequester>();
+builder.Services.AddScoped<HttpRequesterOnlyUrl.HttpRequesterOnlyUrl>();
 // Add MudBlazor services
 builder.Services.AddMudServices();
 
