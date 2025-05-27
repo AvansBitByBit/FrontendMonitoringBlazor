@@ -1,9 +1,4 @@
 ﻿@page "/"
-@using Microsoft.AspNetCore.Identity
-@using System.ComponentModel.DataAnnotations
-@inject UserManager<IdentityUser> UserManager
-@inject SignInManager<IdentityUser> SignInManager
-@inject NavigationManager Navigation
 
 <PageTitle>Home</PageTitle>
 
@@ -14,32 +9,14 @@
         Log in of maak een account aan om verder te gaan.
     </MudText>
 
-    <MudTabs @bind-ActivePanelIndex="activeTabIndex" Rounded="true" Centered="true">
-        <MudTabPanel Text="Inloggen">
-            <MudForm @ref="loginForm" Model="loginModel">
-                <MudTextField @bind-Value="loginModel.Email" For="@(() => loginModel.Email)" Label="E-mail" Required="true" />
-                <MudTextField @bind-Value="loginModel.Password" For="@(() => loginModel.Password)" Label="Wachtwoord" InputType="InputType.Password" Required="true" />
-                <MudCheckBox @bind-Checked="loginModel.RememberMe" T="bool" Label="Ingelogd blijven" />
-                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Login" Disabled="loading" Class="mt-4">Inloggen</MudButton>
-                <MudProgressLinear Indeterminate="true" Color="Color.Primary" Style="height:2px" Class="mt-2" Visible="loading && activeTabIndex == 0" />
-                <MudAlert Severity="Severity.Error" Dense="true" Class="mt-2" Visible="@(!string.IsNullOrWhiteSpace(loginError))">
-                    @loginError
-                </MudAlert>
-            </MudForm>
-        </MudTabPanel>
-        <MudTabPanel Text="Registreren">
-            <MudForm @ref="registerForm" Model="registerModel">
-                <MudTextField @bind-Value="registerModel.Email" For="@(() => registerModel.Email)" Label="E-mail" Required="true" />
-                <MudTextField @bind-Value="registerModel.Password" For="@(() => registerModel.Password)" Label="Wachtwoord" InputType="InputType.Password" Required="true" />
-                <MudTextField @bind-Value="registerModel.ConfirmPassword" For="@(() => registerModel.ConfirmPassword)" Label="Herhaal wachtwoord" InputType="InputType.Password" Required="true" />
-                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Register" Disabled="loading" Class="mt-4">Registreren</MudButton>
-                <MudProgressLinear Indeterminate="true" Color="Color.Secondary" Style="height:2px" Class="mt-2" Visible="loading && activeTabIndex == 1" />
-                <MudAlert Severity="Severity.Error" Dense="true" Class="mt-2" Visible="@(!string.IsNullOrWhiteSpace(registerError))">
-                    @registerError
-                </MudAlert>
-            </MudForm>
-        </MudTabPanel>
-    </MudTabs>
+    <MudStack Row="true" Spacing="2">
+        <MudButton Href="/login" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Login">
+            Inloggen
+        </MudButton>
+        <MudButton Href="/register" Color="Color.Secondary" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.PersonAdd">
+            Registreren
+        </MudButton>
+    </MudStack>
 
     <MudDivider Class="my-6" />
 
@@ -50,86 +27,3 @@
         </MudLink>
     </MudAlert>
 </MudPaper>
-
-@code {
-    private int activeTabIndex = 0;
-
-    // Login
-    private LoginModel loginModel = new();
-    private MudForm loginForm;
-    private string loginError = "";
-
-    // Register
-    private RegisterModel registerModel = new();
-    private MudForm registerForm;
-    private string registerError = "";
-
-    private bool loading = false;
-
-    public class LoginModel
-    {
-        [Required(ErrorMessage = "E-mail is verplicht")]
-        [EmailAddress(ErrorMessage = "Ongeldig e-mailadres")]
-        public string Email { get; set; }
-
-        [Required(ErrorMessage = "Wachtwoord is verplicht")]
-        public string Password { get; set; }
-
-        public bool RememberMe { get; set; }
-    }
-
-    public class RegisterModel
-    {
-        [Required(ErrorMessage = "E-mail is verplicht")]
-        [EmailAddress(ErrorMessage = "Ongeldig e-mailadres")]
-        public string Email { get; set; }
-
-        [Required(ErrorMessage = "Wachtwoord is verplicht")]
-        [MinLength(6, ErrorMessage = "Wachtwoord moet minstens 6 tekens zijn")]
-        public string Password { get; set; }
-
-        [Compare("Password", ErrorMessage = "Wachtwoorden komen niet overeen")]
-        public string ConfirmPassword { get; set; }
-    }
-
-    private async Task Login()
-    {
-        loginError = "";
-        await loginForm.Validate();
-        if (!loginForm.IsValid) return;
-
-        loading = true;
-        var result = await SignInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, loginModel.RememberMe, lockoutOnFailure: false);
-        if (result.Succeeded)
-        {
-            Navigation.NavigateTo("/");
-        }
-        else
-        {
-            loginError = "Inloggen mislukt. Controleer je gegevens.";
-        }
-        loading = false;
-    }
-
-    private async Task Register()
-    {
-        registerError = "";
-        await registerForm.Validate();
-        if (!registerForm.IsValid) return;
-
-        loading = true;
-        var user = new IdentityUser { UserName = registerModel.Email, Email = registerModel.Email };
-        var result = await UserManager.CreateAsync(user, registerModel.Password);
-
-        if (result.Succeeded)
-        {
-            await SignInManager.SignInAsync(user, isPersistent: false);
-            Navigation.NavigateTo("/");
-        }
-        else
-        {
-            registerError = string.Join("<br />", result.Errors.Select(e => e.Description));
-        }
-        loading = false;
-    }
-}
