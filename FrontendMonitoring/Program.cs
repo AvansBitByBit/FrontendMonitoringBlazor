@@ -1,33 +1,46 @@
 using FrontendMonitoring.Components;
-using Microsoft.AspNetCore.Components.Web;
+using FrontendMonitoring.Models;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
-using static System.Net.Mime.MediaTypeNames;
-using Microsoft.AspNetCore.Components.WebAssembly.Server;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// 1. Entity Framework met custom user
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// 2. Identity (met rollen en custom user)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+    {
+        options.SignIn.RequireConfirmedAccount = false;
+    })
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// 3. MudBlazor
+builder.Services.AddMudServices();
+
+// 4. HTTP Clients (voor je eigen services)
+builder.Services.AddHttpClient<HttpRequester.HttpRequester>();
+builder.Services.AddHttpClient<HttpRequesterOnlyUrl.HttpRequesterOnlyUrl>();
+
+// 5. Razor components (Blazor Server)
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddScoped<HttpRequester.HttpRequester>();
-builder.Services.AddScoped<HttpRequesterOnlyUrl.HttpRequesterOnlyUrl>();
-// Add MudBlazor services
-builder.Services.AddMudServices();
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 6. Pipeline configuratie
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 
 app.UseAntiforgery();
 
