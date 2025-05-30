@@ -8,11 +8,11 @@ using MudBlazor.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Database configuratie
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (string.IsNullOrEmpty(connectionString))
-{
-    throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
-}
+var connectionString = builder.Configuration.GetValue<string>("connectionString");
+// if (string.IsNullOrEmpty(connectionString))
+// {
+//     throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+// }
 // 3. MudBlazor
 builder.Services.AddMudServices();
 
