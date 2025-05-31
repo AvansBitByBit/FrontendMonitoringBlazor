@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontendMonitoring", "FrontendMonitoring\FrontendMonitoring.csproj", "{79B053F2-8698-4ACF-81A0-27A04BA06B8E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "frontendMonitoringUnittesten", "frontendMonitoringUnittesten\frontendMonitoringUnittesten.csproj", "{38D2D798-35EC-4149-BA97-8F5733A6EEC7}"
@@ -18,5 +21,8 @@ Global
 		{38D2D798-35EC-4149-BA97-8F5733A6EEC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38D2D798-35EC-4149-BA97-8F5733A6EEC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38D2D798-35EC-4149-BA97-8F5733A6EEC7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
