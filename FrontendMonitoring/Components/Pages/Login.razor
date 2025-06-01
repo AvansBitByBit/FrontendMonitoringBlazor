@@ -1,0 +1,79 @@
+﻿@page "/login"
+@using MudBlazor
+
+<MudPaper Class="pa-6 mx-auto mt-12 mud-width-full mud-width-md" Elevation="4">
+    <MudText Typo="Typo.h5" Class="mb-4">@(_isRegistering ? "Register" : "Login")</MudText>
+
+    <MudTextField Label="Username" @bind-Value="_username" FullWidth="true" />
+    <MudTextField Label="Password" @bind-Value="_password" InputType="InputType.Password" FullWidth="true" />
+
+    @if (_isRegistering)
+    {
+        <MudTextField Label="Confirm Password" @bind-Value="_confirmPassword" InputType="InputType.Password" FullWidth="true" />
+    }
+
+    <MudStack Direction="Row" Spacing="2" Class="mt-4">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleAction">
+            @(_isRegistering ? "Register" : "Login")
+        </MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="@ToggleMode">
+            @(_isRegistering ? "Switch to Login" : "Switch to Register")
+        </MudButton>
+    </MudStack>
+</MudPaper>
+
+@code {
+    private string _username;
+    private string _password;
+    private string _confirmPassword;
+    private bool _isRegistering = false;
+
+    [Inject] private HttpClient Http { get; set; }
+
+    private async Task HandleAction()
+    {
+        if (_isRegistering)
+        {
+            Console.WriteLine($"[Stub] Registering: {_username} / {_password} / {_confirmPassword}");
+            // Registration logic not functional yet.
+        }
+        else
+        {
+            await LoginUser();
+        }
+    }
+
+    private async Task LoginUser()
+    {
+        var loginData = new
+        {
+            Username = _username,
+            Password = _password
+        };
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://bitbybittrash.azurewebsites.net/account/login", loginData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("User logged in successfully.");
+                //redirect here
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Login failed: {error}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Login error: {ex.Message}");
+        }
+    }
+
+    private void ToggleMode()
+    {
+        _isRegistering = !_isRegistering;
+    }
+}
