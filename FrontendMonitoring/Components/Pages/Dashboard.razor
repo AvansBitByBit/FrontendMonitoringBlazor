@@ -1,53 +1,53 @@
 ﻿@page "/dashboard"
+@inject IJSRuntime JS
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
     <MudGrid>
-        <!-- Top Row: Dropdowns -->
+        <!-- Dropdowns -->
         <MudItem xs="12" sm="6" md="4">
             <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-                <MudText Typo="Typo.h6" Class="mb-2">Periode</MudText>
+                <MudText Typo="Typo.h6">Periode</MudText>
                 <MudSelect T="Pizza" @bind-Value="pizza" ToStringFunc="@converter" Label="Selecteer een periode" Variant="Variant.Outlined" Dense="true" Clearable>
-                    <MudSelectItem Value="@(new Pizza() { Name="Laatste 7 dagen"})" />
-                    <MudSelectItem Value="@(new Pizza() { Name="Laatste 30 dagen"})" />
-                    <MudSelectItem Value="@(new Pizza() { Name="Dit jaar"})" />
+                    <MudSelectItem Value="@(new Pizza() { Name = "Laatste 7 dagen" })" />
+                    <MudSelectItem Value="@(new Pizza() { Name = "Laatste 30 dagen" })" />
+                    <MudSelectItem Value="@(new Pizza() { Name = "Dit jaar" })" />
                 </MudSelect>
             </MudPaper>
         </MudItem>
 
         <MudItem xs="12" sm="6" md="4">
             <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-                <MudText Typo="Typo.h6" Class="mb-2">Afvaltype</MudText>
+                <MudText Typo="Typo.h6">Afvaltype</MudText>
                 <MudSelect T="Pizza" @bind-Value="afvaltype" ToStringFunc="@converter" Label="Selecteer afvaltype" Variant="Variant.Outlined" Dense="true" Clearable>
-                    <MudSelectItem Value="@(new Pizza() { Name="Alle types"})" />
-                    <MudSelectItem Value="@(new Pizza() { Name="Plastic"})" />
-                    <MudSelectItem Value="@(new Pizza() { Name="Papier"})" />
-                    <MudSelectItem Value="@(new Pizza() { Name="Organisch"})" />
+                    <MudSelectItem Value="@(new Pizza() { Name = "Alle types" })" />
+                    <MudSelectItem Value="@(new Pizza() { Name = "Plastic" })" />
+                    <MudSelectItem Value="@(new Pizza() { Name = "Papier" })" />
+                    <MudSelectItem Value="@(new Pizza() { Name = "Organisch" })" />
                 </MudSelect>
             </MudPaper>
         </MudItem>
 
         <MudItem xs="12" sm="12" md="4">
             <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-                <MudText Typo="Typo.h6" Class="mb-2">Locatie</MudText>
+                <MudText Typo="Typo.h6">Locatie</MudText>
                 <MudSelect T="Pizza" @bind-Value="locatie" ToStringFunc="@converter" Label="Selecteer locatie" Variant="Variant.Outlined" Dense="true" Clearable>
-                    <MudSelectItem Value="@(new Pizza() { Name="Alle locaties"})" />
-                    <MudSelectItem Value="@(new Pizza() { Name="Sector Noord"})" />
-                    <MudSelectItem Value="@(new Pizza() { Name="Sector Zuid"})" />
+                    <MudSelectItem Value="@(new Pizza() { Name = "Alle locaties" })" />
+                    <MudSelectItem Value="@(new Pizza() { Name = "Sector Noord" })" />
+                    <MudSelectItem Value="@(new Pizza() { Name = "Sector Zuid" })" />
                 </MudSelect>
             </MudPaper>
         </MudItem>
 
-        <!-- Totaal Ingezameld -->
+        <!-- Metrics -->
         <MudItem xs="12" sm="6" md="4">
             <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
                 <MudText Typo="Typo.h6">Totaal Ingezameld</MudText>
             </MudPaper>
         </MudItem>
 
-        <!-- Weer (Updated) -->
         <MudItem xs="12" sm="6" md="4">
             <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-                <MudText Typo="Typo.h6" Class="mb-2">Weer</MudText>
+                <MudText Typo="Typo.h6">Weer</MudText>
                 <MudText>🌡️ 13°C - Bewolkt met buien</MudText>
                 <MudText>💨 Wind: 16 km/u ZW</MudText>
                 <MudText>💧 Luchtvochtigheid: 87%</MudText>
@@ -55,7 +55,6 @@
             </MudPaper>
         </MudItem>
 
-        <!-- Meldingen -->
         <MudItem xs="12" sm="12" md="4">
             <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
                 <MudText Typo="Typo.h6">Meldingen</MudText>
@@ -69,14 +68,15 @@
             </MudPaper>
         </MudItem>
 
-        <!-- Locaties -->
+        <!-- Locaties (map) -->
         <MudItem xs="12" sm="6" md="6">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+            <MudPaper Elevation="2" Class="pa-4" Style="height: 400px;">
                 <MudText Typo="Typo.h6">Locaties</MudText>
+                <div id="map" style="height: 100%; min-height: 350px; width: 100%; border-radius: 4px; background-color: #2a2833;"></div>
             </MudPaper>
         </MudItem>
 
-        <!-- Trends & Analyses -->
+        <!-- Trends -->
         <MudItem xs="12">
             <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
                 <MudText Typo="Typo.h6">Trends & Analyses</MudText>
@@ -94,14 +94,24 @@
     {
         public string Name { get; set; }
 
-        public override bool Equals(object o)
-        {
-            var other = o as Pizza;
-            return other?.Name == Name;
-        }
-
-        public override int GetHashCode() => Name.GetHashCode();
+        public override bool Equals(object o) => (o as Pizza)?.Name == Name;
+        public override int GetHashCode() => Name?.GetHashCode() ?? 0;
     }
 
     Func<Pizza, string> converter = p => p?.Name;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("initMap");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"JS interop failed: {ex.Message}");
+            }
+        }
+    }
 }
