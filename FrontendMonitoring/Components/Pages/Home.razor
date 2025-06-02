@@ -10,11 +10,8 @@
     </MudText>
 
     <MudStack Row="true" Spacing="2">
-        <MudButton Href="/login" Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Login">
-            Inloggen
-        </MudButton>
-        <MudButton Href="/register" Color="Color.Secondary" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.PersonAdd">
-            Registreren
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AccountCircle" OnClick="@GoToLogin">
+            Login / Register
         </MudButton>
     </MudStack>
 
@@ -27,3 +24,12 @@
         </MudLink>
     </MudAlert>
 </MudPaper>
+
+@code {
+    [Inject] NavigationManager Nav { get; set; }
+
+    private void GoToLogin()
+    {
+        Nav.NavigateTo("/login");
+    }
+}

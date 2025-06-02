@@ -1,16 +1,16 @@
 ﻿@page "/login"
 @using MudBlazor
+@using FrontendMonitoring.Models
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+@inject HttpClient Http
 
 <MudPaper Class="pa-6 mx-auto mt-12 mud-width-full mud-width-md" Elevation="4">
     <MudText Typo="Typo.h5" Class="mb-4">@(_isRegistering ? "Register" : "Login")</MudText>
 
     <MudTextField Label="Email" @bind-Value="_email" FullWidth="true" />
     <MudTextField Label="Password" @bind-Value="_password" InputType="InputType.Password" FullWidth="true" />
-
-    @if (_isRegistering)
-    {
-        <MudTextField Label="Confirm Password" @bind-Value="_confirmPassword" InputType="InputType.Password" FullWidth="true" />
-    }
 
     <MudStack Direction="Row" Spacing="2" Class="mt-4">
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@HandleAction">
@@ -25,77 +25,85 @@
 @code {
     private string _email;
     private string _password;
-    private string _confirmPassword;
     private bool _isRegistering = false;
-
-    [Inject] private HttpClient Http { get; set; }
 
     private async Task HandleAction()
     {
         if (_isRegistering)
-        {
             await RegisterUser();
-        }
         else
-        {
             await LoginUser();
-        }
     }
 
     private async Task RegisterUser()
     {
-        var registerData = new
+        if (string.IsNullOrWhiteSpace(_email) || string.IsNullOrWhiteSpace(_password))
         {
-            Email = _email,
-            Password = _password,
-            ConfirmPassword = _confirmPassword
-        };
+            Snackbar.Add("Fill in both email and password.", Severity.Warning);
+            return;
+        }
+
+        var registerData = new RegisterModel
+            {
+                Email = _email,
+                Password = _password
+            };
 
         try
         {
-            var response = await Http.PostAsJsonAsync("https://bitbybittrash.azurewebsites.net/api/account/register", registerData);
+            var response = await Http.PostAsJsonAsync("https://bitbybittrash.azurewebsites.net/account/register", registerData);
 
             if (response.IsSuccessStatusCode)
             {
+                Snackbar.Add("Registered successfully. You can now log in.", Severity.Success);
                 _isRegistering = false;
             }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-             
+                Snackbar.Add($"Register failed: {error}", Severity.Error);
             }
         }
-        catch
+        catch (Exception ex)
         {
-
+            Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
         }
     }
 
     private async Task LoginUser()
     {
-        var loginData = new
+        if (string.IsNullOrWhiteSpace(_email) || string.IsNullOrWhiteSpace(_password))
         {
-            Email = _email,
-            Password = _password
-        };
+            Snackbar.Add("Please fill in both fields!", Severity.Warning);
+            return;
+        }
+
+        var loginData = new LoginModel
+            {
+                Email = _email,
+                Password = _password
+            };
 
         try
         {
-            var response = await Http.PostAsJsonAsync("https://bitbybittrash.azurewebsites.net/api/account/login", loginData);
+            var response = await Http.PostAsJsonAsync("https://bitbybittrash.azurewebsites.net/account/login", loginData);
 
             if (response.IsSuccessStatusCode)
             {
-
+                var token = await response.Content.ReadAsStringAsync();
+                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+                Snackbar.Add("Login successful!", Severity.Success);
+                Navigation.NavigateTo("/dashboard");
             }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-
+                Snackbar.Add($"Login failed: {error}", Severity.Error);
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Show general error toast/snackbar
+            Snackbar.Add($"Exception: {ex.Message}", Severity.Error);
         }
     }
 
