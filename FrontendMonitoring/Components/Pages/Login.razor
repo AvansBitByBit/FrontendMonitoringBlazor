@@ -4,7 +4,7 @@
 <MudPaper Class="pa-6 mx-auto mt-12 mud-width-full mud-width-md" Elevation="4">
     <MudText Typo="Typo.h5" Class="mb-4">@(_isRegistering ? "Register" : "Login")</MudText>
 
-    <MudTextField Label="Username" @bind-Value="_username" FullWidth="true" />
+    <MudTextField Label="Email" @bind-Value="_email" FullWidth="true" />
     <MudTextField Label="Password" @bind-Value="_password" InputType="InputType.Password" FullWidth="true" />
 
     @if (_isRegistering)
@@ -23,7 +23,7 @@
 </MudPaper>
 
 @code {
-    private string _username;
+    private string _email;
     private string _password;
     private string _confirmPassword;
     private bool _isRegistering = false;
@@ -34,8 +34,7 @@
     {
         if (_isRegistering)
         {
-            Console.WriteLine($"[Stub] Registering: {_username} / {_password} / {_confirmPassword}");
-            // Registration logic not functional yet.
+            await RegisterUser();
         }
         else
         {
@@ -43,32 +42,60 @@
         }
     }
 
+    private async Task RegisterUser()
+    {
+        var registerData = new
+        {
+            Email = _email,
+            Password = _password,
+            ConfirmPassword = _confirmPassword
+        };
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://bitbybittrash.azurewebsites.net/api/account/register", registerData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _isRegistering = false;
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+             
+            }
+        }
+        catch
+        {
+
+        }
+    }
+
     private async Task LoginUser()
     {
         var loginData = new
         {
-            Username = _username,
+            Email = _email,
             Password = _password
         };
 
         try
         {
-            var response = await Http.PostAsJsonAsync("https://bitbybittrash.azurewebsites.net/account/login", loginData);
+            var response = await Http.PostAsJsonAsync("https://bitbybittrash.azurewebsites.net/api/account/login", loginData);
 
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine("User logged in successfully.");
-                //redirect here
+
             }
             else
             {
                 var error = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Login failed: {error}");
+
             }
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine($"Login error: {ex.Message}");
+            // Show general error toast/snackbar
         }
     }
 
