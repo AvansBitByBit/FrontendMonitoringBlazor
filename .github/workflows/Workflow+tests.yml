@@ -17,28 +17,124 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    outputs:
+      secrets-valid: ${{ steps.validate-secrets.outputs.valid }}
+      error-message: ${{ steps.validate-secrets.outputs.error-message }}
     steps:
-      - name: "Check if AZURE_WEBAPP_NAME secret exists"
-        env: 
-          super_secret: ${{ secrets.AZURE_WEBAPP_NAME }}
-        if: ${{ env.super_secret == '' }}
-        run: 'echo "Secret AZURE_WEBAPP_NAME is missing."; exit 1;'
+      - name: "Validate all required secrets and configuration"
+        id: validate-secrets
+        run: |
+          echo "🔍 Validating deployment prerequisites..."
+          
+          # Initialize validation status
+          VALIDATION_PASSED=true
+          ERROR_MESSAGES=()
+          
+          # Check AZURE_WEBAPP_NAME secret
+          if [[ -z "${{ secrets.AZURE_WEBAPP_NAME }}" ]]; then
+            echo "❌ AZURE_WEBAPP_NAME secret is missing or empty"
+            ERROR_MESSAGES+=("AZURE_WEBAPP_NAME secret is required for deployment")
+            VALIDATION_PASSED=false
+          else
+            echo "✅ AZURE_WEBAPP_NAME secret is configured"
+          fi
+          
+          # Check Azure Client ID
+          if [[ -z "${{ secrets.AZUREAPPSERVICE_CLIENTID_BBCD49BBABEB403BBBFF41809E88EFF1 }}" ]]; then
+            echo "❌ Azure Client ID secret is missing or empty"
+            ERROR_MESSAGES+=("AZUREAPPSERVICE_CLIENTID secret is required for Azure authentication")
+            VALIDATION_PASSED=false
+          else
+            echo "✅ Azure Client ID is configured"
+          fi
+          
+          # Check Azure Tenant ID
+          if [[ -z "${{ secrets.AZUREAPPSERVICE_TENANTID_F4E6BDB44EE54B8A9AD0E508C38F04B5 }}" ]]; then
+            echo "❌ Azure Tenant ID secret is missing or empty"
+            ERROR_MESSAGES+=("AZUREAPPSERVICE_TENANTID secret is required for Azure authentication")
+            VALIDATION_PASSED=false
+          else
+            echo "✅ Azure Tenant ID is configured"
+          fi
+          
+          # Check Azure Subscription ID
+          if [[ -z "${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8413332D7BD843F5AE90CD923D187DA9 }}" ]]; then
+            echo "❌ Azure Subscription ID secret is missing or empty"
+            ERROR_MESSAGES+=("AZUREAPPSERVICE_SUBSCRIPTIONID secret is required for Azure authentication")
+            VALIDATION_PASSED=false
+          else
+            echo "✅ Azure Subscription ID is configured"
+          fi
+          
+          # Validate environment variables
+          if [[ -z "${{ env.AZURE_WEBAPP_NAME }}" ]]; then
+            echo "❌ AZURE_WEBAPP_NAME environment variable is not set"
+            ERROR_MESSAGES+=("AZURE_WEBAPP_NAME environment variable must be defined")
+            VALIDATION_PASSED=false
+          else
+            echo "✅ AZURE_WEBAPP_NAME environment variable: ${{ env.AZURE_WEBAPP_NAME }}"
+          fi
+          
+          # Check .NET version configuration
+          if [[ -z "${{ env.DOTNET_CORE_VERSION }}" ]]; then
+            echo "❌ DOTNET_CORE_VERSION environment variable is not set"
+            ERROR_MESSAGES+=("DOTNET_CORE_VERSION environment variable must be defined")
+            VALIDATION_PASSED=false
+          else
+            echo "✅ .NET Core version configured: ${{ env.DOTNET_CORE_VERSION }}"
+          fi
+          
+          # Output results
+          if [[ "$VALIDATION_PASSED" == "true" ]]; then
+            echo "✅ All prerequisites validated successfully!"
+            echo "🚀 Ready to proceed with build and deployment"
+            echo "valid=true" >> $GITHUB_OUTPUT
+            echo "error-message=" >> $GITHUB_OUTPUT
+          else
+            echo ""
+            echo "❌ Validation failed! The following issues were found:"
+            printf '%s\n' "${ERROR_MESSAGES[@]}" | sed 's/^/  - /'
+            echo ""
+            echo "🔧 Please configure the missing secrets in your repository settings:"
+            echo "   Repository Settings → Secrets and variables → Actions"
+            echo ""
+            
+            # Join error messages with newlines for output
+            ERROR_MSG=$(printf '%s\n' "${ERROR_MESSAGES[@]}")
+            echo "valid=false" >> $GITHUB_OUTPUT
+            echo "error-message<<EOF" >> $GITHUB_OUTPUT
+            echo "$ERROR_MSG" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+              exit 1
+          fi
 
-      - name: "Check if Azure credentials exist"
-        env: 
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BBCD49BBABEB403BBBFF41809E88EFF1 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F4E6BDB44EE54B8A9AD0E508C38F04B5 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8413332D7BD843F5AE90CD923D187DA9 }}
-        if: ${{ env.client_id == '' || env.tenant_id == '' || env.subscription_id == '' }}
-        run: 'echo "Azure authentication secrets are missing."; exit 1;'
+      - name: "Display validation summary"
+        if: always()
+        run: |
+          echo "📋 Validation Summary:"
+          echo "├── Secrets Status: ${{ steps.validate-secrets.outputs.valid == 'true' && '✅ Valid' || '❌ Invalid' }}"
+          echo "├── Azure App Name: ${{ env.AZURE_WEBAPP_NAME }}"
+          echo "├── .NET Version: ${{ env.DOTNET_CORE_VERSION }}"
+          echo "└── Publish Directory: ${{ env.PUBLISH_DIRECTORY }}"
+          
+          if [[ "${{ steps.validate-secrets.outputs.valid }}" != "true" ]]; then
+            echo ""
+            echo "⚠️  Build and deployment will be skipped due to validation failures"
+          fi
 
   build:
     runs-on: ubuntu-latest
     needs: check
+    if: needs.check.outputs.secrets-valid == 'true'
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
+
+      - name: "Prerequisites validation check"
+        run: |
+          echo "✅ Prerequisites validated successfully"
+          echo "🔨 Starting build process for BitByBitTrashAPI"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -74,10 +170,10 @@ jobs:
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.PUBLISH_DIRECTORY }}
-
   deploy:
     runs-on: ubuntu-latest
     needs: [check, build]
+    if: needs.check.outputs.secrets-valid == 'true' && needs.build.result == 'success'
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
@@ -85,18 +181,49 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: "Pre-deployment validation"
+        run: |
+          echo "🚀 Starting deployment process"
+          echo "├── App Name: ${{ env.AZURE_WEBAPP_NAME }}"
+          echo "├── Artifact: ${{ env.ARTIFACT_NAME }}"
+          echo "└── Publish Directory: ${{ env.PUBLISH_DIRECTORY }}"
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.PUBLISH_DIRECTORY }}
 
+      - name: "Verify deployment package"
+        run: |
+          echo "📦 Verifying deployment package..."
+          if [ ! -d "${{ env.PUBLISH_DIRECTORY }}" ]; then
+            echo "❌ Publish directory not found: ${{ env.PUBLISH_DIRECTORY }}"
+            exit 1
+          fi
+          
+          if [ -z "$(ls -A ${{ env.PUBLISH_DIRECTORY }})" ]; then
+            echo "❌ Publish directory is empty"
+            exit 1
+          fi
+          
+          echo "✅ Deployment package verified"
+          echo "📁 Package contents:"
+          ls -la ${{ env.PUBLISH_DIRECTORY }}
+
       - name: Login to Azure
+        id: azure-login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BBCD49BBABEB403BBBFF41809E88EFF1 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F4E6BDB44EE54B8A9AD0E508C38F04B5 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8413332D7BD843F5AE90CD923D187DA9 }}
+
+      - name: "Verify Azure authentication"
+        run: |
+          echo "🔐 Verifying Azure authentication..."
+          az account show --query "name" -o tsv
+          echo "✅ Azure authentication successful"
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -105,3 +232,38 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           slot-name: 'Production'
           package: ${{ env.PUBLISH_DIRECTORY }}
+
+      - name: "Post-deployment verification"
+        if: always()
+        run: |
+          if [[ "${{ steps.deploy-to-webapp.outcome }}" == "success" ]]; then
+            echo "✅ Deployment completed successfully!"
+            echo "🌐 App URL: ${{ steps.deploy-to-webapp.outputs.webapp-url }}"
+            echo "📊 You can verify the deployment by visiting the URL above"
+          else
+            echo "❌ Deployment failed!"
+            echo "🔍 Please check the deployment logs above for details"
+            exit 1
+          fi
+
+  # Job to handle failed prerequisites
+  prerequisites-failed:
+    runs-on: ubuntu-latest
+    needs: check
+    if: needs.check.outputs.secrets-valid != 'true'
+    steps:
+      - name: "Prerequisites validation failed"
+        run: |
+          echo "❌ Prerequisites validation failed!"
+          echo ""
+          echo "🚫 The following issues were found:"
+          echo "${{ needs.check.outputs.error-message }}"
+          echo ""
+          echo "🔧 To fix these issues:"
+          echo "1. Go to your repository Settings"
+          echo "2. Navigate to Secrets and variables → Actions"
+          echo "3. Add the missing secrets with the correct values"
+          echo "4. Re-run the workflow"
+          echo ""
+          echo "📚 For more information about GitHub secrets:"
+          echo "https://docs.github.com/en/actions/security-guides/encrypted-secrets"
