@@ -4,7 +4,7 @@ env:
   ARTIFACT_NAME: FrontendMonitoring
   DOTNET_CORE_VERSION: 9.0.x
   PUBLISH_DIRECTORY: "./out/publish"
-  AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+  AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME}}
 on:
   push:
     branches:
@@ -139,6 +139,24 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
 
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json', '**/*.csproj') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      - name: Cache .NET build output
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/bin
+            **/obj
+          key: build-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            build-${{ runner.os }}-
+
       - name: Restore dependencies
         run: dotnet restore FrontendMonitoring.sln
 
@@ -213,9 +231,9 @@ jobs:
         id: azure-login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BBCD49BBABEB403BBBFF41809E88EFF1 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F4E6BDB44EE54B8A9AD0E508C38F04B5 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8413332D7BD843F5AE90CD923D187DA9 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BBCD49BBABEB403BBBFF41809E88EFF1}}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F4E6BDB44EE54B8A9AD0E508C38F04B5}}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8413332D7BD843F5AE90CD923D187DA9}}
 
       - name: "Verify Azure authentication"
         run: |
