@@ -12,9 +12,9 @@ public class HttpRequester
         _httpClient = httpClient;
     }
 
-    public async Task<T?> GetAsync<T>(string baseUrl, string endpoint)
+    public async Task<T?> GetAsync<T>(string endpoint)
     {
-        var response = await _httpClient.GetAsync($"{baseUrl}/{endpoint}");
+        var response = await _httpClient.GetAsync($"https://bitbybitwebapi.azurewebsites.net/{endpoint}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }

@@ -51,7 +51,7 @@
 
         try
         {
-            var response = await Http.PostAsJsonAsync("https://bitbybittrash.azurewebsites.net/account/register", registerData);
+            var response = await Http.PostAsJsonAsync("https://bitbybitwebapi.azurewebsites.net/account/register", registerData);
 
             if (response.IsSuccessStatusCode)
             {
@@ -86,7 +86,7 @@
 
         try
         {
-            var response = await Http.PostAsJsonAsync("https://bitbybittrash.azurewebsites.net/account/login", loginData);
+            var response = await Http.PostAsJsonAsync("https://bitbybitwebapi.azurewebsites.net/account/login", loginData);
 
             if (response.IsSuccessStatusCode)
             {

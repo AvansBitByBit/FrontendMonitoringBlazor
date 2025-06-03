@@ -13,6 +13,8 @@ var connectionString = builder.Configuration.GetValue<string>("connectionString"
 // {
 //     throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 // }
+
+
 // 3. MudBlazor
 builder.Services.AddMudServices();
 

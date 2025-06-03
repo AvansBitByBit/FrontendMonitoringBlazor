@@ -11,6 +11,6 @@ public class AfvalApiClient
 
     public Task<AfvalModel?> GetDataAsync()
     {
-        return _httpRequester.GetAsync<AfvalModel>("http://apiclient.com", "data-endpoint");
+        return _httpRequester.GetAsync<AfvalModel>("afval/afval");
     }
 }
