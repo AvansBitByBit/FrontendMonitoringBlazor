@@ -1,11 +1,10 @@
-name: Build, Test and Deploy ASP.NET Core WebAPI to Azure
+name: Build, Test and Deploy Blazor Frontend Monitoring to Azure
 
 env:
-  ARTIFACT_NAME: WebApi
+  ARTIFACT_NAME: FrontendMonitoring
   DOTNET_CORE_VERSION: 9.0.x
   PUBLISH_DIRECTORY: "./out/publish"
-  AZURE_WEBAPP_NAME: bitbybitwebapi
-
+  AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
 on:
   push:
     branches:
@@ -121,7 +120,6 @@ jobs:
             echo ""
             echo "⚠️  Build and deployment will be skipped due to validation failures"
           fi
-
   build:
     runs-on: ubuntu-latest
     needs: check
@@ -130,11 +128,11 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-
+      
       - name: "Prerequisites validation check"
         run: |
           echo "✅ Prerequisites validated successfully"
-          echo "🔨 Starting build process for BitByBitTrashAPI"
+          echo "🔨 Starting build process for FrontendMonitoring"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -142,28 +140,26 @@ jobs:
           dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
 
       - name: Restore dependencies
-        run: dotnet restore BitByBitTrashAPI.sln
+        run: dotnet restore FrontendMonitoring.sln
 
       - name: Build
-        run: dotnet build BitByBitTrashAPI.sln --no-restore --configuration Release
+        run: dotnet build FrontendMonitoring.sln --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test BitByBitTrashAPI.sln --no-build --configuration Release --verbosity normal --logger trx --results-directory TestResults
+        run: dotnet test FrontendMonitoring.sln --no-build --configuration Release --verbosity normal --logger trx --results-directory TestResults
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-results
-          path: TestResults/*.trx
-
-      - name: Clean publish directory
-        run: |
-          rm -rf ${{ env.PUBLISH_DIRECTORY }}
-          mkdir -p ${{ env.PUBLISH_DIRECTORY }}
+          path:TestResults/*.trx      - name: Clean publish directory
+          run: |
+            rm -rf ${{ env.PUBLISH_DIRECTORY }}
+            mkdir -p ${{ env.PUBLISH_DIRECTORY }}
 
       - name: Publish
-        run: dotnet publish ./BitByBitTrashAPI --output ${{ env.PUBLISH_DIRECTORY }} --configuration Release --no-build
+        run: dotnet publish ./FrontendMonitoring --output ${{ env.PUBLISH_DIRECTORY }} --configuration Release --no-build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
