@@ -153,10 +153,12 @@ jobs:
         if: always()
         with:
           name: test-results
-          path:TestResults/*.trx      - name: Clean publish directory
-          run: |
-            rm -rf ${{ env.PUBLISH_DIRECTORY }}
-            mkdir -p ${{ env.PUBLISH_DIRECTORY }}
+          path: TestResults/*.trx
+
+      - name: Clean publish directory
+        run: |
+          rm -rf ${{ env.PUBLISH_DIRECTORY }}
+          mkdir -p ${{ env.PUBLISH_DIRECTORY }}
 
       - name: Publish
         run: dotnet publish ./FrontendMonitoring --output ${{ env.PUBLISH_DIRECTORY }} --configuration Release --no-build
