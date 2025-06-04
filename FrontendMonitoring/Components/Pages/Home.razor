@@ -1,43 +1,60 @@
 ﻿@page "/"
+@inject IJSRuntime JS
+@inject NavigationManager Nav
 
 <PageTitle>Home</PageTitle>
 
-<MudPaper Class="pa-6 mx-auto mt-12" MaxWidth="600px">
-    <MudText Typo="Typo.h4" GutterBottom="true">Welkom bij jouw MudBlazor App!</MudText>
-    <MudText Typo="Typo.body1" Class="mb-6">
-        Deze applicatie maakt gebruik van MudBlazor voor een moderne en responsive gebruikerservaring.
-        Log in of maak een account aan om verder te gaan.
-    </MudText>
+<MudPaper Class="pa-6 mx-auto mt-12 fade-in" MaxWidth="600px">
+    @if (_isLoggedIn)
+    {
+        <MudText Typo="Typo.h4" GutterBottom="true">Welkom terug!</MudText>
+        <MudText Typo="Typo.body1" Class="mb-6">
+            Je bent succesvol ingelogd. Ga naar het dashboard om je gegevens te bekijken.
+        </MudText>
 
-    <MudStack Row="true" Spacing="2">
-        @if (!_loggedIn)
-        {
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AccountCircle" OnClick="@GoToLogin">
+        <MudStack Row="true" Spacing="2" Class="mb-4">
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Dashboard" OnClick="@GoToDashboard" Class="btn-animate">
+                Dashboard
+            </MudButton>
+            <MudButton Color="Color.Secondary" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Logout" OnClick="@Logout" Class="btn-animate">
+                Uitloggen
+            </MudButton>
+        </MudStack>
+    }
+    else
+    {
+        <MudText Typo="Typo.h4" GutterBottom="true">Welkom bij jouw MudBlazor App!</MudText>
+        <MudText Typo="Typo.body1" Class="mb-6">
+            Deze applicatie maakt gebruik van MudBlazor voor een moderne en responsive gebruikerservaring.
+            Log in of maak een account aan om verder te gaan.
+        </MudText>
+
+        <MudStack Row="true" Spacing="2">
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AccountCircle" OnClick="@GoToLogin" Class="btn-animate">
                 Login / Register
             </MudButton>
-        }
-        else
-        {
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Logout" OnClick="@LogOut">
-                Logout
-            </MudButton>
-        }
-    </MudStack>
+        </MudStack>
+    }
 
-    <MudDivider Class="my-6" />
-
-
+    <MudDivider Class="my-6 slide-in" />
 </MudPaper>
 
 @code {
-    [Inject] NavigationManager Nav { get; set; }
-    [Inject] IJSRuntime JS { get; set; }
-
-    private bool _loggedIn;
-
-    protected override async Task OnInitializedAsync()
+    private bool _isLoggedIn = false;    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _loggedIn = await JS.InvokeAsync<bool>("hasAuthToken");
+        if (firstRender)
+        {
+            try
+            {
+                _isLoggedIn = await JS.InvokeAsync<bool>("hasAuthToken");
+                StateHasChanged(); // Trigger a re-render with the updated state
+            }
+            catch
+            {
+                _isLoggedIn = false;
+                StateHasChanged();
+            }
+        }
     }
 
     private void GoToLogin()
@@ -45,10 +62,22 @@
         Nav.NavigateTo("/login");
     }
 
-    private async Task LogOut()
+    private void GoToDashboard()
     {
-        await JS.InvokeVoidAsync("clearAuthToken");
-        _loggedIn = false;
-        StateHasChanged();
+        Nav.NavigateTo("/dashboard");
+    }
+
+    private async Task Logout()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("clearAuthToken");
+            _isLoggedIn = false;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Logout failed: {ex.Message}");
+        }
     }
 }

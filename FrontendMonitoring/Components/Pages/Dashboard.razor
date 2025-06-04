@@ -1,56 +1,56 @@
 ﻿@page "/dashboard"
+@using MudBlazor
 @inject IJSRuntime JS
+@inject NavigationManager Nav
 @inject FrontendMonitoring.Services.AfvalApiClient AfvalClient
 @using FrontendMonitoring.Shared
 @using System.Text
 @using System.Linq
+@using FrontendMonitoring.Services
 
-<MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
+<MudContainer Class="mt-16 px-8 fade-in" MaxWidth="MaxWidth.False">
     <MudGrid>
         <!-- Dropdowns -->
         <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-                <MudText Typo="Typo.h6">Periode</MudText>
-                <MudSelect T="Pizza" @bind-Value="pizza" ToStringFunc="@converter" Label="Selecteer een periode" Variant="Variant.Outlined" Dense="true" Clearable>
-                    <MudSelectItem Value="@(new Pizza() { Name = "Laatste 7 dagen" })" />
-                    <MudSelectItem Value="@(new Pizza() { Name = "Laatste 30 dagen" })" />
-                    <MudSelectItem Value="@(new Pizza() { Name = "Dit jaar" })" />
+            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
+                <MudText Typo="Typo.h6">Periode</MudText>                <MudSelect T="FilterOption" @bind-Value="period" ToStringFunc="@converter" Label="Selecteer een periode" Variant="Variant.Outlined" Dense="true" Clearable>
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 7 dagen" })" />
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 30 dagen" })" />
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Dit jaar" })" />
                 </MudSelect>
             </MudPaper>
         </MudItem>
 
         <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-                <MudText Typo="Typo.h6">Afvaltype</MudText>
-                <MudSelect T="Pizza" @bind-Value="afvaltype" ToStringFunc="@converter" Label="Selecteer afvaltype" Variant="Variant.Outlined" Dense="true" Clearable>
-                    <MudSelectItem Value="@(new Pizza() { Name = "Alle types" })" />
-                    <MudSelectItem Value="@(new Pizza() { Name = "Plastic" })" />
-                    <MudSelectItem Value="@(new Pizza() { Name = "Papier" })" />
-                    <MudSelectItem Value="@(new Pizza() { Name = "Organisch" })" />
+            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
+                <MudText Typo="Typo.h6">Afvaltype</MudText>                <MudSelect T="FilterOption" @bind-Value="wasteType" ToStringFunc="@converter" Label="Selecteer afvaltype" Variant="Variant.Outlined" Dense="true" Clearable>
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Alle types" })" />
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Plastic" })" />
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Papier" })" />
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Organisch" })" />
                 </MudSelect>
             </MudPaper>
         </MudItem>
 
         <MudItem xs="12" sm="12" md="4">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-                <MudText Typo="Typo.h6">Locatie</MudText>
-                <MudSelect T="Pizza" @bind-Value="locatie" ToStringFunc="@converter" Label="Selecteer locatie" Variant="Variant.Outlined" Dense="true" Clearable>
-                    <MudSelectItem Value="@(new Pizza() { Name = "Alle locaties" })" />
-                    <MudSelectItem Value="@(new Pizza() { Name = "Sector Noord" })" />
-                    <MudSelectItem Value="@(new Pizza() { Name = "Sector Zuid" })" />
+            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
+                <MudText Typo="Typo.h6">Locatie</MudText>                <MudSelect T="FilterOption" @bind-Value="location" ToStringFunc="@converter" Label="Selecteer locatie" Variant="Variant.Outlined" Dense="true" Clearable>
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Alle locaties" })" />
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Sector Noord" })" />
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Sector Zuid" })" />
                 </MudSelect>
             </MudPaper>
         </MudItem>
 
         <!-- Metrics -->
         <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
                 <MudText Typo="Typo.h6">Totaal Ingezameld</MudText>
             </MudPaper>
         </MudItem>
 
         <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
                 <MudText Typo="Typo.h6">Weer</MudText>
                 <MudText>🌡️ 13°C - Bewolkt met buien</MudText>
                 <MudText>💨 Wind: 16 km/u ZW</MudText>
@@ -60,21 +60,21 @@
         </MudItem>
 
         <MudItem xs="12" sm="12" md="4">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
                 <MudText Typo="Typo.h6">Meldingen</MudText>
             </MudPaper>
         </MudItem>
 
         <!-- Afvalstromen -->
         <MudItem xs="12" sm="6" md="6">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
                 <MudText Typo="Typo.h6">Afvalstromen</MudText>
             </MudPaper>
         </MudItem>
 
         <!-- Locaties (map) -->
         <MudItem xs="12" sm="6" md="6">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 400px;">
+            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 400px;">
                 <MudText Typo="Typo.h6">Locaties</MudText>
                 <div id="map" style="height: 100%; min-height: 350px; width: 100%; border-radius: 4px; background-color: #2a2833;"></div>
             </MudPaper>
@@ -83,16 +83,16 @@
         <!-- Detections List -->
         <MudItem xs="12">
             <MudPaper Elevation="2" Class="pa-4" Style="min-height: 200px;">
-                <MudStack Row="true" Justify="space-between" AlignItems="center">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
                     <MudText Typo="Typo.h6">Detections</MudText>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportCsv" Class="export-btn">Export CSV</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportCsv" Class="export-btn btn-animate">Export CSV</MudButton>
                 </MudStack>
                 @foreach (var d in FilteredDetections)
                 {
-                    <div class="detection-item">
+                    <div class="detection-item fade-in">
                         <MudText Typo="Typo.subtitle1">@d.Type (@d.Location) - @d.TimeStamp.ToShortDateString()</MudText>
-                        <MudCheckBox @bind-Checked="d.Verified" Color="Color.Success" Label="Verified" />
-                        <MudCheckBox @bind-Checked="d.Cleaned" Color="Color.Info" Label="Cleaned" />
+                        <MudCheckBox T="bool" @bind-Checked="d.Verified" Color="Color.Success" Label="Verified" />
+                        <MudCheckBox T="bool" @bind-Checked="d.Cleaned" Color="Color.Info" Label="Cleaned" />
                     </div>
                 }
             </MudPaper>
@@ -108,40 +108,67 @@
 </MudContainer>
 
 @code {
-    Pizza pizza = new Pizza { Name = "Laatste 7 dagen" };
-    Pizza afvaltype = new Pizza { Name = "Alle types" };
-    Pizza locatie = new Pizza { Name = "Alle locaties" };
+    private bool _isLoggedIn = false;
+    FilterOption period = new FilterOption { Name = "Laatste 7 dagen" };
+    FilterOption wasteType = new FilterOption { Name = "Alle types" };
+    FilterOption location = new FilterOption { Name = "Alle locaties" };
 
     List<DetectionResult> detections = new();
     IEnumerable<DetectionResult> FilteredDetections =>
         detections.Where(d =>
-            (afvaltype.Name == "Alle types" || d.Type == afvaltype.Name) &&
-            (locatie.Name == "Alle locaties" || d.Location == locatie.Name));
+            (wasteType.Name == "Alle types" || d.Type == wasteType.Name) &&
+            (location.Name == "Alle locaties" || d.Location == location.Name));
 
-    public class Pizza
+    public class FilterOption
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public override bool Equals(object o) => (o as Pizza)?.Name == Name;
+        public override bool Equals(object? o) => (o as FilterOption)?.Name == Name;
         public override int GetHashCode() => Name?.GetHashCode() ?? 0;
     }
 
-    Func<Pizza, string> converter = p => p?.Name;
+    Func<FilterOption, string> converter = p => p?.Name ?? string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
+        // Check authentication first
         try
         {
-            var data = await AfvalClient.GetDetectionsAsync();
-            if (data != null)
-                detections = data;
+            _isLoggedIn = await JS.InvokeAsync<bool>("hasAuthToken");
+            if (!_isLoggedIn)
+            {
+                Nav.NavigateTo("/login");
+                return;
+            }
         }
         catch
         {
+            Nav.NavigateTo("/login");
+            return;
+        }
+
+        // Load data
+        try
+        {
+            var data = await AfvalClient.GetDataAsync();
+            if (data != null)
+            {
+                // Process the API data and convert to DetectionResult
+                detections = new List<DetectionResult>
+                {
+                    new() { Type = data.Soort ?? "Unknown", Location = data.Naam ?? "Unknown Location", TimeStamp = DateTime.Parse(data.Datum ?? DateTime.Now.ToString()) },
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            // Fallback to placeholder data if API fails
+            Console.WriteLine($"API call failed: {ex.Message}");
             detections = new List<DetectionResult>
             {
                 new() { Type = "Plastic", Location = "Sector Noord", TimeStamp = DateTime.Now.AddDays(-1) },
-                new() { Type = "Papier", Location = "Sector Zuid", TimeStamp = DateTime.Now.AddDays(-2) }
+                new() { Type = "Papier", Location = "Sector Zuid", TimeStamp = DateTime.Now.AddDays(-2) },
+                new() { Type = "Organisch", Location = "Sector Noord", TimeStamp = DateTime.Now.AddDays(-3) }
             };
         }
     }

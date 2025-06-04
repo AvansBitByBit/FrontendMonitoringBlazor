@@ -1,23 +1,21 @@
 using FrontendMonitoring.Models;
-using FrontendMonitoring.Services;
-using FrontendMonitoring.Shared;
+using HttpRequester;
 
-public class AfvalApiClient
+namespace FrontendMonitoring.Services
+
 {
-    private readonly ApiClient _apiClient;
-
-    public AfvalApiClient(ApiClient apiClient)
+    public class AfvalApiClient
     {
-        _apiClient = apiClient;
-    }
+        private readonly HttpRequester.HttpRequester _httpRequester;
 
-    public Task<AfvalModel?> GetDataAsync()
-    {
-        return _apiClient.GetAsync<AfvalModel>("afval/afval");
-    }
+        public AfvalApiClient(HttpRequester.HttpRequester httpRequester)
+        {
+            _httpRequester = httpRequester;
+        }
 
-    public Task<List<DetectionResult>?> GetDetectionsAsync()
-    {
-        return _apiClient.GetAsync<List<DetectionResult>>("afval/detections");
+        public Task<AfvalModel?> GetDataAsync()
+        {
+            return _httpRequester.GetAsync<AfvalModel>("afval/afval");
+        }
     }
 }
