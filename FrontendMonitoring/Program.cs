@@ -23,6 +23,7 @@ builder.Services.AddHttpClient<ApiClient>();
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<AfvalApiClient>();
 builder.Services.AddScoped<WeatherApiClient>();
+builder.Services.AddScoped<DetectionService>();
 
 // 5. Razor components (Blazor Server)
 builder.Services.AddRazorComponents()
