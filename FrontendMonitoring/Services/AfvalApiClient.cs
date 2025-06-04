@@ -1,5 +1,6 @@
 using FrontendMonitoring.Models;
 using FrontendMonitoring.Services;
+using FrontendMonitoring.Shared;
 
 public class AfvalApiClient
 {
@@ -13,5 +14,10 @@ public class AfvalApiClient
     public Task<AfvalModel?> GetDataAsync()
     {
         return _apiClient.GetAsync<AfvalModel>("afval/afval");
+    }
+
+    public Task<List<DetectionResult>?> GetDetectionsAsync()
+    {
+        return _apiClient.GetAsync<List<DetectionResult>>("afval/detections");
     }
 }

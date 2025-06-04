@@ -10,9 +10,18 @@
     </MudText>
 
     <MudStack Row="true" Spacing="2">
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AccountCircle" OnClick="@GoToLogin">
-            Login / Register
-        </MudButton>
+        @if (!_loggedIn)
+        {
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AccountCircle" OnClick="@GoToLogin">
+                Login / Register
+            </MudButton>
+        }
+        else
+        {
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Logout" OnClick="@LogOut">
+                Logout
+            </MudButton>
+        }
     </MudStack>
 
     <MudDivider Class="my-6" />
@@ -22,9 +31,24 @@
 
 @code {
     [Inject] NavigationManager Nav { get; set; }
+    [Inject] IJSRuntime JS { get; set; }
+
+    private bool _loggedIn;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _loggedIn = await JS.InvokeAsync<bool>("hasAuthToken");
+    }
 
     private void GoToLogin()
     {
         Nav.NavigateTo("/login");
+    }
+
+    private async Task LogOut()
+    {
+        await JS.InvokeVoidAsync("clearAuthToken");
+        _loggedIn = false;
+        StateHasChanged();
     }
 }
