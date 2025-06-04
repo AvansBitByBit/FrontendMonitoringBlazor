@@ -1,5 +1,9 @@
 ﻿@page "/dashboard"
 @inject IJSRuntime JS
+@inject FrontendMonitoring.Services.AfvalApiClient AfvalClient
+@using FrontendMonitoring.Shared
+@using System.Text
+@using System.Linq
 
 <MudContainer Class="mt-16 px-8" MaxWidth="MaxWidth.False">
     <MudGrid>
@@ -76,6 +80,24 @@
             </MudPaper>
         </MudItem>
 
+        <!-- Detections List -->
+        <MudItem xs="12">
+            <MudPaper Elevation="2" Class="pa-4" Style="min-height: 200px;">
+                <MudStack Row="true" Justify="space-between" AlignItems="center">
+                    <MudText Typo="Typo.h6">Detections</MudText>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportCsv" Class="export-btn">Export CSV</MudButton>
+                </MudStack>
+                @foreach (var d in FilteredDetections)
+                {
+                    <div class="detection-item">
+                        <MudText Typo="Typo.subtitle1">@d.Type (@d.Location) - @d.TimeStamp.ToShortDateString()</MudText>
+                        <MudCheckBox @bind-Checked="d.Verified" Color="Color.Success" Label="Verified" />
+                        <MudCheckBox @bind-Checked="d.Cleaned" Color="Color.Info" Label="Cleaned" />
+                    </div>
+                }
+            </MudPaper>
+        </MudItem>
+
         <!-- Trends -->
         <MudItem xs="12">
             <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
@@ -90,6 +112,12 @@
     Pizza afvaltype = new Pizza { Name = "Alle types" };
     Pizza locatie = new Pizza { Name = "Alle locaties" };
 
+    List<DetectionResult> detections = new();
+    IEnumerable<DetectionResult> FilteredDetections =>
+        detections.Where(d =>
+            (afvaltype.Name == "Alle types" || d.Type == afvaltype.Name) &&
+            (locatie.Name == "Alle locaties" || d.Location == locatie.Name));
+
     public class Pizza
     {
         public string Name { get; set; }
@@ -99,6 +127,24 @@
     }
 
     Func<Pizza, string> converter = p => p?.Name;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var data = await AfvalClient.GetDetectionsAsync();
+            if (data != null)
+                detections = data;
+        }
+        catch
+        {
+            detections = new List<DetectionResult>
+            {
+                new() { Type = "Plastic", Location = "Sector Noord", TimeStamp = DateTime.Now.AddDays(-1) },
+                new() { Type = "Papier", Location = "Sector Zuid", TimeStamp = DateTime.Now.AddDays(-2) }
+            };
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -113,5 +159,16 @@
                 Console.WriteLine($"JS interop failed: {ex.Message}");
             }
         }
+    }
+
+    private async Task ExportCsv()
+    {
+        var csv = new StringBuilder();
+        csv.AppendLine("Type,Location,Timestamp,Verified,Cleaned");
+        foreach (var d in FilteredDetections)
+        {
+            csv.AppendLine($"{d.Type},{d.Location},{d.TimeStamp:u},{d.Verified},{d.Cleaned}");
+        }
+        await JS.InvokeVoidAsync("downloadCsv", "detections.csv", csv.ToString());
     }
 }
