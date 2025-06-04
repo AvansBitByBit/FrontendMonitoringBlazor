@@ -1,5 +1,6 @@
 using FrontendMonitoring.Components;
 using FrontendMonitoring.Models;
+using FrontendMonitoring.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +15,14 @@ var connectionString = builder.Configuration.GetValue<string>("connectionString"
 //     throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
 // }
 
-
 // 3. MudBlazor
 builder.Services.AddMudServices();
 
 // 4. HTTP Clients (voor je eigen services)
-builder.Services.AddHttpClient<HttpRequester.HttpRequester>();
-builder.Services.AddHttpClient<HttpRequesterOnlyUrl.HttpRequesterOnlyUrl>();
+builder.Services.AddHttpClient<ApiClient>();
+builder.Services.AddScoped<AuthenticationService>();
+builder.Services.AddScoped<AfvalApiClient>();
+builder.Services.AddScoped<WeatherApiClient>();
 
 // 5. Razor components (Blazor Server)
 builder.Services.AddRazorComponents()
