@@ -4,7 +4,7 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
-@inject HttpClient Http
+@inject FrontendMonitoring.Services.AuthenticationService AuthService
 
 <MudPaper Class="pa-6 mx-auto mt-12 mud-width-full mud-width-md" Elevation="4">
     <MudText Typo="Typo.h5" Class="mb-4">@(_isRegistering ? "Register" : "Login")</MudText>
@@ -44,24 +44,23 @@
         }
 
         var registerData = new RegisterModel
-            {
-                Email = _email,
-                Password = _password
-            };
+        {
+            Email = _email,
+            Password = _password
+        };
 
         try
         {
-            var response = await Http.PostAsJsonAsync("https://bitbybitwebapi.azurewebsites.net/account/register", registerData);
+            var success = await AuthService.RegisterAsync(registerData);
 
-            if (response.IsSuccessStatusCode)
+            if (success)
             {
                 Snackbar.Add("Registered successfully. You can now log in.", Severity.Success);
                 _isRegistering = false;
             }
             else
             {
-                var error = await response.Content.ReadAsStringAsync();
-                Snackbar.Add($"Register failed: {error}", Severity.Error);
+                Snackbar.Add("Register failed", Severity.Error);
             }
         }
         catch (Exception ex)
@@ -79,26 +78,24 @@
         }
 
         var loginData = new LoginModel
-            {
-                Email = _email,
-                Password = _password
-            };
+        {
+            Email = _email,
+            Password = _password
+        };
 
         try
         {
-            var response = await Http.PostAsJsonAsync("https://bitbybitwebapi.azurewebsites.net/account/login", loginData);
+            var token = await AuthService.LoginAsync(loginData);
 
-            if (response.IsSuccessStatusCode)
+            if (!string.IsNullOrWhiteSpace(token))
             {
-                var token = await response.Content.ReadAsStringAsync();
                 await JS.InvokeVoidAsync("localStorage.setItem", "authToken", token);
                 Snackbar.Add("Login successful!", Severity.Success);
                 Navigation.NavigateTo("/dashboard");
             }
             else
             {
-                var error = await response.Content.ReadAsStringAsync();
-                Snackbar.Add($"Login failed: {error}", Severity.Error);
+                Snackbar.Add("Login failed", Severity.Error);
             }
         }
         catch (Exception ex)
