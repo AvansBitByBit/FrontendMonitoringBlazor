@@ -17,10 +17,9 @@ public class ValidationTests
             "user+tag@example.org",
             "firstname.lastname@example.com",
             "email@123.123.123.123", // IP address
-            "1234567890@example.com"
-        };
+            "1234567890@example.com"        };
 
-        var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+        var emailRegex = new Regex(@"^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$");
 
         // Act & Assert
         foreach (var email in validEmails)
@@ -42,10 +41,9 @@ public class ValidationTests
             "email@",
             "@email.com",
             "email..double.dot@example.com",
-            ""
-        };
+            ""        };
 
-        var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+        var emailRegex = new Regex(@"^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$");
 
         // Act & Assert
         foreach (var email in invalidEmails)
