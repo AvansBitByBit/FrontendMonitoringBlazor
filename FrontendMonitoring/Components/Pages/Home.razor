@@ -5,8 +5,10 @@
 
 <PageTitle>Home</PageTitle>
 
+@using Microsoft.AspNetCore.Components.RenderTree
+
 <!-- Overlay Introductie -->
-@if (!_introDismissed)
+@if (!_introDismissed && _isInteractive)
 {
     <MudOverlay Visible="true" Class="intro-overlay fade-in">
         <MudPaper Class="pa-8 mx-auto intro-card animate-pop" MaxWidth="700px" Elevation="12">
@@ -96,11 +98,13 @@
 @code {
     private bool _isLoggedIn = false;
     private bool _introDismissed = false;
+    private bool _isInteractive = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            _isInteractive = true;
             try
             {
                 _isLoggedIn = await JS.InvokeAsync<bool>("hasAuthToken");
