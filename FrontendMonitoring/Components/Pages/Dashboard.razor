@@ -6,7 +6,10 @@
 @using FrontendMonitoring.Shared
 @using System.Text
 @using System.Linq
+@inject ITokenStorage TokenStorage
+@inject AuthenticationStateProvider AuthProvider
 @using FrontendMonitoring.Services
+@using Microsoft.AspNetCore.Components.Authorization
 
 <MudContainer Class="mt-16 px-8 fade-in" MaxWidth="MaxWidth.False">
     <MudGrid>
@@ -198,4 +201,7 @@
         }
         await JS.InvokeVoidAsync("downloadCsv", "detections.csv", csv.ToString());
     }
+
+
+
 }

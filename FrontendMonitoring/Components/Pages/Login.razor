@@ -1,10 +1,15 @@
 ﻿@page "/login"
+@using System.Security.Claims
 @using MudBlazor
 @using FrontendMonitoring.Models
+@using FrontendMonitoring.Services
+@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 @inject HttpClient Http
 @inject IJSRuntime JS
+@inject ITokenStorage TokenStorage
+@inject AuthenticationStateProvider AuthProvider
 
 <MudPaper Class="pa-6 mx-auto mt-12 mud-width-full mud-width-md" Elevation="4">
     <MudText Typo="Typo.h5" Class="mb-4">@(_isRegistering ? "Register" : "Login")</MudText>
@@ -26,7 +31,19 @@
     private string _email = string.Empty;
     private string _password = string.Empty;
     private bool _isRegistering = false;
+    private ClaimsPrincipal user;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        user = authState.User;
+    }
+
+    public async Task LoginAsync(string jwtToken)
+    {
+        await TokenStorage.SetTokenAsync(jwtToken);
+        (AuthProvider as JwtAuthenticationStateProvider)?.NotifyAuthenticationStateChanged();
+    }
     private async Task HandleAction()
     {
         if (_isRegistering)
@@ -110,4 +127,7 @@
     {
         _isRegistering = !_isRegistering;
     }
+
+
+
 }

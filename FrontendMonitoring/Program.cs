@@ -1,6 +1,8 @@
 using FrontendMonitoring.Components;
 using FrontendMonitoring.Models;
+using FrontendMonitoring.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
@@ -9,10 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Database configuratie
 var connectionString = builder.Configuration.GetValue<string>("connectionString");
-// if (string.IsNullOrEmpty(connectionString))
-// {
-//     throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
-// }
+if (string.IsNullOrEmpty(connectionString))
+{
+    Console.WriteLine("Connection string 'DefaultConnection' is not configured.");
+}
 
 
 // 3. MudBlazor
@@ -21,6 +23,9 @@ builder.Services.AddMudServices();
 // 4. HTTP Clients (voor je eigen services)
 builder.Services.AddHttpClient<HttpRequester.HttpRequester>();
 builder.Services.AddHttpClient<HttpRequesterOnlyUrl.HttpRequesterOnlyUrl>();
+builder.Services.AddScoped<ITokenStorage, LocalStorageTokenStorage>();
+builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
+builder.Services.AddAuthorizationCore();
 
 // 5. Razor components (Blazor Server)
 builder.Services.AddRazorComponents()
