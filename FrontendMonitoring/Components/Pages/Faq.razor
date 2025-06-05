@@ -1,118 +1,107 @@
 @page "/faq"
+@using MudBlazor
 
-<PageTitle>FAQ</PageTitle>
+<PageTitle>Veelgestelde Vragen</PageTitle>
 
 <MudPaper Class="responsive-padding mx-auto fade-in" MaxWidth="800px">
     <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-4 text-responsive-h3">
         <MudIcon Icon="@Icons.Material.Filled.Help" Class="mr-2" />
-        Frequently Asked Questions
+        Veelgestelde Vragen
     </MudText>
     <MudText Typo="Typo.body1" Class="mb-6 text-responsive-body">
-        Find answers to common questions about our waste detection platform and how it works.
+        Vind antwoorden op veelgestelde vragen over ons afvaldetectieplatform en hoe het werkt.
     </MudText>
 
-    <MudExpansionPanels MultiExpansion="true" Class="card-animate">
-        <MudExpansionPanel>
-            <MudExpansionPanelHeader>
-                <div style="display: flex; align-items: center;">
-                    <MudIcon Icon="@Icons.Material.Filled.Psychology" class="mr-3" style="color: var(--mud-palette-primary);" />
-                    <MudText Typo="Typo.h6" Class="text-responsive-h6">How does the waste detection work?</MudText>
-                </div>
-            </MudExpansionPanelHeader>
-            <MudExpansionPanelText>
+    <MudStack Spacing="4" Class="card-animate">
+        <MudPaper Elevation="2" Class="responsive-padding">
+            <MudStack Spacing="3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.Psychology" Style="color: var(--mud-palette-primary);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Hoe werkt de afvaldetectie?</MudText>
+                </MudStack>
                 <MudText Class="text-responsive-body">
-                    Our system uses smart cameras and sensors to continuously monitor public areas. Advanced AI algorithms analyze the collected data in real-time to identify and classify different types of waste. When waste is detected, the system automatically generates alerts for cleanup crews with precise location information.
+                    Ons systeem gebruikt slimme camera's en sensoren om openbare ruimtes continu te monitoren. Geavanceerde AI-algoritmes analyseren de verzamelde data in real-time om verschillende soorten afval te identificeren en classificeren. Wanneer afval wordt gedetecteerd, genereert het systeem automatisch meldingen voor opruimploegen met precieze locatie-informatie.
                 </MudText>
-            </MudExpansionPanelText>
-        </MudExpansionPanel>
+            </MudStack>
+        </MudPaper>
 
-        <MudExpansionPanel>
-            <MudExpansionPanelHeader>
-                <div style="display: flex; align-items: center;">
-                    <MudIcon Icon="@Icons.Material.Filled.Security" class="mr-3" style="color: var(--mud-palette-success);" />
-                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Is my data stored securely?</MudText>
-                </div>
-            </MudExpansionPanelHeader>
-            <MudExpansionPanelText>
+        <MudPaper Elevation="2" Class="responsive-padding">
+            <MudStack Spacing="3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.Security" Style="color: var(--mud-palette-success);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Worden mijn gegevens veilig opgeslagen?</MudText>
+                </MudStack>
                 <MudText Class="text-responsive-body">
-                    Yes, privacy and security are our top priorities. We do not store any photos or images. All data is encrypted both in transit and at rest, and access is restricted to authorized personnel only. For detailed information, please see our <MudLink Href="/privacy">Privacy Policy</MudLink>.
+                    Ja, privacy en veiligheid zijn onze topprioriteiten. We slaan geen foto's of afbeeldingen op. Alle gegevens worden versleuteld tijdens transport en opslag, en toegang is beperkt tot alleen geautoriseerd personeel. Voor gedetailleerde informatie, zie ons <MudLink Href="/privacy">Privacybeleid</MudLink>.
                 </MudText>
-            </MudExpansionPanelText>
-        </MudExpansionPanel>
+            </MudStack>
+        </MudPaper>
 
-        <MudExpansionPanel>
-            <MudExpansionPanelHeader>
-                <div style="display: flex; align-items: center;">
-                    <MudIcon Icon="@Icons.Material.Filled.People" class="mr-3" style="color: var(--mud-palette-secondary);" />
-                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Can citizens contribute to the system?</MudText>
-                </div>
-            </MudExpansionPanelHeader>
-            <MudExpansionPanelText>
+        <MudPaper Elevation="2" Class="responsive-padding">
+            <MudStack Spacing="3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.People" Style="color: var(--mud-palette-secondary);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Kunnen burgers bijdragen aan het systeem?</MudText>
+                </MudStack>
                 <MudText Class="text-responsive-body">
-                    Absolutely! Citizens can contribute by creating accounts, reporting waste locations manually, and providing feedback on cleanup efforts. The platform encourages community involvement to help maintain cleaner public spaces.
+                    Absoluut! Burgers kunnen bijdragen door accounts aan te maken, afvallocaties handmatig te melden en feedback te geven over opruimactiviteiten. Het platform moedigt gemeenschapsbetrokkenheid aan om schonere openbare ruimtes te behouden.
                 </MudText>
-            </MudExpansionPanelText>
-        </MudExpansionPanel>
+            </MudStack>
+        </MudPaper>
 
-        <MudExpansionPanel>
-            <MudExpansionPanelHeader>
-                <div style="display: flex; align-items: center;">
-                    <MudIcon Icon="@Icons.Material.Filled.Update" class="mr-3" style="color: var(--mud-palette-info);" />
-                    <MudText Typo="Typo.h6" Class="text-responsive-h6">How often is the data updated?</MudText>
-                </div>
-            </MudExpansionPanelHeader>
-            <MudExpansionPanelText>
+        <MudPaper Elevation="2" Class="responsive-padding">
+            <MudStack Spacing="3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.Update" Style="color: var(--mud-palette-info);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Hoe vaak worden de gegevens bijgewerkt?</MudText>
+                </MudStack>
                 <MudText Class="text-responsive-body">
-                    The system operates in real-time. Data is continuously collected and analyzed, with new detections appearing on the dashboard immediately. Statistics and reports are updated every few minutes to ensure accuracy.
+                    Het systeem werkt in real-time. Gegevens worden continu verzameld en geanalyseerd, waarbij nieuwe detecties onmiddellijk op het dashboard verschijnen. Statistieken en rapporten worden elke paar minuten bijgewerkt om nauwkeurigheid te garanderen.
                 </MudText>
-            </MudExpansionPanelText>
-        </MudExpansionPanel>
+            </MudStack>
+        </MudPaper>
 
-        <MudExpansionPanel>
-            <MudExpansionPanelHeader>
-                <div style="display: flex; align-items: center;">
-                    <MudIcon Icon="@Icons.Material.Filled.Category" class="mr-3" style="color: var(--mud-palette-warning);" />
-                    <MudText Typo="Typo.h6" Class="text-responsive-h6">What types of waste can be detected?</MudText>
-                </div>
-            </MudExpansionPanelHeader>
-            <MudExpansionPanelText>
+        <MudPaper Elevation="2" Class="responsive-padding">
+            <MudStack Spacing="3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.Category" Style="color: var(--mud-palette-warning);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Welke soorten afval kunnen worden gedetecteerd?</MudText>
+                </MudStack>
                 <MudText Class="text-responsive-body mb-3">
-                    Our AI system can accurately identify and classify several types of waste:
+                    Ons AI-systeem kan verschillende soorten afval accuraat identificeren en classificeren:
                 </MudText>
                 <MudList T="string">
-                    <MudListItem T="string" Icon="@Icons.Material.Filled.LocalDining" Class="text-responsive-body">Food waste and organic materials</MudListItem>
-                    <MudListItem T="string" Icon="@Icons.Material.Filled.Recycling" Class="text-responsive-body">Recyclable materials (plastic, glass, paper, metal)</MudListItem>
-                    <MudListItem T="string" Icon="@Icons.Material.Filled.Delete" Class="text-responsive-body">General household waste</MudListItem>
-                    <MudListItem T="string" Icon="@Icons.Material.Filled.Warning" Class="text-responsive-body">Hazardous materials (batteries, electronics)</MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.LocalDining" Class="text-responsive-body">Voedselafval en organische materialen</MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Recycling" Class="text-responsive-body">Recyclebare materialen (plastic, glas, papier, metaal)</MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Delete" Class="text-responsive-body">Algemeen huishoudelijk afval</MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Warning" Class="text-responsive-body">Gevaarlijke materialen (batterijen, elektronica)</MudListItem>
                 </MudList>
-            </MudExpansionPanelText>
-        </MudExpansionPanel>
+            </MudStack>
+        </MudPaper>
 
-        <MudExpansionPanel>
-            <MudExpansionPanelHeader>
-                <div style="display: flex; align-items: center;">
-                    <MudIcon Icon="@Icons.Material.Filled.Map" class="mr-3" style="color: var(--mud-palette-tertiary);" />
-                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Is the system available in other cities?</MudText>
-                </div>
-            </MudExpansionPanelHeader>
-            <MudExpansionPanelText>
+        <MudPaper Elevation="2" Class="responsive-padding">
+            <MudStack Spacing="3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.Map" Style="color: var(--mud-palette-tertiary);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Is het systeem beschikbaar in andere steden?</MudText>
+                </MudStack>
                 <MudText Class="text-responsive-body">
-                    Currently, we're focused on Breda as our pilot location to perfect the technology and processes. However, we have plans to expand to other municipalities once we've demonstrated the system's effectiveness and refined our approach based on real-world feedback.
+                    Momenteel richten we ons op Breda als onze pilotlocatie om de technologie en processen te perfectioneren. We hebben echter plannen om uit te breiden naar andere gemeenten zodra we de effectiviteit van het systeem hebben aangetoond en onze aanpak hebben verfijnd op basis van real-world feedback.
                 </MudText>
-            </MudExpansionPanelText>
-        </MudExpansionPanel>
-    </MudExpansionPanels>
+            </MudStack>
+        </MudPaper>
+    </MudStack>
 
     <MudDivider Class="my-6" />
 
     <MudPaper Elevation="2" Class="responsive-padding text-center card-animate" Style="background: var(--mud-palette-primary-lighten);">
         <MudIcon Icon="@Icons.Material.Filled.QuestionAnswer" Style="font-size: 3rem; color: var(--mud-palette-primary);" Class="mb-3" />
-        <MudText Typo="Typo.h5" Class="mb-3 text-responsive-h5">Still Have Questions?</MudText>
+        <MudText Typo="Typo.h5" Class="mb-3 text-responsive-h5">Heeft u nog vragen?</MudText>
         <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body">
-            If you couldn't find the answer you were looking for, feel free to reach out to our team. We're here to help!
+            Als u het antwoord dat u zocht niet kon vinden, neem dan gerust contact op met ons team. We zijn er om te helpen!
         </MudText>
         <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.ContactMail" Class="btn-animate">
-            Contact Support
+            Contact Ondersteuning
         </MudButton>
     </MudPaper>
 </MudPaper>

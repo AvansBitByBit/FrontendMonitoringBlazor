@@ -2,107 +2,102 @@
 @using Microsoft.AspNetCore.Components.Web
 @using MudBlazor
 
-<PageTitle>Statistics</PageTitle>
+<PageTitle>Statistieken</PageTitle>
 
 <MudPaper Class="responsive-padding mx-auto fade-in" MaxWidth="800px">
     <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-4 text-responsive-h3">
         <MudIcon Icon="@Icons.Material.Filled.Analytics" Class="mr-2" />
-        Waste Detection Statistics
+        Afvaldetectie Statistieken
     </MudText>
     <MudText Typo="Typo.body1" Class="mb-6 text-responsive-body">
-        Comprehensive analytics and insights from our AI-powered waste monitoring system across Breda.
+        Uitgebreide analyses en inzichten van ons AI-aangedreven afvalmonitoringsysteem in Breda.
     </MudText>
 
     <MudAlert Severity="Severity.Info" Class="mb-4">
         <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
-        The following statistics are based on simulated data for demonstration purposes.
+        De volgende statistieken zijn gebaseerd op gesimuleerde gegevens voor demonstratiedoeleinden.
     </MudAlert>
 
-    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Current Statistics</MudText>
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Huidige Statistieken</MudText>
     
     <MudGrid Spacing="2" Class="mb-6">
         <MudItem xs="12" sm="6" md="3">
             <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
                 <MudIcon Icon="@Icons.Material.Filled.DeleteSweep" Style="font-size: 2.5rem; color: var(--mud-palette-primary);" Class="mb-2" />
-                <MudText Typo="Typo.h4" Class="text-responsive-h4" Style="color: var(--mud-palette-primary);">1,247</MudText>
-                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Total Detections</MudText>
-                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">This month</MudText>
+                <MudText Typo="Typo.h4" Class="text-responsive-h4" Style="color: var(--mud-palette-primary);">1,247</MudText>                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Totale Detecties</MudText>
+                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">Deze maand</MudText>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="6" md="3">
             <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
                 <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Style="font-size: 2.5rem; color: var(--mud-palette-success);" Class="mb-2" />
-                <MudText Typo="Typo.h4" Class="text-responsive-h4" Style="color: var(--mud-palette-success);">96%</MudText>
-                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Cleanup Rate</MudText>
-                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">Within 24h</MudText>
+                <MudText Typo="Typo.h4" Class="text-responsive-h4" Style="color: var(--mud-palette-success);">96%</MudText>                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Opruimpercentage</MudText>
+                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">Binnen 24u</MudText>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="6" md="3">
             <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
                 <MudIcon Icon="@Icons.Material.Filled.Schedule" Style="font-size: 2.5rem; color: var(--mud-palette-warning);" Class="mb-2" />
-                <MudText Typo="Typo.h4" Class="text-responsive-h4" Style="color: var(--mud-palette-warning);">2.3h</MudText>
-                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Avg Response</MudText>
-                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">Hours</MudText>
+                <MudText Typo="Typo.h4" Class="text-responsive-h4" Style="color: var(--mud-palette-warning);">2.3u</MudText>
+                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Gem. Reactie</MudText>
+                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">Uren</MudText>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="6" md="3">
             <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
                 <MudIcon Icon="@Icons.Material.Filled.LocationOn" Style="font-size: 2.5rem; color: var(--mud-palette-info);" Class="mb-2" />
                 <MudText Typo="Typo.h4" Class="text-responsive-h4" Style="color: var(--mud-palette-info);">42</MudText>
-                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Active Zones</MudText>
-                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">Monitored</MudText>
+                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Actieve Zones</MudText>
+                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">Gemonitord</MudText>
             </MudPaper>
         </MudItem>
     </MudGrid>
 
     <MudDivider Class="my-6" />
 
-    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Weekly Trends</MudText>
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Wekelijkse Trends</MudText>
     
     <MudPaper Elevation="2" Class="responsive-padding mb-6 card-animate">
         <MudGrid Spacing="3">
             <MudItem xs="12" md="6">
-                <MudText Typo="Typo.h6" Class="mb-3 text-responsive-h6">Detection Volume</MudText>
-                <MudList T="string">                    <MudListItem T="string" Class="text-responsive-body">
+                <MudText Typo="Typo.h6" Class="mb-3 text-responsive-h6">Detectievolume</MudText>                <MudList T="string">                    <MudListItem T="string" Class="text-responsive-body">
                         <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                            <MudText>Monday</MudText>
+                            <MudText>Maandag</MudText>
                             <MudProgressLinear Color="Color.Primary" Size="Size.Medium" Value="85" Class="flex-grow-1 mx-3" />
                             <MudText>204</MudText>
                         </MudStack>
                     </MudListItem>
                     <MudListItem T="string" Class="text-responsive-body">
                         <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                            <MudText>Tuesday</MudText>
+                            <MudText>Dinsdag</MudText>
                             <MudProgressLinear Color="Color.Secondary" Size="Size.Medium" Value="72" Class="flex-grow-1 mx-3" />
                             <MudText>178</MudText>
                         </MudStack>
                     </MudListItem>
                     <MudListItem T="string" Class="text-responsive-body">
                         <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                            <MudText>Wednesday</MudText>
+                            <MudText>Woensdag</MudText>
                             <MudProgressLinear Color="Color.Tertiary" Size="Size.Medium" Value="91" Class="flex-grow-1 mx-3" />
                             <MudText>223</MudText>
                         </MudStack>
                     </MudListItem>
                 </MudList>
             </MudItem>
-            <MudItem xs="12" md="6">
-                <MudText Typo="Typo.h6" Class="mb-3 text-responsive-h6">Waste Categories</MudText>
+            <MudItem xs="12" md="6">                <MudText Typo="Typo.h6" Class="mb-3 text-responsive-h6">Afvalcategorieën</MudText>
                 <MudList T="string">                    <MudListItem T="string" Icon="@Icons.Material.Filled.LocalDining" Class="text-responsive-body">
                         <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                            <MudText>Food Waste</MudText>
+                            <MudText>Voedselafval</MudText>
                             <MudChip Color="Color.Primary" Size="Size.Small">42%</MudChip>
                         </MudStack>
                     </MudListItem>
                     <MudListItem T="string" Icon="@Icons.Material.Filled.Recycling" Class="text-responsive-body">
                         <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                            <MudText>Recyclables</MudText>
+                            <MudText>Recyclebaar</MudText>
                             <MudChip Color="Color.Success" Size="Size.Small">28%</MudChip>
                         </MudStack>
                     </MudListItem>
-                    <MudListItem T="string" Icon="@Icons.Material.Filled.Delete" Class="text-responsive-body">
-                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                            <MudText>General Waste</MudText>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Delete" Class="text-responsive-body">                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                            <MudText>Algemeen Afval</MudText>
                             <MudChip Color="Color.Warning" Size="Size.Small">30%</MudChip>
                         </MudStack>
                     </MudListItem>
@@ -113,33 +108,33 @@
 
     <MudDivider Class="my-6" />
 
-    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Environmental Impact</MudText>
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Milieu-impact</MudText>
     
     <MudGrid Spacing="2" Class="mb-6">
         <MudItem xs="12" md="4">
             <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
                 <MudIcon Icon="@Icons.Material.Filled.Nature" Style="font-size: 2rem; color: var(--mud-palette-success);" Class="mb-2" />
-                <MudText Typo="Typo.h6" Class="text-responsive-h6">Cleaner Streets</MudText>
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Schonere Straten</MudText>
                 <MudText Typo="Typo.body2" Class="text-responsive-body">
-                    15% reduction in street litter since system deployment
+                    15% minder zwerfafval sinds implementatie systeem
                 </MudText>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" md="4">
             <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
                 <MudIcon Icon="@Icons.Material.Filled.Co2" Style="font-size: 2rem; color: var(--mud-palette-info);" Class="mb-2" />
-                <MudText Typo="Typo.h6" Class="text-responsive-h6">CO₂ Savings</MudText>
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">CO₂ Besparing</MudText>
                 <MudText Typo="Typo.body2" Class="text-responsive-body">
-                    2.3 tons CO₂ saved through optimized routes
+                    2,3 ton CO₂ bespaard door geoptimaliseerde routes
                 </MudText>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" md="4">
             <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
                 <MudIcon Icon="@Icons.Material.Filled.SentimentVerySatisfied" Style="font-size: 2rem; color: var(--mud-palette-warning);" Class="mb-2" />
-                <MudText Typo="Typo.h6" Class="text-responsive-h6">Satisfaction</MudText>
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Tevredenheid</MudText>
                 <MudText Typo="Typo.body2" Class="text-responsive-body">
-                    87% citizen satisfaction with cleanliness improvements
+                    87% burgertevredenheid met verbeteringen in netheid
                 </MudText>
             </MudPaper>
         </MudItem>
@@ -148,20 +143,20 @@
     <MudDivider Class="my-6" />
 
     <MudPaper Elevation="2" Class="responsive-padding card-animate">
-        <MudText Typo="Typo.h5" Class="mb-3 text-responsive-h5">System Performance</MudText>
+        <MudText Typo="Typo.h5" Class="mb-3 text-responsive-h5">Systeemprestaties</MudText>
         <MudGrid Spacing="3">
             <MudItem xs="12" md="6">
                 <MudList T="string">
                     <MudListItem T="string" Icon="@Icons.Material.Filled.Speed" Class="text-responsive-body">
                         <MudStack Row="true" Justify="Justify.SpaceBetween">
-                            <MudText>Detection Accuracy</MudText>
-                            <MudText Style="color: var(--mud-palette-success);">94.7%</MudText>
+                            <MudText>Detectienauwkeurigheid</MudText>
+                            <MudText Style="color: var(--mud-palette-success);">94,7%</MudText>
                         </MudStack>
                     </MudListItem>
                     <MudListItem T="string" Icon="@Icons.Material.Filled.NetworkCheck" Class="text-responsive-body">
                         <MudStack Row="true" Justify="Justify.SpaceBetween">
-                            <MudText>System Uptime</MudText>
-                            <MudText Style="color: var(--mud-palette-success);">99.2%</MudText>
+                            <MudText>Systeem Uptime</MudText>
+                            <MudText Style="color: var(--mud-palette-success);">99,2%</MudText>
                         </MudStack>
                     </MudListItem>
                 </MudList>
@@ -170,14 +165,14 @@
                 <MudList T="string">
                     <MudListItem T="string" Icon="@Icons.Material.Filled.Timer" Class="text-responsive-body">
                         <MudStack Row="true" Justify="Justify.SpaceBetween">
-                            <MudText>Processing Time</MudText>
-                            <MudText Style="color: var(--mud-palette-info);">1.2s avg</MudText>
+                            <MudText>Verwerkingstijd</MudText>
+                            <MudText Style="color: var(--mud-palette-info);">1,2s gem.</MudText>
                         </MudStack>
                     </MudListItem>
                     <MudListItem T="string" Icon="@Icons.Material.Filled.Storage" Class="text-responsive-body">
                         <MudStack Row="true" Justify="Justify.SpaceBetween">
-                            <MudText>Data Processed</MudText>
-                            <MudText Style="color: var(--mud-palette-warning);">15.7 TB</MudText>
+                            <MudText>Data Verwerkt</MudText>
+                            <MudText Style="color: var(--mud-palette-warning);">15,7 TB</MudText>
                         </MudStack>
                     </MudListItem>
                 </MudList>
