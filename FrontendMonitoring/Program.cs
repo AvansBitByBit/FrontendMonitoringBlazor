@@ -11,10 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Database configuratie
 var connectionString = builder.Configuration.GetValue<string>("connectionString");
-if (string.IsNullOrEmpty(connectionString))
-{
-    Console.WriteLine("Connection string 'DefaultConnection' is not configured.");
-}
+
 
 
 // 3. MudBlazor
@@ -26,6 +23,9 @@ builder.Services.AddHttpClient<HttpRequesterOnlyUrl.HttpRequesterOnlyUrl>();
 builder.Services.AddScoped<ITokenStorage, LocalStorageTokenStorage>();
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
 builder.Services.AddAuthorizationCore();
+
+// Register AfvalApiClient as a service
+builder.Services.AddScoped<FrontendMonitoring.Services.AfvalApiClient>();
 
 // 5. Razor components (Blazor Server)
 builder.Services.AddRazorComponents()

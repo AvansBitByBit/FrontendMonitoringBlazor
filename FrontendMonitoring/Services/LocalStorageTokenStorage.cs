@@ -11,20 +11,37 @@ public class LocalStorageTokenStorage : ITokenStorage
     public LocalStorageTokenStorage(IJSRuntime jsRuntime)
     {
         _jsRuntime = jsRuntime;
-    }
-
-    public async Task<string> GetTokenAsync()
+    }    public async Task<string> GetTokenAsync()
     {
-        return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", TokenKey);
-    }
-
-    public async Task SetTokenAsync(string token)
+        try
+        {
+            return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", TokenKey) ?? string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }    public async Task SetTokenAsync(string token)
     {
-        await _jsRuntime.InvokeVoidAsync("localStorage.setItem", TokenKey, token);
+        try
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", TokenKey, token);
+        }
+        catch
+        {
+            // Ignore errors during server-side rendering
+        }
     }
 
     public async Task RemoveTokenAsync()
     {
-        await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", TokenKey);
+        try
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", TokenKey);
+        }
+        catch
+        {
+            // Ignore errors during server-side rendering
+        }
     }
 }

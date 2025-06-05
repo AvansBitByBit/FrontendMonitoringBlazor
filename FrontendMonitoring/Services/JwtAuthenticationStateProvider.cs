@@ -7,26 +7,39 @@ using System.Threading.Tasks;
 
 public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 {
-    private readonly ITokenStorage _tokenStorage; // Je eigen service om het JWT uit storage te halen
+    private readonly ITokenStorage _tokenStorage;
 
-    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    public JwtAuthenticationStateProvider(ITokenStorage tokenStorage)
     {
-        var token = await _tokenStorage.GetTokenAsync();
-        var identity = new ClaimsIdentity();
-
-        if (!string.IsNullOrWhiteSpace(token))
+        _tokenStorage = tokenStorage;
+    }    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    {
+        try
         {
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
+            var token = await _tokenStorage.GetTokenAsync();
+            var identity = new ClaimsIdentity();
 
-            if (jwtToken.ValidTo > DateTime.UtcNow)
+            if (!string.IsNullOrWhiteSpace(token))
             {
-                identity = new ClaimsIdentity(jwtToken.Claims, "jwt");
-            }
-        }
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
 
-        var user = new ClaimsPrincipal(identity);
-        return new AuthenticationState(user);
+                if (jwtToken.ValidTo > DateTime.UtcNow)
+                {
+                    identity = new ClaimsIdentity(jwtToken.Claims, "jwt");
+                }
+            }
+
+            var user = new ClaimsPrincipal(identity);
+            return new AuthenticationState(user);
+        }
+        catch
+        {
+            // Return unauthenticated state if any errors occur
+            var identity = new ClaimsIdentity();
+            var user = new ClaimsPrincipal(identity);
+            return new AuthenticationState(user);
+        }
     }
 
     public void NotifyAuthenticationStateChanged() =>

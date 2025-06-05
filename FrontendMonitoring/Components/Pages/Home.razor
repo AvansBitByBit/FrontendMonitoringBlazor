@@ -1,4 +1,5 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 @inject IJSRuntime JS
 @inject NavigationManager Nav
 
@@ -40,14 +41,16 @@
 </MudPaper>
 
 @code {
-    private bool _isLoggedIn = false;    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private bool _isLoggedIn = false;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             try
             {
                 _isLoggedIn = await JS.InvokeAsync<bool>("hasAuthToken");
-                StateHasChanged(); // Trigger a re-render with the updated state
+                StateHasChanged();
             }
             catch
             {
@@ -59,7 +62,14 @@
 
     private void GoToLogin()
     {
-        Nav.NavigateTo("/login");
+        try
+        {
+            Nav.NavigateTo("/login");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Navigation failed: {ex.Message}");
+        }
     }
 
     private void GoToDashboard()

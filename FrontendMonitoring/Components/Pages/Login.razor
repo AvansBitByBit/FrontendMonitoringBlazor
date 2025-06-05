@@ -1,4 +1,5 @@
 ﻿@page "/login"
+@rendermode InteractiveServer
 @using System.Security.Claims
 @using MudBlazor
 @using FrontendMonitoring.Models
@@ -31,12 +32,23 @@
     private string _email = string.Empty;
     private string _password = string.Empty;
     private bool _isRegistering = false;
-    private ClaimsPrincipal user;
+    private ClaimsPrincipal? user;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var authState = await AuthProvider.GetAuthenticationStateAsync();
-        user = authState.User;
+        if (firstRender)
+        {
+            try
+            {
+                var authState = await AuthProvider.GetAuthenticationStateAsync();
+                user = authState.User;
+                StateHasChanged();
+            }
+            catch
+            {
+                // Ignore errors during initial load
+            }
+        }
     }
 
     public async Task LoginAsync(string jwtToken)
@@ -103,13 +115,36 @@
 
         try
         {
-            var response = await Http.PostAsJsonAsync("https://bitbybitwebapi.azurewebsites.net/account/login", loginData);            if (response.IsSuccessStatusCode)
+            var response = await Http.PostAsJsonAsync("https://bitbybitwebapi.azurewebsites.net/account/login", loginData);
+            if (response.IsSuccessStatusCode)
             {
-                var token = await response.Content.ReadAsStringAsync();
-                // Store token in localStorage
-                await JS.InvokeVoidAsync("localStorage.setItem", "authToken", token);
-                Snackbar.Add("Login successful!", Severity.Success);
-                Navigation.NavigateTo("/dashboard");
+                var content = await response.Content.ReadAsStringAsync();
+                string token = content;
+                // Try to parse as JSON if not a plain string
+                if (content.TrimStart().StartsWith("{"))
+                {
+                    try
+                    {
+                        var json = System.Text.Json.JsonDocument.Parse(content);
+                        if (json.RootElement.TryGetProperty("token", out var tokenProp))
+                        {
+                            token = tokenProp.GetString() ?? string.Empty;
+                        }
+                    }
+                    catch { /* fallback to plain string */ }
+                }
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    await JS.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+                    await TokenStorage.SetTokenAsync(token); // Use your ITokenStorage
+                    (AuthProvider as JwtAuthenticationStateProvider)?.NotifyAuthenticationStateChanged();
+                    Snackbar.Add("Login successful!", Severity.Success);
+                    Navigation.NavigateTo("/dashboard");
+                }
+                else
+                {
+                    Snackbar.Add("Login failed: No token received.", Severity.Error);
+                }
             }
             else
             {
