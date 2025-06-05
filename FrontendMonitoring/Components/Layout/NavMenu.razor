@@ -1,19 +1,10 @@
-﻿<MudNavMenu>    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home" OnClick="@CloseDrawerOnMobile">Home</MudNavLink>
-    <MudNavLink Href="dashboard" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add" OnClick="@CloseDrawerOnMobile">Dashboard</MudNavLink>
-    <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List" OnClick="@CloseDrawerOnMobile">Weather</MudNavLink>
-    <MudNavLink Href="how-it-works" Icon="@Icons.Material.Filled.Help" OnClick="@CloseDrawerOnMobile">Hoe werkt het?</MudNavLink>
-    <MudNavLink Href="statistics" Icon="@Icons.Material.Filled.BarChart" OnClick="@CloseDrawerOnMobile">Statistieken</MudNavLink>
-    <MudNavLink Href="faq" Icon="@Icons.Material.Filled.QuestionAnswer" OnClick="@CloseDrawerOnMobile">FAQ</MudNavLink>
-    <MudNavLink Href="about" Icon="@Icons.Material.Filled.Info" OnClick="@CloseDrawerOnMobile">Over</MudNavLink>
-    <MudNavLink Href="privacy" Icon="@Icons.Material.Filled.PrivacyTip" OnClick="@CloseDrawerOnMobile">Privacy</MudNavLink>
+﻿<MudNavMenu>
+    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+    <MudNavLink Href="dashboard" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Dashboard</MudNavLink>
+    <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
+    <MudNavLink Href="how-it-works" Icon="@Icons.Material.Filled.Help">Hoe werkt het?</MudNavLink>
+    <MudNavLink Href="statistics" Icon="@Icons.Material.Filled.BarChart">Statistieken</MudNavLink>
+    <MudNavLink Href="faq" Icon="@Icons.Material.Filled.QuestionAnswer">FAQ</MudNavLink>
+    <MudNavLink Href="about" Icon="@Icons.Material.Filled.Info">Over</MudNavLink>
+    <MudNavLink Href="privacy" Icon="@Icons.Material.Filled.PrivacyTip">Privacy</MudNavLink>
 </MudNavMenu>
-
-@code {
-    [CascadingParameter] public MainLayout? Layout { get; set; }
-    
-    private void CloseDrawerOnMobile()
-    {
-        // Close drawer on mobile after navigation
-        Layout?.CloseDrawer();
-    }
-}
