@@ -1,0 +1,26 @@
+@rendermode InteractiveServer
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+
+
+@page "/how-it-works"
+<MudPaper Elevation="2" Class="main-home-content card-animate gradient-bg fade-in">
+    <MudText Typo="Typo.h3" Class="mb-2 text-gradient text-responsive-h3 animate-pop">Hoe werkt het?</MudText>
+    <MudStepper Linear="false" Class="mb-4">
+        <MudStep Label="Detectie" Icon="@Icons.Material.Filled.CameraAlt">
+            <MudText>Camera’s en sensoren verzamelen continu data in de openbare ruimte.</MudText>
+        </MudStep>
+        <MudStep Label="AI Analyse" Icon="@Icons.Material.Filled.Memory">
+            <MudText>AI-algoritmes herkennen afval en bepalen de locatie.</MudText>
+        </MudStep>
+        <MudStep Label="Melding" Icon="@Icons.Material.Filled.NotificationsActive">
+            <MudText>Bij detectie wordt automatisch een melding verstuurd naar de juiste instantie.</MudText>
+        </MudStep>
+        <MudStep Label="Actie" Icon="@Icons.Material.Filled.CheckCircle">
+            <MudText>Gemeente of burgers kunnen direct actie ondernemen.</MudText>
+        </MudStep>
+    </MudStepper>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="btn-animate" Href="/faq">
+        Meer weten? Bekijk de FAQ
+    </MudButton>
+</MudPaper>
