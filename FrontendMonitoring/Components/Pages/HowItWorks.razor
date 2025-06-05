@@ -1,26 +1,131 @@
-@rendermode InteractiveServer
-@inject IJSRuntime JS
-@inject NavigationManager Nav
-
-
 @page "/how-it-works"
-<MudPaper Elevation="2" Class="main-home-content card-animate gradient-bg fade-in">
-    <MudText Typo="Typo.h3" Class="mb-2 text-gradient text-responsive-h3 animate-pop">Hoe werkt het?</MudText>
-    <MudStepper Linear="false" Class="mb-4">
-        <MudStep Label="Detectie" Icon="@Icons.Material.Filled.CameraAlt">
-            <MudText>Camera’s en sensoren verzamelen continu data in de openbare ruimte.</MudText>
-        </MudStep>
-        <MudStep Label="AI Analyse" Icon="@Icons.Material.Filled.Memory">
-            <MudText>AI-algoritmes herkennen afval en bepalen de locatie.</MudText>
-        </MudStep>
-        <MudStep Label="Melding" Icon="@Icons.Material.Filled.NotificationsActive">
-            <MudText>Bij detectie wordt automatisch een melding verstuurd naar de juiste instantie.</MudText>
-        </MudStep>
-        <MudStep Label="Actie" Icon="@Icons.Material.Filled.CheckCircle">
-            <MudText>Gemeente of burgers kunnen direct actie ondernemen.</MudText>
-        </MudStep>
-    </MudStepper>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="btn-animate" Href="/faq">
-        Meer weten? Bekijk de FAQ
-    </MudButton>
+@using Microsoft.AspNetCore.Components.Web
+@using MudBlazor
+
+<PageTitle>How It Works</PageTitle>
+
+<MudPaper Class="responsive-padding mx-auto fade-in" MaxWidth="800px">
+    <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-4 text-responsive-h3">
+        <MudIcon Icon="@Icons.Material.Filled.Settings" Class="mr-2" />
+        How It Works
+    </MudText>
+    <MudText Typo="Typo.body1" Class="mb-6 text-responsive-body">
+        Discover how our AI-powered waste detection system helps create cleaner communities through smart monitoring and efficient response systems.
+    </MudText>
+
+    <MudDivider Class="my-6" />
+
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">The Process</MudText>
+    
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="6">            <MudPaper Elevation="2" Class="responsive-padding card-animate">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Videocam" Style="font-size: 2rem; color: var(--mud-palette-primary);" />
+                    <MudText Typo="Typo.h5" Class="text-responsive-h5">1. Data Collection</MudText>
+                </MudStack>
+                <MudText Typo="Typo.body1" Class="text-responsive-body">
+                    Smart cameras and sensors continuously monitor public areas, capturing high-quality images and environmental data.
+                </MudText>
+            </MudPaper>
+        </MudItem>        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="responsive-padding card-animate">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Psychology" Style="font-size: 2rem; color: var(--mud-palette-secondary);" />
+                    <MudText Typo="Typo.h5" Class="text-responsive-h5">2. AI Analysis</MudText>
+                </MudStack>
+                <MudText Typo="Typo.body1" Class="text-responsive-body">
+                    Advanced machine learning algorithms analyze the collected data to identify and classify different types of waste automatically.
+                </MudText>
+            </MudPaper>
+        </MudItem>        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="responsive-padding card-animate">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Notifications" Style="font-size: 2rem; color: var(--mud-palette-warning);" />
+                    <MudText Typo="Typo.h5" Class="text-responsive-h5">3. Alert System</MudText>
+                </MudStack>
+                <MudText Typo="Typo.body1" Class="text-responsive-body">
+                    When waste is detected, the system automatically generates alerts and notifications for relevant authorities and cleanup crews.
+                </MudText>
+            </MudPaper>
+        </MudItem>        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="responsive-padding card-animate">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.CleaningServices" Style="font-size: 2rem; color: var(--mud-palette-success);" />
+                    <MudText Typo="Typo.h5" Class="text-responsive-h5">4. Response & Cleanup</MudText>
+                </MudStack>
+                <MudText Typo="Typo.body1" Class="text-responsive-body">
+                    Cleanup teams receive precise location data and can respond quickly to maintain clean public spaces efficiently.
+                </MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudDivider Class="my-6" />
+
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Key Features</MudText>
+    
+    <MudPaper Elevation="2" Class="responsive-padding mb-4 card-animate">        <MudList T="string">
+            <MudListItem T="string" Icon="@Icons.Material.Filled.Schedule" Class="text-responsive-body">
+                <MudText>Real-time monitoring and instant detection of waste accumulation</MudText>
+            </MudListItem>
+            <MudListItem T="string" Icon="@Icons.Material.Filled.Map" Class="text-responsive-body">
+                <MudText>Interactive maps showing waste locations and cleanup status</MudText>
+            </MudListItem>
+            <MudListItem T="string" Icon="@Icons.Material.Filled.Analytics" Class="text-responsive-body">
+                <MudText>Comprehensive analytics and reporting for trend analysis</MudText>
+            </MudListItem>
+            <MudListItem T="string" Icon="@Icons.Material.Filled.Security" Class="text-responsive-body">
+                <MudText>Secure user authentication and role-based access control</MudText>
+            </MudListItem>
+            <MudListItem T="string" Icon="@Icons.Material.Filled.Devices" Class="text-responsive-body">
+                <MudText>Mobile-responsive design for access from any device</MudText>
+            </MudListItem>
+        </MudList>
+    </MudPaper>
+
+    <MudDivider Class="my-6" />
+
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Benefits</MudText>
+    
+    <MudGrid Spacing="2">
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
+                <MudIcon Icon="@Icons.Material.Filled.Speed" Style="font-size: 2rem; color: var(--mud-palette-info);" Class="mb-2" />
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Faster Response</MudText>
+                <MudText Typo="Typo.body2" Class="text-responsive-body">
+                    Reduce response time from hours to minutes with automated detection
+                </MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
+                <MudIcon Icon="@Icons.Material.Filled.MonetizationOn" Style="font-size: 2rem; color: var(--mud-palette-success);" Class="mb-2" />
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Cost Effective</MudText>
+                <MudText Typo="Typo.body2" Class="text-responsive-body">
+                    Optimize cleanup routes and reduce operational costs significantly
+                </MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
+                <MudIcon Icon="@Icons.Material.Filled.Nature" Style="font-size: 2rem; color: var(--mud-palette-tertiary);" Class="mb-2" />
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Environmental Impact</MudText>
+                <MudText Typo="Typo.body2" Class="text-responsive-body">
+                    Maintain cleaner public spaces and promote environmental sustainability
+                </MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudDivider Class="my-6" />
+
+    <MudPaper Elevation="2" Class="responsive-padding text-center card-animate" Style="background: var(--mud-palette-primary-lighten);">
+        <MudText Typo="Typo.h5" Class="mb-3 text-responsive-h5">Ready to Get Started?</MudText>
+        <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body">
+            Join municipalities worldwide in creating cleaner, smarter communities with our waste detection technology.
+        </MudText>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Dashboard" Class="btn-animate">
+            Go to Dashboard
+        </MudButton>
+    </MudPaper>
 </MudPaper>

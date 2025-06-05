@@ -1,38 +1,145 @@
 @page "/privacy"
-<MudPaper Elevation="2" Class="main-home-content card-animate gradient-bg fade-in">
-    <MudText Typo="Typo.h3" Class="mb-2 text-gradient text-responsive-h3 animate-pop">Privacyverklaring</MudText>
-    
-    <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body fade-in">
-        Wij nemen privacy zeer serieus. Alle gegevens die via onze applicatie worden verzameld, worden strikt vertrouwelijk behandeld en uitsluitend gebruikt voor het verbeteren van afvaldetectie en -opruiming. 
-        
-        Wij slaan <b>geen foto's</b> op. Dit betekent dat wij géén beelden verzamelen van mensen, dieren, kentekens of woningen. Enkel tekstuele gegevens die relevant zijn voor onze dienst worden verwerkt.
-        
-        <br /><br />
-        De gegevens worden veilig opgeslagen in een versleutelde database en zijn alleen toegankelijk voor geautoriseerde medewerkers. We gebruiken deze informatie uitsluitend voor:
-        <ul>
-            <li>Het detecteren en voorspellen van afvalopbouw</li>
-            <li>Het verbeteren van onze AI-modellen</li>
-            <li>Het optimaliseren van opruimroutes</li>
-        </ul>
-        
-        <br />
-        We bewaren gegevens niet langer dan noodzakelijk. Wanneer de informatie niet meer nodig is voor bovenstaande doelen, wordt deze permanent verwijderd.
-        
-        <br /><br />
-        Gebruikers hebben het recht om:
-        <ul>
-            <li>Inzage te vragen in hun opgeslagen gegevens</li>
-            <li>Gegevens te laten corrigeren of verwijderen</li>
-            <li>Bezwaar te maken tegen het gebruik van hun gegevens</li>
-        </ul>
+@using Microsoft.AspNetCore.Components.Web
+@using MudBlazor
 
-        <br />
-        Voor vragen of verzoeken kun je terecht op onze <MudLink Href="/faq">FAQ</MudLink> pagina of contact met ons opnemen via het contactformulier.
+<PageTitle>Privacy Policy</PageTitle>
+
+<MudPaper Class="responsive-padding mx-auto fade-in" MaxWidth="800px">
+    <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-4 text-responsive-h3">
+        <MudIcon Icon="@Icons.Material.Filled.Security" Class="mr-2" />
+        Privacy Policy
     </MudText>
-    
-    <MudDivider Class="mb-4 slide-in" />
-    
-    <MudText Typo="Typo.body2" Class="text-responsive-body">
-        Laatste update: juni 2025. Bij wijzigingen in ons privacybeleid zal deze pagina worden bijgewerkt.
+    <MudText Typo="Typo.body1" Class="mb-6 text-responsive-body">
+        We take your privacy seriously. This policy explains how we collect, use, and protect your data in our waste detection platform.
     </MudText>
+
+    <MudAlert Severity="Severity.Info" Class="mb-6">
+        <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+        <strong>Important:</strong> We do not store any photos or images. Our system processes visual data in real-time without permanent storage.
+    </MudAlert>
+
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Data Collection</MudText>
+    
+    <MudPaper Elevation="2" Class="responsive-padding mb-6 card-animate">
+        <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body">
+            We collect and process only the minimum data necessary to provide our waste detection services:
+        </MudText>
+        <MudList T="string">
+            <MudListItem T="string" Icon="@Icons.Material.Filled.LocationOn" Class="text-responsive-body">
+                <MudText><strong>Location Data:</strong> GPS coordinates of detected waste for mapping and cleanup routing</MudText>
+            </MudListItem>
+            <MudListItem T="string" Icon="@Icons.Material.Filled.Analytics" Class="text-responsive-body">
+                <MudText><strong>Detection Metadata:</strong> Waste type, detection confidence, and timestamp information</MudText>
+            </MudListItem>
+            <MudListItem T="string" Icon="@Icons.Material.Filled.AccountCircle" Class="text-responsive-body">
+                <MudText><strong>User Information:</strong> Account details for registered users (name, email, role)</MudText>
+            </MudListItem>
+        </MudList>
+    </MudPaper>
+
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">How We Use Your Data</MudText>
+    
+    <MudPaper Elevation="2" Class="responsive-padding mb-6 card-animate">
+        <MudGrid Spacing="3">
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.h6" Class="mb-3 text-responsive-h6">Primary Uses</MudText>
+                <MudList T="string">
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Search" Class="text-responsive-body">
+                        <MudText>Detecting and predicting waste accumulation</MudText>
+                    </MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Route" Class="text-responsive-body">
+                        <MudText>Optimizing cleanup routes and schedules</MudText>
+                    </MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Insights" Class="text-responsive-body">
+                        <MudText>Providing analytics and reporting</MudText>
+                    </MudListItem>
+                </MudList>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.h6" Class="mb-3 text-responsive-h6">Improvements</MudText>
+                <MudList T="string">
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Psychology" Class="text-responsive-body">
+                        <MudText>Enhancing AI model accuracy</MudText>
+                    </MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Tune" Class="text-responsive-body">
+                        <MudText>Improving system performance</MudText>
+                    </MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.BugReport" Class="text-responsive-body">
+                        <MudText>Identifying and fixing issues</MudText>
+                    </MudListItem>
+                </MudList>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Data Protection</MudText>
+    
+    <MudPaper Elevation="2" Class="responsive-padding mb-6 card-animate">
+        <MudGrid Spacing="2">            <MudItem xs="12" md="4">
+                <MudStack AlignItems="AlignItems.Center" Class="text-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Lock" Style="font-size: 2rem; color: var(--mud-palette-success);" Class="mb-2" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Encryption</MudText>
+                    <MudText Typo="Typo.body2" Class="text-responsive-body">
+                        All data is encrypted both in transit and at rest
+                    </MudText>
+                </MudStack>
+            </MudItem>            <MudItem xs="12" md="4">
+                <MudStack AlignItems="AlignItems.Center" Class="text-center">
+                    <MudIcon Icon="@Icons.Material.Filled.AdminPanelSettings" Style="font-size: 2rem; color: var(--mud-palette-warning);" Class="mb-2" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Access Control</MudText>
+                    <MudText Typo="Typo.body2" Class="text-responsive-body">
+                        Only authorized personnel can access data
+                    </MudText>
+                </MudStack>
+            </MudItem>            <MudItem xs="12" md="4">
+                <MudStack AlignItems="AlignItems.Center" Class="text-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Schedule" Style="font-size: 2rem; color: var(--mud-palette-info);" Class="mb-2" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Retention</MudText>
+                    <MudText Typo="Typo.body2" Class="text-responsive-body">
+                        Data is kept only as long as necessary
+                    </MudText>
+                </MudStack>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Your Rights</MudText>
+    
+    <MudPaper Elevation="2" Class="responsive-padding mb-6 card-animate">
+        <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body">
+            Under applicable data protection laws, you have the following rights:
+        </MudText>
+        <MudList T="string">
+            <MudListItem T="string" Icon="@Icons.Material.Filled.Visibility" Class="text-responsive-body">
+                <MudText><strong>Right to Access:</strong> Request a copy of your personal data we hold</MudText>
+            </MudListItem>
+            <MudListItem T="string" Icon="@Icons.Material.Filled.Edit" Class="text-responsive-body">
+                <MudText><strong>Right to Rectification:</strong> Correct any inaccurate or incomplete data</MudText>
+            </MudListItem>
+            <MudListItem T="string" Icon="@Icons.Material.Filled.Delete" Class="text-responsive-body">
+                <MudText><strong>Right to Erasure:</strong> Request deletion of your personal data</MudText>
+            </MudListItem>
+            <MudListItem T="string" Icon="@Icons.Material.Filled.Block" Class="text-responsive-body">
+                <MudText><strong>Right to Object:</strong> Object to the processing of your data</MudText>
+            </MudListItem>
+            <MudListItem T="string" Icon="@Icons.Material.Filled.GetApp" Class="text-responsive-body">
+                <MudText><strong>Right to Portability:</strong> Receive your data in a portable format</MudText>
+            </MudListItem>
+        </MudList>
+    </MudPaper>
+
+    <MudDivider Class="my-6" />
+
+    <MudPaper Elevation="2" Class="responsive-padding card-animate" Style="background: var(--mud-palette-info-lighten);">        <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-3">
+            <MudIcon Icon="@Icons.Material.Filled.ContactMail" Style="color: var(--mud-palette-info);" />
+            <MudText Typo="Typo.h5" Class="text-responsive-h5">Contact Us</MudText>
+        </MudStack>
+        <MudText Typo="Typo.body1" Class="mb-3 text-responsive-body">
+            For questions about this privacy policy or to exercise your rights, please contact us through our 
+            <MudLink Href="/faq" Style="color: var(--mud-palette-info);">FAQ page</MudLink> or use our contact form.
+        </MudText>
+        <MudText Typo="Typo.body2" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">
+            <strong>Last updated:</strong> June 2025. This privacy policy may be updated periodically to reflect changes in our practices or legal requirements.
+        </MudText>
+    </MudPaper>
 </MudPaper>

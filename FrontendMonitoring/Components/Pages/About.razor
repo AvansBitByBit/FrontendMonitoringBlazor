@@ -1,25 +1,119 @@
 @page "/about"
-<MudPaper Elevation="2" Class="main-home-content card-animate gradient-bg fade-in">
-    <MudText Typo="Typo.h3" Class="mb-2 text-gradient text-responsive-h3 animate-pop">Over dit project</MudText>
-    <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body fade-in">
-        Dit platform helpt gemeenten en burgers om afvalproblemen snel te signaleren en op te lossen met slimme AI en monitoring.
+@using Microsoft.AspNetCore.Components.Web
+@using MudBlazor
+
+<PageTitle>About</PageTitle>
+
+<MudPaper Class="responsive-padding mx-auto fade-in" MaxWidth="800px">
+    <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-4 text-responsive-h3">
+        <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
+        About Our Project
     </MudText>
-    <MudDivider Class="mb-4 slide-in" />
-    <MudStack Direction="Row" Spacing="3" Class="responsive-stack">
-        <MudPaper Class="card-animate responsive-padding" Elevation="1">
-            <MudText Typo="Typo.h5" Class="text-gradient text-responsive-h5">Ons Team</MudText>
-            <MudList T="List<String>" Class="text-responsive-body">
-                <MudListItem T="String">Rishyan Syal</MudListItem>
-                <MudListItem T="String">Yazan Dawud</MudListItem>
-                <MudListItem T="String">Fabiano Pungol</MudListItem>
-                <MudListItem T="String">Jason Van Hek</MudListItem>
-            </MudList>
-        </MudPaper>
-        <MudPaper Class="card-animate responsive-padding" Elevation="1">
-            <MudText Typo="Typo.h5" Class="text-gradient text-responsive-h5">Missie</MudText>
-            <MudText Typo="Typo.body2" Class="text-responsive-body">
-                Een schonere, veiligere leefomgeving door technologie en samenwerking.
-            </MudText>
-        </MudPaper>
-    </MudStack>
+    <MudText Typo="Typo.body1" Class="mb-6 text-responsive-body">
+        Our AI-powered waste detection platform helps municipalities and citizens quickly identify and resolve waste problems through smart monitoring and efficient response systems.
+    </MudText>
+
+    <MudDivider Class="my-6" />
+
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Our Mission</MudText>
+    
+    <MudPaper Elevation="2" Class="responsive-padding mb-6 card-animate">
+        <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body">
+            We believe in creating cleaner, safer communities through the power of technology and collaboration. Our platform combines cutting-edge artificial intelligence with user-friendly interfaces to tackle one of the most persistent urban challenges: waste management.
+        </MudText>
+        <MudText Typo="Typo.body1" Class="text-responsive-body">
+            By providing real-time monitoring, intelligent analytics, and streamlined reporting, we empower both authorities and citizens to take immediate action and work together towards a sustainable future.
+        </MudText>
+    </MudPaper>
+
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Our Team</MudText>
+    
+    <MudGrid Spacing="2" Class="mb-6">
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Style="font-size: 3rem; color: var(--mud-palette-primary);" Class="mb-2" />
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Rishyan Syal</MudText>
+                <MudText Typo="Typo.body2" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">
+                    Lead Developer
+                </MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Style="font-size: 3rem; color: var(--mud-palette-secondary);" Class="mb-2" />
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Yazan Dawud</MudText>
+                <MudText Typo="Typo.body2" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">
+                    Backend Developer
+                </MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Style="font-size: 3rem; color: var(--mud-palette-tertiary);" Class="mb-2" />
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Fabiano Pungol</MudText>
+                <MudText Typo="Typo.body2" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">
+                    AI Specialist
+                </MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Style="font-size: 3rem; color: var(--mud-palette-warning);" Class="mb-2" />
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Jason Van Hek</MudText>
+                <MudText Typo="Typo.body2" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">
+                    Frontend Developer
+                </MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudDivider Class="my-6" />
+
+    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Technology Stack</MudText>
+    
+    <MudPaper Elevation="2" Class="responsive-padding mb-6 card-animate">
+        <MudGrid Spacing="3">
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.h6" Class="mb-3 text-responsive-h6">Frontend Technologies</MudText>
+                <MudList T="string">
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Web" Class="text-responsive-body">
+                        <MudText>Blazor Server with ASP.NET Core</MudText>
+                    </MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Palette" Class="text-responsive-body">
+                        <MudText>MudBlazor UI Components</MudText>
+                    </MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Map" Class="text-responsive-body">
+                        <MudText>Interactive Maps & Visualization</MudText>
+                    </MudListItem>
+                </MudList>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.h6" Class="mb-3 text-responsive-h6">Backend & AI</MudText>
+                <MudList T="string">
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Psychology" Class="text-responsive-body">
+                        <MudText>Machine Learning for Waste Detection</MudText>
+                    </MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Api" Class="text-responsive-body">
+                        <MudText>RESTful API Architecture</MudText>
+                    </MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Storage" Class="text-responsive-body">
+                        <MudText>Real-time Data Processing</MudText>
+                    </MudListItem>
+                </MudList>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <MudDivider Class="my-6" />
+
+    <MudPaper Elevation="2" Class="responsive-padding text-center card-animate" Style="background: var(--mud-palette-primary-lighten);">
+        <MudIcon Icon="@Icons.Material.Filled.ContactMail" Style="font-size: 3rem; color: var(--mud-palette-primary);" Class="mb-3" />
+        <MudText Typo="Typo.h5" Class="mb-3 text-responsive-h5">Get In Touch</MudText>
+        <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body">
+            Interested in learning more about our waste detection technology or want to collaborate? We'd love to hear from you!
+        </MudText>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Email" Class="btn-animate">
+            Contact Us
+        </MudButton>
+    </MudPaper>
 </MudPaper>

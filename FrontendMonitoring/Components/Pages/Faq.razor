@@ -1,15 +1,118 @@
 @page "/faq"
-<MudPaper Elevation="2" Class="main-home-content card-animate gradient-bg fade-in">
-    <MudText Typo="Typo.h3" Class="mb-2 text-gradient text-responsive-h3 animate-pop">Veelgestelde vragen</MudText>
-    <MudExpansionPanels>
-        <MudExpansionPanel Text="Hoe werkt de afvaldetectie?">
-            Camera’s en sensoren verzamelen data. AI analyseert beelden en stuurt meldingen bij detectie van afval.
+
+<PageTitle>FAQ</PageTitle>
+
+<MudPaper Class="responsive-padding mx-auto fade-in" MaxWidth="800px">
+    <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-4 text-responsive-h3">
+        <MudIcon Icon="@Icons.Material.Filled.Help" Class="mr-2" />
+        Frequently Asked Questions
+    </MudText>
+    <MudText Typo="Typo.body1" Class="mb-6 text-responsive-body">
+        Find answers to common questions about our waste detection platform and how it works.
+    </MudText>
+
+    <MudExpansionPanels MultiExpansion="true" Class="card-animate">
+        <MudExpansionPanel>
+            <MudExpansionPanelHeader>
+                <div style="display: flex; align-items: center;">
+                    <MudIcon Icon="@Icons.Material.Filled.Psychology" class="mr-3" style="color: var(--mud-palette-primary);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">How does the waste detection work?</MudText>
+                </div>
+            </MudExpansionPanelHeader>
+            <MudExpansionPanelText>
+                <MudText Class="text-responsive-body">
+                    Our system uses smart cameras and sensors to continuously monitor public areas. Advanced AI algorithms analyze the collected data in real-time to identify and classify different types of waste. When waste is detected, the system automatically generates alerts for cleanup crews with precise location information.
+                </MudText>
+            </MudExpansionPanelText>
         </MudExpansionPanel>
-        <MudExpansionPanel Text="Worden mijn gegevens veilig opgeslagen?">
-            Ja, privacy en veiligheid staan voorop. Zie ook onze <MudLink Href="/privacy">privacyverklaring</MudLink>.
+
+        <MudExpansionPanel>
+            <MudExpansionPanelHeader>
+                <div style="display: flex; align-items: center;">
+                    <MudIcon Icon="@Icons.Material.Filled.Security" class="mr-3" style="color: var(--mud-palette-success);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Is my data stored securely?</MudText>
+                </div>
+            </MudExpansionPanelHeader>
+            <MudExpansionPanelText>
+                <MudText Class="text-responsive-body">
+                    Yes, privacy and security are our top priorities. We do not store any photos or images. All data is encrypted both in transit and at rest, and access is restricted to authorized personnel only. For detailed information, please see our <MudLink Href="/privacy">Privacy Policy</MudLink>.
+                </MudText>
+            </MudExpansionPanelText>
         </MudExpansionPanel>
-        <MudExpansionPanel Text="Kan ik als burger bijdragen?">
-            Zeker! Meldingen en feedback zijn welkom via het platform.
+
+        <MudExpansionPanel>
+            <MudExpansionPanelHeader>
+                <div style="display: flex; align-items: center;">
+                    <MudIcon Icon="@Icons.Material.Filled.People" class="mr-3" style="color: var(--mud-palette-secondary);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Can citizens contribute to the system?</MudText>
+                </div>
+            </MudExpansionPanelHeader>
+            <MudExpansionPanelText>
+                <MudText Class="text-responsive-body">
+                    Absolutely! Citizens can contribute by creating accounts, reporting waste locations manually, and providing feedback on cleanup efforts. The platform encourages community involvement to help maintain cleaner public spaces.
+                </MudText>
+            </MudExpansionPanelText>
+        </MudExpansionPanel>
+
+        <MudExpansionPanel>
+            <MudExpansionPanelHeader>
+                <div style="display: flex; align-items: center;">
+                    <MudIcon Icon="@Icons.Material.Filled.Update" class="mr-3" style="color: var(--mud-palette-info);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">How often is the data updated?</MudText>
+                </div>
+            </MudExpansionPanelHeader>
+            <MudExpansionPanelText>
+                <MudText Class="text-responsive-body">
+                    The system operates in real-time. Data is continuously collected and analyzed, with new detections appearing on the dashboard immediately. Statistics and reports are updated every few minutes to ensure accuracy.
+                </MudText>
+            </MudExpansionPanelText>
+        </MudExpansionPanel>
+
+        <MudExpansionPanel>
+            <MudExpansionPanelHeader>
+                <div style="display: flex; align-items: center;">
+                    <MudIcon Icon="@Icons.Material.Filled.Category" class="mr-3" style="color: var(--mud-palette-warning);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">What types of waste can be detected?</MudText>
+                </div>
+            </MudExpansionPanelHeader>
+            <MudExpansionPanelText>
+                <MudText Class="text-responsive-body mb-3">
+                    Our AI system can accurately identify and classify several types of waste:
+                </MudText>
+                <MudList T="string">
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.LocalDining" Class="text-responsive-body">Food waste and organic materials</MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Recycling" Class="text-responsive-body">Recyclable materials (plastic, glass, paper, metal)</MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Delete" Class="text-responsive-body">General household waste</MudListItem>
+                    <MudListItem T="string" Icon="@Icons.Material.Filled.Warning" Class="text-responsive-body">Hazardous materials (batteries, electronics)</MudListItem>
+                </MudList>
+            </MudExpansionPanelText>
+        </MudExpansionPanel>
+
+        <MudExpansionPanel>
+            <MudExpansionPanelHeader>
+                <div style="display: flex; align-items: center;">
+                    <MudIcon Icon="@Icons.Material.Filled.Map" class="mr-3" style="color: var(--mud-palette-tertiary);" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Is the system available in other cities?</MudText>
+                </div>
+            </MudExpansionPanelHeader>
+            <MudExpansionPanelText>
+                <MudText Class="text-responsive-body">
+                    Currently, we're focused on Breda as our pilot location to perfect the technology and processes. However, we have plans to expand to other municipalities once we've demonstrated the system's effectiveness and refined our approach based on real-world feedback.
+                </MudText>
+            </MudExpansionPanelText>
         </MudExpansionPanel>
     </MudExpansionPanels>
+
+    <MudDivider Class="my-6" />
+
+    <MudPaper Elevation="2" Class="responsive-padding text-center card-animate" Style="background: var(--mud-palette-primary-lighten);">
+        <MudIcon Icon="@Icons.Material.Filled.QuestionAnswer" Style="font-size: 3rem; color: var(--mud-palette-primary);" Class="mb-3" />
+        <MudText Typo="Typo.h5" Class="mb-3 text-responsive-h5">Still Have Questions?</MudText>
+        <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body">
+            If you couldn't find the answer you were looking for, feel free to reach out to our team. We're here to help!
+        </MudText>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.ContactMail" Class="btn-animate">
+            Contact Support
+        </MudButton>
+    </MudPaper>
 </MudPaper>

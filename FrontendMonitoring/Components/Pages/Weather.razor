@@ -1,60 +1,216 @@
 ﻿@page "/weather"
-
-
+@rendermode InteractiveServer
+@inject HttpClient HttpClient
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components.Web
+@using MudBlazor
 
 <PageTitle>Weather</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Weather forecast</MudText>
-<MudText Typo="Typo.body1" Class="mb-8">This component demonstrates fetching data from the server.</MudText>
+<MudPaper Class="responsive-padding mx-auto fade-in" MaxWidth="800px">
+    <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-4 text-responsive-h3">
+        <MudIcon Icon="@Icons.Material.Filled.Cloud" Class="mr-2" />
+        Live Weather - Breda
+    </MudText>
+    <MudText Typo="Typo.body1" Class="mb-6 text-responsive-body">
+        Real-time weather information for waste monitoring operations in Breda
+    </MudText>
 
-@if (forecasts == null)
-{
-    <MudProgressCircular Color="Color.Default" Indeterminate="true" />
-}
-else
-{
-    <MudTable Items="forecasts" Hover="true" SortLabel="Sort By" Elevation="0" AllowUnsorted="false">
-        <HeaderContent>
-            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<WeatherForecast, object>(x=>x.Date)">Date</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.TemperatureC)">Temp. (C)</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.TemperatureF)">Temp. (F)</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.Summary!)">Summary</MudTableSortLabel></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Date">@context.Date</MudTd>
-            <MudTd DataLabel="Temp. (C)">@context.TemperatureC</MudTd>
-            <MudTd DataLabel="Temp. (F)">@context.TemperatureF</MudTd>
-            <MudTd DataLabel="Summary">@context.Summary</MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
-        </PagerContent>
-    </MudTable>
-}
+    @if (weather != null)
+    {
+        <MudPaper Elevation="2" Class="responsive-padding mb-4 card-animate">
+            <MudGrid Spacing="3" AlignItems="Center">
+                <MudItem xs="12" md="8">
+                    <MudText Typo="Typo.h2" Class="text-responsive-h2 mb-2" Style="color: var(--mud-palette-primary);">
+                        @weather.Temperature°C
+                    </MudText>
+                    <MudText Typo="Typo.h5" Class="text-responsive-h5 mb-3">
+                        @weather.Description
+                    </MudText>
+                    <MudText Typo="Typo.subtitle2" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">
+                        Last updated: @weather.LastUpdated.ToString("HH:mm")
+                    </MudText>
+                </MudItem>
+                <MudItem xs="12" md="4" Class="text-center">
+                    <MudIcon Icon="@GetWeatherIcon(weather.WeatherCode)" Style="font-size: 5rem; color: var(--mud-palette-primary);" />
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+
+        <MudGrid Spacing="2">
+            <MudItem xs="12" md="4">
+                <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Air" Style="font-size: 2rem; color: var(--mud-palette-info);" Class="mb-2" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Wind Speed</MudText>
+                    <MudText Typo="Typo.h5" Class="text-responsive-h5" Style="color: var(--mud-palette-info);">
+                        @weather.WindSpeed km/h
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Opacity" Style="font-size: 2rem; color: var(--mud-palette-success);" Class="mb-2" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Humidity</MudText>
+                    <MudText Typo="Typo.h5" Class="text-responsive-h5" Style="color: var(--mud-palette-success);">
+                        @weather.Humidity%
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Compress" Style="font-size: 2rem; color: var(--mud-palette-warning);" Class="mb-2" />
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Pressure</MudText>
+                    <MudText Typo="Typo.h5" Class="text-responsive-h5" Style="color: var(--mud-palette-warning);">
+                        @weather.Pressure hPa
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    }
+    else if (isLoading)
+    {
+        <MudPaper Elevation="2" Class="responsive-padding text-center card-animate">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" Class="mb-4" />
+            <MudText Typo="Typo.body1" Class="text-responsive-body">Loading weather data...</MudText>
+        </MudPaper>
+    }
+    else
+    {
+        <MudPaper Elevation="2" Class="responsive-padding text-center card-animate">
+            <MudIcon Icon="@Icons.Material.Filled.Error" Style="font-size: 3rem; color: var(--mud-palette-error);" Class="mb-3" />
+            <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body">
+                Unable to load weather data. Please try again later.
+            </MudText>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="LoadWeatherData" Class="btn-animate">
+                Retry
+            </MudButton>
+        </MudPaper>
+    }
+</MudPaper>
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private WeatherData? weather;
+    private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
-        // Simulate asynchronous loading to demonstrate a loading indicator
-        await Task.Delay(500);
-
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = startDate.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = summaries[Random.Shared.Next(summaries.Length)]
-            }).ToArray();
+        await LoadWeatherData();
     }
 
-    private class WeatherForecast
+    private async Task LoadWeatherData()
     {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            var apiUrl = "https://api.open-meteo.com/v1/forecast?latitude=51.5833&longitude=4.7833&current_weather=true&hourly=relative_humidity_2m,surface_pressure&timezone=Europe%2FBerlin";
+            var response = await HttpClient.GetFromJsonAsync<OpenMeteoResponse>(apiUrl);
+            
+            if (response?.current_weather != null)
+            {
+                weather = new WeatherData
+                {
+                    Temperature = Math.Round(response.current_weather.temperature),
+                    WindSpeed = Math.Round(response.current_weather.windspeed),
+                    WeatherCode = response.current_weather.weathercode,
+                    Description = GetWeatherDescription(response.current_weather.weathercode),
+                    LastUpdated = DateTime.Now,
+                    Humidity = response.hourly?.relative_humidity_2m?.FirstOrDefault() ?? 0,
+                    Pressure = Math.Round(response.hourly?.surface_pressure?.FirstOrDefault() ?? 0)
+                };
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading weather data: {ex.Message}");
+            weather = null;
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }    private string GetWeatherIcon(int weatherCode)
+    {
+        return weatherCode switch
+        {
+            0 => Icons.Material.Filled.WbSunny,
+            1 or 2 or 3 => Icons.Material.Filled.WbCloudy,
+            45 or 48 => Icons.Material.Filled.Cloud,
+            51 or 53 or 55 or 56 or 57 => Icons.Material.Filled.Grain,
+            61 or 63 or 65 or 80 or 81 or 82 => Icons.Material.Filled.WaterDrop,
+            66 or 67 => Icons.Material.Filled.AcUnit,
+            71 or 73 or 75 or 77 or 85 or 86 => Icons.Material.Filled.AcUnit,
+            95 or 96 or 99 => Icons.Material.Filled.Thunderstorm,
+            _ => Icons.Material.Filled.Cloud
+        };
+    }
+
+    private string GetWeatherDescription(int weatherCode)
+    {
+        return weatherCode switch
+        {
+            0 => "Clear sky",
+            1 => "Mainly clear",
+            2 => "Partly cloudy", 
+            3 => "Overcast",
+            45 => "Fog",
+            48 => "Depositing rime fog",
+            51 => "Light drizzle",
+            53 => "Moderate drizzle",
+            55 => "Dense drizzle",
+            56 => "Light freezing drizzle",
+            57 => "Dense freezing drizzle",
+            61 => "Slight rain",
+            63 => "Moderate rain",
+            65 => "Heavy rain",
+            66 => "Light freezing rain",
+            67 => "Heavy freezing rain",
+            71 => "Slight snow fall",
+            73 => "Moderate snow fall",
+            75 => "Heavy snow fall",
+            77 => "Snow grains",
+            80 => "Slight rain showers",
+            81 => "Moderate rain showers",
+            82 => "Violent rain showers",
+            85 => "Slight snow showers",
+            86 => "Heavy snow showers",
+            95 => "Thunderstorm",
+            96 => "Thunderstorm with slight hail",
+            99 => "Thunderstorm with heavy hail",
+            _ => "Unknown"
+        };
+    }
+
+    public class WeatherData
+    {
+        public double Temperature { get; set; }
+        public double WindSpeed { get; set; }
+        public int WeatherCode { get; set; }
+        public string Description { get; set; } = "";
+        public DateTime LastUpdated { get; set; }
+        public double Humidity { get; set; }
+        public double Pressure { get; set; }
+    }
+
+    public class OpenMeteoResponse
+    {
+        public CurrentWeather? current_weather { get; set; }
+        public HourlyData? hourly { get; set; }
+    }
+
+    public class CurrentWeather
+    {
+        public double temperature { get; set; }
+        public double windspeed { get; set; }
+        public int weathercode { get; set; }
+        public DateTime time { get; set; }
+    }
+
+    public class HourlyData
+    {
+        public List<double>? relative_humidity_2m { get; set; }
+        public List<double>? surface_pressure { get; set; }
     }
 }
