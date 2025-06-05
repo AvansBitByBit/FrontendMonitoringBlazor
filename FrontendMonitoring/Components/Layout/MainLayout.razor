@@ -5,21 +5,23 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudLayout>
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5" Class="ml-3 text-responsive-h5">Application</MudText>
-        <MudSpacer />
-        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
-    </MudAppBar>    <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="@_drawerClipMode" Elevation="2" Variant="@_drawerVariant">
-        <NavMenu />
-    </MudDrawer>
-    <MudMainContent Class="responsive-padding">
-        <LeafletScripts />
-        <div class="page fade-in">
-            @Body
-        </div>
-    </MudMainContent>
+    <CascadingValue Value="this">
+        <MudAppBar Elevation="1">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <MudText Typo="Typo.h5" Class="ml-3 text-responsive-h5">Application</MudText>
+            <MudSpacer />
+            <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+            <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        </MudAppBar>        <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="@_drawerClipMode" Elevation="2" Variant="@_drawerVariant" PreserveOpenState="false">
+            <NavMenu />
+        </MudDrawer>
+        <MudMainContent Class="responsive-padding">
+            <LeafletScripts />
+            <div class="page fade-in">
+                @Body
+            </div>
+        </MudMainContent>
+    </CascadingValue>
 </MudLayout>
 
 
@@ -30,11 +32,11 @@
 </div>
 
 @code {
-    private bool _drawerOpen = true;
+    private bool _drawerOpen = false; // Start closed on mobile by default
     private bool _isDarkMode = true;
     private MudTheme? _theme = null;
-    private DrawerClipMode _drawerClipMode = DrawerClipMode.Always;
-    private DrawerVariant _drawerVariant = DrawerVariant.Mini;
+    private DrawerClipMode _drawerClipMode = DrawerClipMode.Never;
+    private DrawerVariant _drawerVariant = DrawerVariant.Temporary;
 
     protected override void OnInitialized()
     {
@@ -53,16 +55,20 @@
 
     private void SetDrawerBehavior()
     {
-        // For mobile screens, use temporary drawer that overlays content
-        // For desktop, use persistent drawer
-        _drawerClipMode = DrawerClipMode.Always;
-        _drawerVariant = DrawerVariant.Responsive;
-        _drawerOpen = true; // Start open on desktop, will auto-close on mobile
-    }
-
-    private void DrawerToggle()
+        // Use temporary drawer that overlays content on mobile
+        // This will automatically close when user taps outside or selects item
+        _drawerClipMode = DrawerClipMode.Never;
+        _drawerVariant = DrawerVariant.Temporary;
+        _drawerOpen = false; // Start closed for better mobile UX
+    }    private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    public void CloseDrawer()
+    {
+        _drawerOpen = false;
+        StateHasChanged();
     }
 
     private void DarkModeToggle()

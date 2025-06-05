@@ -1,5 +1,30 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /* Ensure proper mobile viewport handling */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Prevent horizontal scrolling on mobile */
+    overflow-x: hidden;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    /* Better mobile touch handling */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Re-enable text selection for content areas */
+.mud-typography, .mud-list-item, .mud-input, .mud-paper {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
 
 a, .btn-link {
@@ -183,11 +208,83 @@ h1:focus {
     padding-top: 0.5rem;
   }
   
+  /* Critical: Fix button interaction issues on mobile */
+  .mud-button, .btn, .mud-icon-button {
+    min-height: 48px !important;
+    min-width: 48px !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+  }
+  
+  /* Ensure all clickable elements are touch-friendly */
+  .mud-list-item, .mud-nav-link, .mud-checkbox, .mud-select {
+    min-height: 48px !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+  }
+  
+  /* Fix drawer overlay issues */
+  .mud-drawer-overlay {
+    background-color: rgba(0,0,0,0.6) !important;
+    z-index: 1300 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+  }
+  
+  .mud-drawer {
+    z-index: 1400 !important;
+    width: 280px !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+  }
+  
+  .mud-drawer-temporary {
+    position: fixed !important;
+  }
+  
+  /* Ensure main content doesn't interfere with drawer */
+  .mud-main-content {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding: 8px !important;
+    width: 100% !important;
+  }
+  
+  /* AppBar improvements for mobile */
+  .mud-appbar {
+    z-index: 1200 !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .mud-appbar .mud-typography-h5 {
+    font-size: 1.1rem !important;
+  }
+  
+  .mud-appbar .mud-icon-button {
+    padding: 12px !important;
+    margin: 4px !important;
+  }
+  
   /* Intro card mobile adjustments */
   .intro-card { 
     padding: 1.5rem !important;
     margin: 1rem !important;
     max-width: 95vw !important;
+    position: relative;
+    z-index: 2000;
   }
   
   /* Main content mobile adjustments */
@@ -199,41 +296,82 @@ h1:focus {
   
   /* Button adjustments for mobile */
   .btn-animate {
-    min-height: 44px;
-    padding: 12px 16px;
-    font-size: 0.9rem;
+    min-height: 48px !important;
+    padding: 14px 20px !important;
+    font-size: 1rem !important;
+    width: 100% !important;
+    margin-bottom: 8px !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Fix button hover effects on mobile */
+  .btn-animate:hover {
+    transform: scale(1.02) translateY(-1px) !important;
+    box-shadow: 0 4px 16px 0 rgba(0,0,0,0.1) !important;
   }
   
   /* Cards mobile responsive */
   .mud-paper, .mud-card {
     margin-bottom: 1rem;
+    border-radius: 12px !important;
   }
   
   /* Typography adjustments */
-  .mud-typography-h3 {
+  .mud-typography-h3, .text-responsive-h3 {
     font-size: 1.8rem !important;
+    line-height: 1.3 !important;
   }
   
-  .mud-typography-h4 {
+  .mud-typography-h4, .text-responsive-h4 {
     font-size: 1.5rem !important;
+    line-height: 1.3 !important;
   }
   
-  .mud-typography-h5 {
+  .mud-typography-h5, .text-responsive-h5 {
     font-size: 1.3rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  .mud-typography-h6, .text-responsive-h6 {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+  }
+  
+  .text-responsive-body {
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
   }
   
   /* Touch-friendly spacing */
   .mud-list-item {
-    padding: 12px 16px;
+    padding: 16px 12px !important;
+    font-size: 0.95rem !important;
   }
   
-  /* Mobile navigation adjustments */
-  .mud-appbar {
-    padding: 0 8px;
-  }
-  
-  .mud-main-content {
+  /* Container and grid improvements */
+  .mud-container {
     padding: 8px !important;
+    margin-top: 8px !important;
+  }
+  
+  .mud-grid-item {
+    padding: 4px !important;
+  }
+  
+  /* Form improvements */
+  .mud-select, .mud-input-control {
+    margin-bottom: 1rem !important;
+    min-height: 48px !important;
+  }
+  
+  .mud-select .mud-input-control {
+    min-height: 48px !important;
+  }
+  
+  .mud-select-input {
+    padding: 12px 16px !important;
+    font-size: 1rem !important;
   }
 }
 
@@ -273,18 +411,61 @@ h1:focus {
 
 /* Dashboard specific mobile styles */
 @media (max-width: 768px) {
+  .dashboard-container {
+    padding: 0.5rem !important;
+    margin-top: 0.5rem !important;
+  }
+  
   .dashboard-card {
     height: auto !important;
-    min-height: 150px;
+    min-height: auto !important;
+    margin-bottom: 1rem !important;
   }
   
-  .mud-container {
-    padding: 8px !important;
-    margin-top: 8px !important;
+  .dashboard-card .mud-paper {
+    padding: 1rem !important;
+    border-radius: 12px !important;
   }
   
-  .mud-grid-item {
+  .dashboard-grid-item {
+    margin-bottom: 0.75rem !important;
     padding: 4px !important;
+  }
+  
+  /* Map improvements for mobile */
+  #map {
+    height: 250px !important;
+    min-height: 200px !important;
+    border-radius: 8px !important;
+    margin-top: 0.5rem !important;
+  }
+  
+  /* Detection items mobile improvements */
+  .detection-item {
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 12px !important;
+    background: rgba(255,255,255,0.02) !important;
+  }
+  
+  .detection-item .mud-stack-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+  }
+  
+  .detection-item .mud-checkbox {
+    margin-right: 0 !important;
+    margin-bottom: 0.5rem !important;
+    min-height: 48px !important;
+  }
+  
+  /* Export button mobile */
+  .export-btn {
+    width: 100% !important;
+    margin-top: 0.5rem !important;
+    min-height: 48px !important;
   }
 }
 
@@ -445,11 +626,25 @@ h1:focus {
   .mud-stack-row {
     flex-direction: column !important;
     align-items: stretch !important;
+    gap: 0.5rem !important;
   }
   
   .mud-stack-row .mud-button {
-    width: 100%;
-    margin-bottom: 0.5rem;
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+    min-height: 48px !important;
+  }
+  
+  /* Fix stack spacing issues */
+  .responsive-stack {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+  
+  .mobile-responsive-stack {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 1rem !important;
   }
 }
 
@@ -618,5 +813,264 @@ h1:focus {
   .dashboard-card .mud-paper {
     padding: 1rem !important;
   }
+}
+
+/* =================================================================== */
+/* COMPREHENSIVE MOBILE FIXES AND IMPROVEMENTS */
+/* =================================================================== */
+
+/* Critical Mobile Touch Fixes */
+@media (max-width: 768px) {
+  /* Fix all touch interactions */
+  *, *:before, *:after {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+  
+  /* Ensure buttons are properly clickable */
+  .mud-button, .mud-icon-button, .mud-fab, .mud-checkbox, .mud-radio {
+    min-height: 48px !important;
+    min-width: 48px !important;
+    touch-action: manipulation !important;
+    position: relative !important;
+    z-index: 10 !important;
+    cursor: pointer !important;
+  }
+  
+  /* Fix navigation links */
+  .mud-nav-link, .mud-list-item {
+    min-height: 48px !important;
+    padding: 12px 16px !important;
+    touch-action: manipulation !important;
+    cursor: pointer !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+  
+  /* Fix drawer issues completely */
+  .mud-drawer-temporary {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    z-index: 1400 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  
+  .mud-drawer-temporary.mud-drawer-open {
+    transform: translateX(0) !important;
+  }
+  
+  .mud-drawer-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 1300 !important;
+    opacity: 0 !important;
+    transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  
+  .mud-drawer-overlay.mud-overlay-visible {
+    opacity: 1 !important;
+  }
+  
+  /* Fix AppBar on mobile */
+  .mud-appbar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1200 !important;
+    height: 64px !important;
+  }
+  
+  /* Adjust main content to account for fixed AppBar */
+  .mud-main-content {
+    padding-top: 64px !important;
+    position: relative !important;
+    z-index: 1 !important;
+    min-height: calc(100vh - 64px) !important;
+  }
+  
+  /* Fix select dropdowns */
+  .mud-select .mud-input-control {
+    min-height: 48px !important;
+    cursor: pointer !important;
+  }
+  
+  .mud-select-input {
+    padding: 14px 16px !important;
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    cursor: pointer !important;
+  }
+  
+  /* Fix input fields to prevent zoom on iOS */
+  .mud-input input, .mud-input textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Improve card spacing and sizing */
+  .mud-paper, .mud-card {
+    margin-bottom: 1rem !important;
+    border-radius: 12px !important;
+    position: relative !important;
+  }
+  
+  /* Fix grid spacing */
+  .mud-grid {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  
+  .mud-grid-item {
+    padding: 4px !important;
+    width: 100% !important;
+  }
+  
+  /* Ensure full-width containers */
+  .mud-container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    max-width: 100% !important;
+  }
+  
+  /* Fix stack layouts */
+  .mud-stack-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+  
+  .mud-stack-row > * {
+    width: 100% !important;
+    flex: 1 !important;
+  }
+  
+  /* Typography improvements */
+  .mud-typography-h1 {
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  .mud-typography-h2 {
+    font-size: 1.75rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  .mud-typography-h3 {
+    font-size: 1.5rem !important;
+    line-height: 1.3 !important;
+  }
+  
+  .mud-typography-h4 {
+    font-size: 1.25rem !important;
+    line-height: 1.3 !important;
+  }
+  
+  .mud-typography-h5 {
+    font-size: 1.1rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  .mud-typography-h6 {
+    font-size: 1rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  .mud-typography-body1, .mud-typography-body2 {
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+  }
+}
+
+/* Ultra small devices (phones in portrait) */
+@media (max-width: 480px) {
+  .mud-appbar .mud-typography {
+    font-size: 1rem !important;
+  }
+  
+  .responsive-padding {
+    padding: 0.5rem !important;
+  }
+  
+  .mud-container {
+    padding: 4px !important;
+  }
+  
+  .mud-paper, .mud-card {
+    margin-bottom: 0.75rem !important;
+    border-radius: 8px !important;
+  }
+}
+
+/* Landscape orientation fixes */
+@media (max-width: 768px) and (orientation: landscape) {
+  .mud-appbar {
+    height: 56px !important;
+  }
+  
+  .mud-main-content {
+    padding-top: 56px !important;
+    min-height: calc(100vh - 56px) !important;
+  }
+}
+
+/* Prevent iOS bounce scrolling that can interfere with drawer */
+@media (max-width: 768px) {
+  body {
+    position: relative;
+    overflow-x: hidden;
+    width: 100%;
+    height: 100vh;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html {
+    position: relative;
+    overflow-x: hidden;
+    width: 100%;
+    height: 100vh;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Ensure main layout scrolls properly */
+.mud-layout, .mud-main-content {
+  position: relative !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Fix for very specific drawer issue on some mobile browsers */
+@supports (-webkit-touch-callout: none) {
+  .mud-drawer-temporary {
+    -webkit-transform: translate3d(-100%, 0, 0) !important;
+    transform: translate3d(-100%, 0, 0) !important;
+  }
+  
+  .mud-drawer-temporary.mud-drawer-open {
+    -webkit-transform: translate3d(0, 0, 0) !important;
+    transform: translate3d(0, 0, 0) !important;
+  }
+}
+
+/* Touch active state for better mobile feedback */
+.mud-touch-active {
+  background-color: rgba(var(--mud-palette-action-default-rgb), 0.12) !important;
+  transform: scale(0.98) !important;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.mud-button.mud-touch-active {
+  background-color: rgba(var(--mud-palette-primary-rgb), 0.12) !important;
+}
+
+.mud-icon-button.mud-touch-active {
+  background-color: rgba(var(--mud-palette-action-default-rgb), 0.12) !important;
+  border-radius: 50% !important;
 }
 
