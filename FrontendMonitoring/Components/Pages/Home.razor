@@ -5,14 +5,71 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudPaper Class="pa-6 mx-auto mt-12 fade-in" MaxWidth="600px">
+<!-- Overlay Introductie -->
+@if (!_introDismissed)
+{
+    <MudOverlay Visible="true" Class="intro-overlay fade-in">
+        <MudPaper Class="pa-8 mx-auto intro-card animate-pop" MaxWidth="700px" Elevation="12">
+            <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-2">Welkom bij Waste Detection & Monitoring!</MudText>
+            <MudText Typo="Typo.body1" Class="mb-4">
+                Deze webapplicatie helpt gemeenten en burgers om afvalproblemen in de openbare ruimte snel te signaleren en op te lossen. Met behulp van AI en slimme monitoring worden afvallocaties automatisch gedetecteerd, gevisualiseerd en opgevolgd.
+            </MudText>
+            <MudDivider Class="my-2" />
+            <MudText Typo="Typo.subtitle1" Class="mb-2">Wat kun je hier doen?</MudText>
+            <MudList T="string">
+                <MudListItem T="string">🔍 Realtime afvaldetecties bekijken op een interactieve kaart</MudListItem>
+                <MudListItem T="string">📈 Statistieken en trends van afvalstromen volgen</MudListItem>
+                <MudListItem T="string">📝 Zelf meldingen maken en opvolgen</MudListItem>
+                <MudListItem T="string">🔒 Veilig inloggen en je eigen dashboard beheren</MudListItem>
+            </MudList>
+            <MudStack Row="true" Spacing="2" Class="mt-4">
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@DismissIntro" Class="btn-animate">Aan de slag!</MudButton>
+            </MudStack>
+        </MudPaper>
+        <div class="floating-icons">
+            <i class="fa fa-trash-alt afval-icon"></i>
+            <i class="fa fa-recycle afval-icon"></i>
+            <i class="fa fa-dumpster afval-icon"></i>
+        </div>
+    </MudOverlay>
+}
+
+<MudPaper Class="pa-6 mx-auto mt-12 fade-in main-home-content" MaxWidth="800px">
+    <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-2 text-gradient">Waste Detection & Monitoring</MudText>
+    <MudText Typo="Typo.body1" Class="mb-6">
+        Deze applicatie maakt gebruik van slimme AI-algoritmes om afval in de openbare ruimte te detecteren en te monitoren. Je kunt als gebruiker direct zien waar afval ligt, trends volgen en bijdragen aan een schonere leefomgeving.
+    </MudText>
+    <MudGrid>
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4 card-animate mb-4">
+                <MudText Typo="Typo.h5" Class="mb-2">Hoe werkt het?</MudText>
+                <MudList T="string">
+                    <MudListItem T="string">Camera's en sensoren verzamelen data</MudListItem>
+                    <MudListItem T="string">AI detecteert afval en stuurt meldingen</MudListItem>
+                    <MudListItem T="string">Locaties worden op de kaart getoond</MudListItem>
+                    <MudListItem T="string">Gemeente en burgers kunnen direct actie ondernemen</MudListItem>
+                </MudList>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="2" Class="pa-4 card-animate mb-4 gradient-bg">
+                <MudText Typo="Typo.h5" Class="mb-2">Features</MudText>
+                <MudList T="string">
+                    <MudListItem T="string">Interactieve dashboard met live data</MudListItem>
+                    <MudListItem T="string">Statistieken en trends per wijk</MudListItem>
+                    <MudListItem T="string">Veilige login en gebruikersbeheer</MudListItem>
+                    <MudListItem T="string">Exporteren van data en rapportages</MudListItem>
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+    <MudDivider Class="my-6 slide-in" />
     @if (_isLoggedIn)
     {
         <MudText Typo="Typo.h4" GutterBottom="true">Welkom terug!</MudText>
         <MudText Typo="Typo.body1" Class="mb-6">
             Je bent succesvol ingelogd. Ga naar het dashboard om je gegevens te bekijken.
         </MudText>
-
         <MudStack Row="true" Spacing="2" Class="mb-4">
             <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Dashboard" OnClick="@GoToDashboard" Class="btn-animate">
                 Dashboard
@@ -24,25 +81,22 @@
     }
     else
     {
-        <MudText Typo="Typo.h4" GutterBottom="true">Welkom bij jouw Bit by bit App!</MudText>
+        <MudText Typo="Typo.h4" GutterBottom="true">Direct starten?</MudText>
         <MudText Typo="Typo.body1" Class="mb-6">
-            Welkom bij Bit by bit webapp. In deze app kun je je gegevens beheren en bekijken. Om toegang te krijgen tot je dashboard, moet je ingelogd zijn.
-            Log in of maak een account aan om verder te gaan.
+            Log in of maak een account aan om toegang te krijgen tot alle functionaliteiten en je eigen dashboard.
         </MudText>
-
         <MudStack Row="true" Spacing="2">
             <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AccountCircle" OnClick="@GoToLogin" Class="btn-animate">
                 Login / Register
             </MudButton>
         </MudStack>
     }
-
-    <MudDivider Class="my-6 slide-in" />
 </MudPaper>
 
 @code {
     private bool _isLoggedIn = false;
-    
+    private bool _introDismissed = false;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -89,5 +143,11 @@
         {
             Console.WriteLine($"Logout failed: {ex.Message}");
         }
+    }
+
+    private void DismissIntro()
+    {
+        _introDismissed = true;
+        StateHasChanged();
     }
 }

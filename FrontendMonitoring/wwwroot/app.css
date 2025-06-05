@@ -120,3 +120,64 @@ h1:focus {
   animation: fadeIn 0.7s cubic-bezier(0.4,0,0.2,1);
 }
 
+/* Animatie voor overlay en pop-in */
+.intro-overlay {
+  background: rgba(30,30,45,0.92);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  animation: fadeIn 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.intro-card.animate-pop {
+  animation: popIn 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.8) translateY(40px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.floating-icons {
+  position: absolute;
+  top: 10%; left: 0; right: 0;
+  pointer-events: none;
+  z-index: 2100;
+}
+.afval-icon {
+  font-size: 2.5rem;
+  color: #7e6fff;
+  margin: 0 1.5rem;
+  opacity: 0.7;
+  animation: floatY 3s ease-in-out infinite alternate;
+}
+.afval-icon:nth-child(2) { color: #4a86ff; animation-delay: 0.7s; }
+.afval-icon:nth-child(3) { color: #3dcb6c; animation-delay: 1.2s; }
+@keyframes floatY {
+  from { transform: translateY(0); }
+  to { transform: translateY(-30px) scale(1.08); }
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #7e6fff 0%, #4a86ff 50%, #3dcb6c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #23234a 0%, #2a2833 100%);
+  color: #b2b0bf;
+}
+
+.main-home-content {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 700px) {
+  .intro-card { padding: 1.5rem !important; }
+  .main-home-content { padding: 1.2rem !important; }
+}
+
