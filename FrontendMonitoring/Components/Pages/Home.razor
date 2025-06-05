@@ -11,24 +11,24 @@
 @if (!_introDismissed && _isInteractive)
 {
     <MudOverlay Visible="true" Class="intro-overlay fade-in">
-        <MudPaper Class="pa-8 mx-auto intro-card animate-pop" MaxWidth="700px" Elevation="12">
-            <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-2">Welkom bij Waste Detection & Monitoring!</MudText>
-            <MudText Typo="Typo.body1" Class="mb-4">
+        <MudPaper Class="responsive-padding mx-auto intro-card animate-pop" MaxWidth="700px" Elevation="12">
+            <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-2 text-responsive-h3">Welkom bij Waste Detection & Monitoring!</MudText>
+            <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body">
                 Deze webapplicatie helpt gemeenten en burgers om afvalproblemen in de openbare ruimte snel te signaleren en op te lossen. Met behulp van AI en slimme monitoring worden afvallocaties automatisch gedetecteerd, gevisualiseerd en opgevolgd.
             </MudText>
             <MudDivider Class="my-2" />
-            <MudText Typo="Typo.subtitle1" Class="mb-2">Wat kun je hier doen?</MudText>
+            <MudText Typo="Typo.subtitle1" Class="mb-2 text-responsive-h5">Wat kun je hier doen?</MudText>
             <MudList T="string">
-                <MudListItem T="string">🔍 Realtime afvaldetecties bekijken op een interactieve kaart</MudListItem>
-                <MudListItem T="string">📈 Statistieken en trends van afvalstromen volgen</MudListItem>
-                <MudListItem T="string">📝 Zelf meldingen maken en opvolgen</MudListItem>
-                <MudListItem T="string">🔒 Veilig inloggen en je eigen dashboard beheren</MudListItem>
+                <MudListItem T="string" Class="text-responsive-body">🔍 Realtime afvaldetecties bekijken op een interactieve kaart</MudListItem>
+                <MudListItem T="string" Class="text-responsive-body">📈 Statistieken en trends van afvalstromen volgen</MudListItem>
+                <MudListItem T="string" Class="text-responsive-body">📝 Zelf meldingen maken en opvolgen</MudListItem>
+                <MudListItem T="string" Class="text-responsive-body">🔒 Veilig inloggen en je eigen dashboard beheren</MudListItem>
             </MudList>
-            <MudStack Row="true" Spacing="2" Class="mt-4">
-                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@DismissIntro" Class="btn-animate">Aan de slag!</MudButton>
+            <MudStack Row="false" Spacing="2" Class="mt-4 responsive-stack">
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@DismissIntro" Class="btn-animate" FullWidth="true">Aan de slag!</MudButton>
             </MudStack>
         </MudPaper>
-        <div class="floating-icons">
+        <div class="floating-icons mobile-hidden">
             <i class="fa fa-trash-alt afval-icon"></i>
             <i class="fa fa-recycle afval-icon"></i>
             <i class="fa fa-dumpster afval-icon"></i>
@@ -36,31 +36,31 @@
     </MudOverlay>
 }
 
-<MudPaper Class="pa-6 mx-auto mt-12 fade-in main-home-content" MaxWidth="800px">
-    <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-2 text-gradient">Waste Detection & Monitoring</MudText>
-    <MudText Typo="Typo.body1" Class="mb-6">
+<MudPaper Class="responsive-padding mx-auto fade-in main-home-content" MaxWidth="800px">
+    <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-2 text-gradient text-responsive-h3">Waste Detection & Monitoring</MudText>
+    <MudText Typo="Typo.body1" Class="mb-6 text-responsive-body">
         Deze applicatie maakt gebruik van slimme AI-algoritmes om afval in de openbare ruimte te detecteren en te monitoren. Je kunt als gebruiker direct zien waar afval ligt, trends volgen en bijdragen aan een schonere leefomgeving.
     </MudText>
-    <MudGrid>
+    <MudGrid Spacing="2">
         <MudItem xs="12" md="6">
-            <MudPaper Elevation="2" Class="pa-4 card-animate mb-4">
-                <MudText Typo="Typo.h5" Class="mb-2">Hoe werkt het?</MudText>
+            <MudPaper Elevation="2" Class="responsive-padding card-animate card-mobile-responsive mb-4">
+                <MudText Typo="Typo.h5" Class="mb-2 text-responsive-h5">Hoe werkt het?</MudText>
                 <MudList T="string">
-                    <MudListItem T="string">Camera's en sensoren verzamelen data</MudListItem>
-                    <MudListItem T="string">AI detecteert afval en stuurt meldingen</MudListItem>
-                    <MudListItem T="string">Locaties worden op de kaart getoond</MudListItem>
-                    <MudListItem T="string">Gemeente en burgers kunnen direct actie ondernemen</MudListItem>
+                    <MudListItem T="string" Class="text-responsive-body">Camera's en sensoren verzamelen data</MudListItem>
+                    <MudListItem T="string" Class="text-responsive-body">AI detecteert afval en stuurt meldingen</MudListItem>
+                    <MudListItem T="string" Class="text-responsive-body">Locaties worden op de kaart getoond</MudListItem>
+                    <MudListItem T="string" Class="text-responsive-body">Gemeente en burgers kunnen direct actie ondernemen</MudListItem>
                 </MudList>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" md="6">
-            <MudPaper Elevation="2" Class="pa-4 card-animate mb-4 gradient-bg">
-                <MudText Typo="Typo.h5" Class="mb-2">Features</MudText>
+            <MudPaper Elevation="2" Class="responsive-padding card-animate card-mobile-responsive mb-4 gradient-bg">
+                <MudText Typo="Typo.h5" Class="mb-2 text-responsive-h5">Features</MudText>
                 <MudList T="string">
-                    <MudListItem T="string">Interactieve dashboard met live data</MudListItem>
-                    <MudListItem T="string">Statistieken en trends per wijk</MudListItem>
-                    <MudListItem T="string">Veilige login en gebruikersbeheer</MudListItem>
-                    <MudListItem T="string">Exporteren van data en rapportages</MudListItem>
+                    <MudListItem T="string" Class="text-responsive-body">Interactieve dashboard met live data</MudListItem>
+                    <MudListItem T="string" Class="text-responsive-body">Statistieken en trends per wijk</MudListItem>
+                    <MudListItem T="string" Class="text-responsive-body">Veilige login en gebruikersbeheer</MudListItem>
+                    <MudListItem T="string" Class="text-responsive-body">Exporteren van data en rapportages</MudListItem>
                 </MudList>
             </MudPaper>
         </MudItem>
@@ -68,27 +68,27 @@
     <MudDivider Class="my-6 slide-in" />
     @if (_isLoggedIn)
     {
-        <MudText Typo="Typo.h4" GutterBottom="true">Welkom terug!</MudText>
-        <MudText Typo="Typo.body1" Class="mb-6">
+        <MudText Typo="Typo.h4" GutterBottom="true" Class="text-responsive-h4">Welkom terug!</MudText>
+        <MudText Typo="Typo.body1" Class="mb-6 text-responsive-body">
             Je bent succesvol ingelogd. Ga naar het dashboard om je gegevens te bekijken.
         </MudText>
-        <MudStack Row="true" Spacing="2" Class="mb-4">
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Dashboard" OnClick="@GoToDashboard" Class="btn-animate">
+        <MudStack Row="false" Spacing="2" Class="mb-4 responsive-stack">
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Dashboard" OnClick="@GoToDashboard" Class="btn-animate" FullWidth="true">
                 Dashboard
             </MudButton>
-            <MudButton Color="Color.Secondary" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Logout" OnClick="@Logout" Class="btn-animate">
+            <MudButton Color="Color.Secondary" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Logout" OnClick="@Logout" Class="btn-animate" FullWidth="true">
                 Uitloggen
             </MudButton>
         </MudStack>
     }
     else
     {
-        <MudText Typo="Typo.h4" GutterBottom="true">Direct starten?</MudText>
-        <MudText Typo="Typo.body1" Class="mb-6">
+        <MudText Typo="Typo.h4" GutterBottom="true" Class="text-responsive-h4">Direct starten?</MudText>
+        <MudText Typo="Typo.body1" Class="mb-6 text-responsive-body">
             Log in of maak een account aan om toegang te krijgen tot alle functionaliteiten en je eigen dashboard.
         </MudText>
-        <MudStack Row="true" Spacing="2">
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AccountCircle" OnClick="@GoToLogin" Class="btn-animate">
+        <MudStack Row="false" Spacing="2" Class="responsive-stack">
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AccountCircle" OnClick="@GoToLogin" Class="btn-animate" FullWidth="true">
                 Login / Register
             </MudButton>
         </MudStack>

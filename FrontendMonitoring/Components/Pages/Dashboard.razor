@@ -11,12 +11,13 @@
 @using FrontendMonitoring.Services
 @using Microsoft.AspNetCore.Components.Authorization
 
-<MudContainer Class="mt-16 px-8 fade-in" MaxWidth="MaxWidth.False">
-    <MudGrid>
+<MudContainer Class="dashboard-container fade-in" MaxWidth="MaxWidth.False">
+    <MudGrid Spacing="2">
         <!-- Dropdowns -->
-        <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
-                <MudText Typo="Typo.h6">Periode</MudText>                <MudSelect T="FilterOption" @bind-Value="period" ToStringFunc="@converter" Label="Selecteer een periode" Variant="Variant.Outlined" Dense="true" Clearable>
+        <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Periode</MudText>
+                <MudSelect T="FilterOption" @bind-Value="period" ToStringFunc="@converter" Label="Selecteer een periode" Variant="Variant.Outlined" Dense="true" Clearable>
                     <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 7 dagen" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 30 dagen" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Dit jaar" })" />
@@ -24,9 +25,10 @@
             </MudPaper>
         </MudItem>
 
-        <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
-                <MudText Typo="Typo.h6">Afvaltype</MudText>                <MudSelect T="FilterOption" @bind-Value="wasteType" ToStringFunc="@converter" Label="Selecteer afvaltype" Variant="Variant.Outlined" Dense="true" Clearable>
+        <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Afvaltype</MudText>
+                <MudSelect T="FilterOption" @bind-Value="wasteType" ToStringFunc="@converter" Label="Selecteer afvaltype" Variant="Variant.Outlined" Dense="true" Clearable>
                     <MudSelectItem Value="@(new FilterOption() { Name = "Alle types" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Plastic" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Papier" })" />
@@ -35,76 +37,85 @@
             </MudPaper>
         </MudItem>
 
-        <MudItem xs="12" sm="12" md="4">
-            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
-                <MudText Typo="Typo.h6">Locatie</MudText>                <MudSelect T="FilterOption" @bind-Value="location" ToStringFunc="@converter" Label="Selecteer locatie" Variant="Variant.Outlined" Dense="true" Clearable>
+        <MudItem xs="12" sm="12" md="4" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Locatie</MudText>
+                <MudSelect T="FilterOption" @bind-Value="location" ToStringFunc="@converter" Label="Selecteer locatie" Variant="Variant.Outlined" Dense="true" Clearable>
                     <MudSelectItem Value="@(new FilterOption() { Name = "Alle locaties" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Sector Noord" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Sector Zuid" })" />
                 </MudSelect>
             </MudPaper>
-        </MudItem>
-
-        <!-- Metrics -->
-        <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
-                <MudText Typo="Typo.h6">Totaal Ingezameld</MudText>
+        </MudItem>        <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Totaal Ingezameld</MudText>
+                <MudText Typo="Typo.h4" Class="text-responsive-h4">@FilteredDetections.Count().ToString("N0") kg</MudText>
+                <MudText Typo="Typo.caption" Class="text-responsive-body">+12% t.o.v. vorige maand</MudText>
             </MudPaper>
         </MudItem>
 
-        <MudItem xs="12" sm="6" md="4">
-            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
-                <MudText Typo="Typo.h6">Weer</MudText>
-                <MudText>🌡️ 13°C - Bewolkt met buien</MudText>
-                <MudText>💨 Wind: 16 km/u ZW</MudText>
-                <MudText>💧 Luchtvochtigheid: 87%</MudText>
-                <MudText>🌬️ Luchtkwaliteit: Goed</MudText>
+        <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Weer vandaag</MudText>
+                <MudText Class="text-responsive-body">🌡️ 13°C - Bewolkt met buien</MudText>
+                <MudText Class="text-responsive-body">💨 Wind: 16 km/u ZW</MudText>
+                <MudText Class="text-responsive-body">💧 Luchtvochtigheid: 87%</MudText>
+                <MudText Class="text-responsive-body">🌬️ Luchtkwaliteit: Goed</MudText>
             </MudPaper>
         </MudItem>
 
-        <MudItem xs="12" sm="12" md="4">
-            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
-                <MudText Typo="Typo.h6">Meldingen</MudText>
+        <MudItem xs="12" sm="12" md="4" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Meldingen</MudText>
+                <MudText Typo="Typo.h4" Class="text-responsive-h4">@FilteredDetections.Count()</MudText>
+                <MudText Typo="Typo.caption" Class="text-responsive-body">Nieuwe meldingen vandaag</MudText>
             </MudPaper>
-        </MudItem>
-
-        <!-- Afvalstromen -->
-        <MudItem xs="12" sm="6" md="6">
-            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 200px;">
-                <MudText Typo="Typo.h6">Afvalstromen</MudText>
+        </MudItem>        <!-- Afvalstromen -->
+        <MudItem xs="12" sm="12" md="6" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Afvalstromen</MudText>
+                <MudText Typo="Typo.body1" Class="text-responsive-body">Grafiek met trends komt hier...</MudText>
             </MudPaper>
         </MudItem>
 
         <!-- Locaties (map) -->
-        <MudItem xs="12" sm="6" md="6">
-            <MudPaper Elevation="2" Class="pa-4 card-animate" Style="height: 400px;">
-                <MudText Typo="Typo.h6">Locaties</MudText>
-                <div id="map" style="height: 100%; min-height: 350px; width: 100%; border-radius: 4px; background-color: #2a2833;"></div>
+        <MudItem xs="12" sm="12" md="6" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive" Style="min-height: 350px;">
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Locaties</MudText>
+                <div id="map" style="height: 300px; min-height: 250px; width: 100%; border-radius: 4px; background-color: #2a2833; margin-top: 1rem;"></div>
             </MudPaper>
         </MudItem>
 
         <!-- Detections List -->
-        <MudItem xs="12">
-            <MudPaper Elevation="2" Class="pa-4" Style="min-height: 200px;">
-                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                    <MudText Typo="Typo.h6">Detections</MudText>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportCsv" Class="export-btn btn-animate">Export CSV</MudButton>
-                </MudStack>
-                @foreach (var d in FilteredDetections)
+        <MudItem xs="12" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-mobile-responsive" Style="min-height: 200px;">
+                <MudStack Row="false" Spacing="2" Class="mobile-responsive-stack">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mobile-hidden">
+                        <MudText Typo="Typo.h6" Class="text-responsive-h6">Detections</MudText>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportCsv" Class="export-btn btn-animate">Export CSV</MudButton>
+                    </MudStack>
+                    <div class="mobile-only">
+                        <MudText Typo="Typo.h6" Class="text-responsive-h6 mb-2">Detections</MudText>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportCsv" Class="export-btn btn-animate" FullWidth="true">Export CSV</MudButton>
+                    </div>
+                </MudStack>                @foreach (var d in FilteredDetections)
                 {
-                    <div class="detection-item fade-in">
-                        <MudText Typo="Typo.subtitle1">@d.Type (@d.Location) - @d.TimeStamp.ToShortDateString()</MudText>
-                        <MudCheckBox T="bool" @bind-Checked="d.Verified" Color="Color.Success" Label="Verified" />
-                        <MudCheckBox T="bool" @bind-Checked="d.Cleaned" Color="Color.Info" Label="Cleaned" />
+                    <div class="detection-item fade-in card-mobile-responsive">
+                        <MudText Typo="Typo.subtitle1" Class="text-responsive-body">@d.Type (@d.Location) - @d.TimeStamp.ToShortDateString()</MudText>
+                        <MudStack Row="true" Spacing="2" Class="mt-2">
+                            <MudCheckBox T="bool" @bind-Checked="d.Verified" Color="Color.Success" Label="Verified" />
+                            <MudCheckBox T="bool" @bind-Checked="d.Cleaned" Color="Color.Info" Label="Cleaned" />
+                        </MudStack>
                     </div>
                 }
             </MudPaper>
         </MudItem>
 
         <!-- Trends -->
-        <MudItem xs="12">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
-                <MudText Typo="Typo.h6">Trends & Analyses</MudText>
+        <MudItem xs="12" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Trends & Analyses</MudText>
+                <MudText Typo="Typo.body1" Class="text-responsive-body">Geavanceerde analyses en trendgrafieken komen hier...</MudText>
             </MudPaper>
         </MudItem>
     </MudGrid>
