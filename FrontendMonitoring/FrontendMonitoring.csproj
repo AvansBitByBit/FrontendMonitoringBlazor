@@ -5,15 +5,11 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>cfc5f8f0-884d-4a63-a227-ceed85a22803</UserSecretsId>
-    </PropertyGroup>
-
-    <ItemGroup>
+    </PropertyGroup>    <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.5" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.5" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.5" />
-      <PackageReference Include="Microsoft.CodeCoverage" Version="17.14.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
-      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
       <PackageReference Include="MudBlazor" Version="8.6.0" />
     </ItemGroup>
 
