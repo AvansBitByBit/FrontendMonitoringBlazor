@@ -19,7 +19,7 @@ public class ValidationTests
             "email@123.123.123.123", // IP address
             "1234567890@example.com"        };
 
-        var emailRegex = new Regex(@"^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$", RegexOptions.Compiled);
+        var emailRegex = new Regex(@"^(?!.*\.\.)[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
 
         // Act & Assert
         foreach (var email in validEmails)
@@ -43,7 +43,7 @@ public class ValidationTests
             "email..double.dot@example.com",
             ""        };
 
-        var emailRegex = new Regex(@"^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$", RegexOptions.Compiled);
+        var emailRegex = new Regex(@"^(?!.*\.\.)[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
 
         // Act & Assert
         foreach (var email in invalidEmails)
