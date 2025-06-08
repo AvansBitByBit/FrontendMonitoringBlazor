@@ -7,7 +7,7 @@
         public string Type { get; set; }
         public float Confidence { get; set; }
         public string Location { get; set; }
-        public DateTime TimeStamp { get; set; }
+        public DateTime Time { get; set; }
         public bool Verified { get; set; }
         public bool Cleaned { get; set; }
     }

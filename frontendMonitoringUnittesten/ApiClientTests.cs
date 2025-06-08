@@ -18,14 +18,21 @@ public class ApiClientTests
     public async Task AfvalApiClient_GetDataAsync_ReturnsData()
     {
         // Arrange
+        
+        // Arrange
+        var id = Guid.NewGuid();
+        var soort = "PMD";
+        var datum = DateTime.Now;
+        var tijd = DateTime.Now;
+        string location = "avans";
+        
         var mockHandler = new Mock<HttpMessageHandler>();
-        var afvalModel = new AfvalModel 
+        var afvalModel = new AfvalModel
         { 
-            Id = "1", 
-            Naam = "Test Container",
-            Soort = "plastic", 
-            Datum = "2024-01-01",
-            Tijd = "10:00"
+            Id = id, 
+            TrashType = soort, 
+            Time = tijd,
+            Location = location
         };
         var json = JsonSerializer.Serialize(afvalModel);
         
@@ -51,9 +58,9 @@ public class ApiClientTests
 
         // Assert
         Assert.IsNotNull(result);
-        Assert.AreEqual("1", result.Id);
-        Assert.AreEqual("plastic", result.Soort);
-        Assert.AreEqual("Test Container", result.Naam);
+        Assert.AreEqual(id, result.Id);
+        Assert.AreEqual("plastic", result.TrashType);
+
     }
 
     [TestMethod]

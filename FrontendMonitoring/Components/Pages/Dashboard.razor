@@ -101,7 +101,7 @@
                 </MudStack>                @foreach (var d in FilteredDetections)
                 {
                     <div class="detection-item fade-in card-mobile-responsive">
-                        <MudText Typo="Typo.subtitle1" Class="text-responsive-body">@d.Type (@d.Location) - @d.TimeStamp.ToShortDateString()</MudText>
+                        <MudText Typo="Typo.subtitle1" Class="text-responsive-body">@d.Type (@d.Location) - @d.Time.ToShortDateString()</MudText>
                         <MudStack Row="true" Spacing="2" Class="mt-2">
                             <MudCheckBox T="bool" @bind-Checked="d.Verified" Color="Color.Success" Label="Verified" />
                             <MudCheckBox T="bool" @bind-Checked="d.Cleaned" Color="Color.Info" Label="Cleaned" />
@@ -170,7 +170,7 @@
                 // Process the API data and convert to DetectionResult
                 detections = new List<DetectionResult>
                 {
-                    new() { Type = data.Soort ?? "Unknown", Location = data.Naam ?? "Unknown Location", TimeStamp = DateTime.Parse(data.Datum ?? DateTime.Now.ToString()) },
+                    new() { Type = data.TrashType ?? "Unknown", Location = data.Location ?? "Unknown Location", Time = DateTime.Now },
                 };
             }
         }
@@ -180,9 +180,9 @@
             Console.WriteLine($"API call failed: {ex.Message}");
             detections = new List<DetectionResult>
             {
-                new() { Type = "Plastic", Location = "Sector Noord", TimeStamp = DateTime.Now.AddDays(-1) },
-                new() { Type = "Papier", Location = "Sector Zuid", TimeStamp = DateTime.Now.AddDays(-2) },
-                new() { Type = "Organisch", Location = "Sector Noord", TimeStamp = DateTime.Now.AddDays(-3) }
+                new() { Type = "Plastic", Location = "Sector Noord", Time = DateTime.Now.AddDays(-1) },
+                new() { Type = "Papier", Location = "Sector Zuid", Time = DateTime.Now.AddDays(-2) },
+                new() { Type = "Organisch", Location = "Sector Noord", Time = DateTime.Now.AddDays(-3) }
             };
         }
     }
@@ -208,7 +208,7 @@
         csv.AppendLine("Type,Location,Timestamp,Verified,Cleaned");
         foreach (var d in FilteredDetections)
         {
-            csv.AppendLine($"{d.Type},{d.Location},{d.TimeStamp:u},{d.Verified},{d.Cleaned}");
+            csv.AppendLine($"{d.Type},{d.Location},{d.Time:u},{d.Verified},{d.Cleaned}");
         }
         await JS.InvokeVoidAsync("downloadCsv", "detections.csv", csv.ToString());
     }

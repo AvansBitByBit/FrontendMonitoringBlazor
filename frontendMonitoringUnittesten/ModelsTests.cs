@@ -49,28 +49,24 @@ public class ModelsTests
     public void AfvalModel_Properties_SetAndGetCorrectly()
     {
         // Arrange
-        var id = "123";
-        var naam = "Plastic Container";
+        var id = Guid.NewGuid();
         var soort = "PMD";
-        var datum = "2024-06-15";
-        var tijd = "08:00";
+        var datum = DateTime.Now;
+       string location = "Avans";
         
         // Act
         var afvalModel = new AfvalModel
         {
             Id = id,
-            Naam = naam,
-            Soort = soort,
-            Datum = datum,
-            Tijd = tijd
+            TrashType = soort,
+            Time = datum,
+            Location = location
         };
         
         // Assert
         Assert.AreEqual(id, afvalModel.Id);
-        Assert.AreEqual(naam, afvalModel.Naam);
-        Assert.AreEqual(soort, afvalModel.Soort);
-        Assert.AreEqual(datum, afvalModel.Datum);
-        Assert.AreEqual(tijd, afvalModel.Tijd);
+        Assert.AreEqual(soort, afvalModel.TrashType);
+        Assert.AreEqual(datum, afvalModel.Time);
     }
 
     [TestMethod]
@@ -158,17 +154,15 @@ public class ModelsTests
         var afvalModel = new AfvalModel
         {
             Id = null,
-            Naam = null,
-            Soort = null,
-            Datum = null,
-            Tijd = null
+            TrashType = null,
+            Time = null,
+            Location = null
         };
 
         // Assert
         Assert.IsNull(afvalModel.Id);
-        Assert.IsNull(afvalModel.Naam);
-        Assert.IsNull(afvalModel.Soort);
-        Assert.IsNull(afvalModel.Datum);
-        Assert.IsNull(afvalModel.Tijd);
+        Assert.IsNull(afvalModel.TrashType);
+        Assert.IsNull(afvalModel.Time);
+        Assert.IsNull(afvalModel.Location);
     }
 }

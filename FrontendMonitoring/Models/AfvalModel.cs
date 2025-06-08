@@ -2,10 +2,11 @@
 {
     public class AfvalModel
     {
-        public string? Id { get; set; }
-        public string? Naam { get; set; }
-        public string? Soort { get; set; }
-        public string? Datum { get; set; }
-        public string? Tijd { get; set; }
+        public Guid? Id { get; set; }
+        
+        public DateTime? Time { get; set; }
+        public string? TrashType { get; set; }
+        
+        public string? Location { get; set; }
     }
 }
