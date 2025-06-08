@@ -3,7 +3,7 @@
 @inject IJSRuntime JS
 @inject NavigationManager Nav
 @inject FrontendMonitoring.Services.AfvalApiClient AfvalClient
-@using FrontendMonitoring.Shared
+@using FrontendMonitoring.Models
 @using System.Text
 @using System.Linq
 @inject ITokenStorage TokenStorage
@@ -101,7 +101,7 @@
                 </MudStack>                @foreach (var d in FilteredDetections)
                 {
                     <div class="detection-item fade-in card-mobile-responsive">
-                        <MudText Typo="Typo.subtitle1" Class="text-responsive-body">@d.Type (@d.Location) - @d.Time.ToShortDateString()</MudText>
+                        <MudText Typo="Typo.subtitle1" Class="text-responsive-body">@d.TrashType (@d.Location) - @(d.Time.HasValue ? d.Time.Value.ToShortDateString() : "Onbekend")</MudText>
                         <MudStack Row="true" Spacing="2" Class="mt-2">
                             <MudCheckBox T="bool" @bind-Checked="d.Verified" Color="Color.Success" Label="Verified" />
                             <MudCheckBox T="bool" @bind-Checked="d.Cleaned" Color="Color.Info" Label="Cleaned" />
@@ -127,10 +127,10 @@
     FilterOption wasteType = new FilterOption { Name = "Alle types" };
     FilterOption location = new FilterOption { Name = "Alle locaties" };
 
-    List<DetectionResult> detections = new();
-    IEnumerable<DetectionResult> FilteredDetections =>
+    List<AfvalModel> detections = new();
+    IEnumerable<AfvalModel> FilteredDetections =>
         detections.Where(d =>
-            (wasteType.Name == "Alle types" || d.Type == wasteType.Name) &&
+            (wasteType.Name == "Alle types" || d.TrashType == wasteType.Name) &&
             (location.Name == "Alle locaties" || d.Location == location.Name));
 
     public class FilterOption
@@ -167,10 +167,9 @@
             var data = await AfvalClient.GetDataAsync();
             if (data != null)
             {
-                // Process the API data and convert to DetectionResult
-                detections = new List<DetectionResult>
+                detections = new List<AfvalModel>
                 {
-                    new() { Type = data.TrashType ?? "Unknown", Location = data.Location ?? "Unknown Location", Time = DateTime.Now },
+                    new() { TrashType = data.TrashType ?? "Unknown", Location = data.Location ?? "Unknown Location", Time = data.Time ?? DateTime.Now, Verified = data.Verified, Cleaned = data.Cleaned },
                 };
             }
         }
@@ -178,11 +177,11 @@
         {
             // Fallback to placeholder data if API fails
             Console.WriteLine($"API call failed: {ex.Message}");
-            detections = new List<DetectionResult>
+            detections = new List<AfvalModel>
             {
-                new() { Type = "Plastic", Location = "Sector Noord", Time = DateTime.Now.AddDays(-1) },
-                new() { Type = "Papier", Location = "Sector Zuid", Time = DateTime.Now.AddDays(-2) },
-                new() { Type = "Organisch", Location = "Sector Noord", Time = DateTime.Now.AddDays(-3) }
+                new() { TrashType = "Plastic", Location = "Sector Noord", Time = DateTime.Now.AddDays(-1), Verified = false, Cleaned = false },
+                new() { TrashType = "Papier", Location = "Sector Zuid", Time = DateTime.Now.AddDays(-2), Verified = false, Cleaned = false },
+                new() { TrashType = "Organisch", Location = "Sector Noord", Time = DateTime.Now.AddDays(-3), Verified = false, Cleaned = false }
             };
         }
     }
@@ -208,7 +207,7 @@
         csv.AppendLine("Type,Location,Timestamp,Verified,Cleaned");
         foreach (var d in FilteredDetections)
         {
-            csv.AppendLine($"{d.Type},{d.Location},{d.Time:u},{d.Verified},{d.Cleaned}");
+            csv.AppendLine($"{d.TrashType},{d.Location},{d.Time:u},{d.Verified},{d.Cleaned}");
         }
         await JS.InvokeVoidAsync("downloadCsv", "detections.csv", csv.ToString());
     }
