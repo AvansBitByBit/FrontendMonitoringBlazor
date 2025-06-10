@@ -32,7 +32,8 @@ public class ApiClientTests
             Id = id, 
             TrashType = soort, 
             Time = tijd,
-            Location = location
+            Location = location,
+            Confidence = 0.88
         };
         var json = JsonSerializer.Serialize(afvalModel);
         

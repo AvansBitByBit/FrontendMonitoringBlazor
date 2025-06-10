@@ -10,5 +10,6 @@
         public string? Location { get; set; }
         public bool Verified { get; set; }
         public bool Cleaned { get; set; }
+        public double Confidence { get; set; }
     }
 }

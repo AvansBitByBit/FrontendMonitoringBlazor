@@ -101,7 +101,7 @@
                 </MudStack>                @foreach (var d in FilteredDetections)
                 {
                     <div class="detection-item fade-in card-mobile-responsive">
-                        <MudText Typo="Typo.subtitle1" Class="text-responsive-body">@d.TrashType (@d.Location) - @(d.Time.HasValue ? d.Time.Value.ToShortDateString() : "Onbekend")</MudText>
+                        <MudText Typo="Typo.subtitle1" Class="text-responsive-body">@d.TrashType (@d.Location) - @(d.Time.HasValue ? d.Time.Value.ToShortDateString() : "Onbekend") | Confidence: @d.Confidence</MudText>
                         <MudStack Row="true" Spacing="2" Class="mt-2">
                             <MudCheckBox T="bool" @bind-Checked="d.Verified" Color="Color.Success" Label="Verified" />
                             <MudCheckBox T="bool" @bind-Checked="d.Cleaned" Color="Color.Info" Label="Cleaned" />
@@ -169,7 +169,7 @@
             {
                 detections = new List<AfvalModel>
                 {
-                    new() { TrashType = data.TrashType ?? "Unknown", Location = data.Location ?? "Unknown Location", Time = data.Time ?? DateTime.Now, Verified = data.Verified, Cleaned = data.Cleaned },
+                    new() { TrashType = data.TrashType ?? "Unknown", Location = data.Location ?? "Unknown Location", Time = data.Time ?? DateTime.Now, Verified = data.Verified, Cleaned = data.Cleaned, Confidence = data.Confidence },
                 };
             }
         }
@@ -179,9 +179,9 @@
             Console.WriteLine($"API call failed: {ex.Message}");
             detections = new List<AfvalModel>
             {
-                new() { TrashType = "Plastic", Location = "Sector Noord", Time = DateTime.Now.AddDays(-1), Verified = false, Cleaned = false },
-                new() { TrashType = "Papier", Location = "Sector Zuid", Time = DateTime.Now.AddDays(-2), Verified = false, Cleaned = false },
-                new() { TrashType = "Organisch", Location = "Sector Noord", Time = DateTime.Now.AddDays(-3), Verified = false, Cleaned = false }
+                new() { TrashType = "Plastic", Location = "Sector Noord", Time = DateTime.Now.AddDays(-1), Verified = false, Cleaned = false, Confidence = 0.85 },
+                new() { TrashType = "Papier", Location = "Sector Zuid", Time = DateTime.Now.AddDays(-2), Verified = false, Cleaned = false, Confidence = 0.92 },
+                new() { TrashType = "Organisch", Location = "Sector Noord", Time = DateTime.Now.AddDays(-3), Verified = false, Cleaned = false, Confidence = 0.78 }
             };
         }
     }
@@ -204,10 +204,10 @@
     private async Task ExportCsv()
     {
         var csv = new StringBuilder();
-        csv.AppendLine("Type,Location,Timestamp,Verified,Cleaned");
+        csv.AppendLine("Type,Location,Timestamp,Verified,Cleaned,Confidence");
         foreach (var d in FilteredDetections)
         {
-            csv.AppendLine($"{d.TrashType},{d.Location},{d.Time:u},{d.Verified},{d.Cleaned}");
+            csv.AppendLine($"{d.TrashType},{d.Location},{d.Time:u},{d.Verified},{d.Cleaned},{d.Confidence}");
         }
         await JS.InvokeVoidAsync("downloadCsv", "detections.csv", csv.ToString());
     }

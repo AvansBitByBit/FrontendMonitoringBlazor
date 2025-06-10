@@ -60,13 +60,15 @@ public class ModelsTests
             Id = id,
             TrashType = soort,
             Time = datum,
-            Location = location
+            Location = location,
+            Confidence = 0.95
         };
         
         // Assert
         Assert.AreEqual(id, afvalModel.Id);
         Assert.AreEqual(soort, afvalModel.TrashType);
         Assert.AreEqual(datum, afvalModel.Time);
+        Assert.AreEqual(0.95, afvalModel.Confidence);
     }
 
     [TestMethod]
@@ -156,7 +158,8 @@ public class ModelsTests
             Id = null,
             TrashType = null,
             Time = null,
-            Location = null
+            Location = null,
+            Confidence = 0
         };
 
         // Assert
@@ -164,5 +167,6 @@ public class ModelsTests
         Assert.IsNull(afvalModel.TrashType);
         Assert.IsNull(afvalModel.Time);
         Assert.IsNull(afvalModel.Location);
+        Assert.AreEqual(0, afvalModel.Confidence);
     }
 }
