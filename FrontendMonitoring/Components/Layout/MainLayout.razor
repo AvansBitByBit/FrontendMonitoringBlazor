@@ -10,9 +10,24 @@
         <MudText Typo="Typo.h5" Class="ml-3 text-responsive-h5">Application</MudText>
         <MudSpacer />
         <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End">
+            <MudMenuItem Href="about">
+                <MudIcon Icon="@Icons.Material.Filled.Info" Class="me-2" />
+                Over
+            </MudMenuItem>
+            <MudMenuItem Href="privacy">
+                <MudIcon Icon="@Icons.Material.Filled.PrivacyTip" Class="me-2" />
+                Privacy
+            </MudMenuItem>
+            <MudMenuItem Href="faq">
+                <MudIcon Icon="@Icons.Material.Filled.QuestionAnswer" Class="me-2" />
+                FAQ
+            </MudMenuItem>
+        </MudMenu>
+
     </MudAppBar>    <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="@_drawerClipMode" Elevation="2" Variant="@_drawerVariant">
         <NavMenu />
+
     </MudDrawer>
     <MudMainContent Class="responsive-padding">
         <LeafletScripts />
