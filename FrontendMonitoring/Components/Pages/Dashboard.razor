@@ -62,17 +62,56 @@
         </MudItem>
 
         <!-- Afvalstromen -->
-        <MudItem xs="12" sm="6" md="6">
-            <MudPaper Elevation="2" Class="pa-4" Style="height: 200px;">
+        <MudItem xs="12" sm="12" md="8">
+            <MudPaper Elevation="2" Class="pa-4" Style="height: 400px;">
                 <MudText Typo="Typo.h6">Afvalstromen</MudText>
+                <MudPaper Class="doc-section-component-container">
+                    <MudChart ChartType="ChartType.Bar" ChartSeries="@_series" @bind-SelectedIndex="_index" XAxisLabels="@_xAxisLabels" Width="@_width" Height="@_height" AxisChartOptions="_axisChartOptions"></MudChart>
+                </MudPaper>
+
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudText Typo="Typo.body1" Class="py-3">Selected: @(_index < 0 ? "None" : _series[_index].Name)</MudText>
+                    </MudItem>
+                    <MudItem md="6" xs="12">
+                        <MudCheckBox @bind-Value="_axisChartOptions.MatchBoundsToSize" Color="Color.Primary" Label="MatchBoundsToSize"></MudCheckBox>
+                    </MudItem>
+                    <MudItem md="6" xs="12">
+                        <MudTextField @bind-Value="_width" Label="Chart Width"></MudTextField>
+                    </MudItem>
+                    <MudItem md="6" xs="12">
+                        <MudTextField @bind-Value="_height" Label="Chart Height"></MudTextField>
+                    </MudItem>
+                    <MudItem md="6" xs="12">
+                        <MudStack>
+                            <MudText Typo="Typo.body1">XAxis Label Rotation</MudText>
+                            <MudSlider @bind-Value="_axisChartOptions.XAxisLabelRotation" Min="0" Max="90" Step="15"></MudSlider>
+                        </MudStack>
+                    </MudItem>
+                </MudGrid>
+
+                @code {
+        private int _index = -1; //default value cannot be 0 -> first selectedindex is 0.
+        private string _width = "650px";
+        private string _height = "350px";
+        private AxisChartOptions _axisChartOptions = new AxisChartOptions();
+
+        private List<ChartSeries> _series = new List<ChartSeries>()
+                {
+                new ChartSeries() { Name = "United States", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
+                new ChartSeries() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
+                new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
+                };
+        private string[] _xAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+                }
             </MudPaper>
         </MudItem>
 
         <!-- Locaties (map) -->
-        <MudItem xs="12" sm="6" md="6">
+        <MudItem xs="12" sm="12" md="4">
             <MudPaper Elevation="2" Class="pa-4" Style="height: 400px;">
                 <MudText Typo="Typo.h6">Locaties</MudText>
-                <div id="map" style="height: 100%; min-height: 350px; width: 100%; border-radius: 4px; background-color: #2a2833;"></div>
+                <div id="map" style="height: 320px; min-height: 300px; width: 100%; border-radius: 4px; background-color: #2a2833;"></div>
             </MudPaper>
         </MudItem>
 
