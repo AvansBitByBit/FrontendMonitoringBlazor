@@ -21,7 +21,7 @@ public class ApiClientTests
         
         // Arrange
         var id = Guid.NewGuid();
-        var soort = "PMD";
+        var soort = "plastic";
         var datum = DateTime.Now;
         var tijd = DateTime.Now;
         string location = "avans";
