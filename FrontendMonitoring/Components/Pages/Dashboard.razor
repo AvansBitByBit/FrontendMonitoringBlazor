@@ -4,7 +4,6 @@
 @inject NavigationManager Nav
 @inject FrontendMonitoring.Services.AfvalApiClient AfvalClient
 @using FrontendMonitoring.Models
-@using System.Security.Claims
 @using System.Text
 @using System.Linq
 @inject ITokenStorage TokenStorage
@@ -14,21 +13,6 @@
 
 <MudContainer Class="dashboard-container fade-in" MaxWidth="MaxWidth.False">
     <MudGrid Spacing="2">
-        <!-- Example: Show an alert for Admins -->
-        @if (user?.IsInRole("Beheerder") == true)
-        {
-            <MudItem xs="12">
-                <MudAlert Severity="Severity.Info" Variant="Variant.Filled">Welcome, Admin! You have special privileges.</MudAlert>
-            </MudItem>
-        }
-        <!-- Example: Show an alert for Users -->
-        @if (user?.IsInRole("Gebruiker") == true)
-        {
-            <MudItem xs="12">
-                <MudAlert Severity="Severity.Success" Variant="Variant.Filled">Welcome, User!</MudAlert>
-            </MudItem>
-        }
-
         <!-- Dropdowns -->
         <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
             <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
@@ -62,8 +46,7 @@
                     <MudSelectItem Value="@(new FilterOption() { Name = "Sector Zuid" })" />
                 </MudSelect>
             </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
+        </MudItem>        <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
             <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
                 <MudText Typo="Typo.h6" Class="text-responsive-h6">Totaal Ingezameld</MudText>
                 <MudText Typo="Typo.h4" Class="text-responsive-h4">@FilteredDetections.Count().ToString("N0") kg</MudText>
@@ -87,8 +70,7 @@
                 <MudText Typo="Typo.h4" Class="text-responsive-h4">@FilteredDetections.Count()</MudText>
                 <MudText Typo="Typo.caption" Class="text-responsive-body">Nieuwe meldingen vandaag</MudText>
             </MudPaper>
-        </MudItem>
-        <!-- Afvalstromen -->
+        </MudItem>        <!-- Afvalstromen -->
         <MudItem xs="12" sm="12" md="6" Class="dashboard-grid-item">
             <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
                 <MudText Typo="Typo.h6" Class="text-responsive-h6">Afvalstromen</MudText>
@@ -130,8 +112,7 @@
                         <MudText Typo="Typo.h6" Class="text-responsive-h6 mb-2">Detections</MudText>
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportCsv" Class="export-btn btn-animate" FullWidth="true">Export CSV</MudButton>
                     </div>
-                </MudStack>
-                @foreach (var d in FilteredDetections)
+                </MudStack>                @foreach (var d in FilteredDetections)
                 {
                     <div class="detection-item fade-in card-mobile-responsive">
                         <MudText Typo="Typo.subtitle1" Class="text-responsive-body">@d.TrashType (@d.Location) - @(d.Time.HasValue ? d.Time.Value.ToShortDateString() : "Onbekend") | Confidence: @d.Confidence</MudText>
@@ -155,7 +136,7 @@
 </MudContainer>
 
 @code {
-    private ClaimsPrincipal? user;
+    private bool _isLoggedIn = false;
     FilterOption period = new FilterOption { Name = "Laatste 7 dagen" };
     FilterOption wasteType = new FilterOption { Name = "Alle types" };
     FilterOption location = new FilterOption { Name = "Alle locaties" };
@@ -178,10 +159,17 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthProvider.GetAuthenticationStateAsync();
-        user = authState.User;
-
-        if (user == null || !user.Identity?.IsAuthenticated == true)
+        // Check authentication first
+        try
+        {
+            _isLoggedIn = await JS.InvokeAsync<bool>("hasAuthToken");
+            if (!_isLoggedIn)
+            {
+                Nav.NavigateTo("/login");
+                return;
+            }
+        }
+        catch
         {
             Nav.NavigateTo("/login");
             return;
@@ -245,4 +233,5 @@
         new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
     };
     public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+
 }
