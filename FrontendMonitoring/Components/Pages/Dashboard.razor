@@ -15,14 +15,14 @@
 <MudContainer Class="dashboard-container fade-in" MaxWidth="MaxWidth.False">
     <MudGrid Spacing="2">
         <!-- Example: Show an alert for Admins -->
-        @if (user?.IsInRole("Admin") == true)
+        @if (user?.IsInRole("Beheerder") == true)
         {
             <MudItem xs="12">
                 <MudAlert Severity="Severity.Info" Variant="Variant.Filled">Welcome, Admin! You have special privileges.</MudAlert>
             </MudItem>
         }
         <!-- Example: Show an alert for Users -->
-        @if (user?.IsInRole("User") == true)
+        @if (user?.IsInRole("Gebruiker") == true)
         {
             <MudItem xs="12">
                 <MudAlert Severity="Severity.Success" Variant="Variant.Filled">Welcome, User!</MudAlert>
