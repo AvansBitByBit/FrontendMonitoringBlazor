@@ -120,25 +120,25 @@ jobs:
             echo ""
             echo "⚠️  Build and deployment will be skipped due to validation failures"
           fi
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     needs: check
     if: needs.check.outputs.secrets-valid == 'true'
+    environment:
+      name: 'Production'
     permissions:
+      id-token: write
       contents: read
     steps:
       - uses: actions/checkout@v4
-      
       - name: "Prerequisites validation check"
         run: |
           echo "✅ Prerequisites validated successfully"
           echo "🔨 Starting build process for FrontendMonitoring"
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-
       - name: Cache NuGet packages
         uses: actions/cache@v4
         with:
@@ -146,7 +146,6 @@ jobs:
           key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json', '**/*.csproj') }}
           restore-keys: |
             nuget-${{ runner.os }}-
-
       - name: Cache .NET build output
         uses: actions/cache@v4
         with:
@@ -156,42 +155,23 @@ jobs:
           key: build-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             build-${{ runner.os }}-
-
       - name: Restore dependencies
         run: dotnet restore FrontendMonitoring.sln
-
       - name: Build
         run: dotnet build FrontendMonitoring.sln --no-restore --configuration Release
-
       - name: Test
         run: dotnet test FrontendMonitoring.sln --no-build --configuration Release --verbosity normal --logger trx --results-directory TestResults
-
       - name: Clean publish directory
         run: |
           rm -rf ${{ env.PUBLISH_DIRECTORY }}
           mkdir -p ${{ env.PUBLISH_DIRECTORY }}
-
       - name: Publish
         run: dotnet publish ./FrontendMonitoring --output ${{ env.PUBLISH_DIRECTORY }} --configuration Release --no-build
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [check, build]
-    if: needs.check.outputs.secrets-valid == 'true' && needs.build.result == 'success'
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write
-      contents: read
-    steps:
       - name: "Pre-deployment validation"
         run: |
           echo "🚀 Starting deployment process"
           echo "├── App Name: ${{ env.AZURE_WEBAPP_NAME }}"
-          echo "├── Artifact: ${{ env.ARTIFACT_NAME }}"
           echo "└── Publish Directory: ${{ env.PUBLISH_DIRECTORY }}"
-
       - name: "Verify deployment package"
         run: |
           echo "📦 Verifying deployment package..."
@@ -199,16 +179,13 @@ jobs:
             echo "❌ Publish directory not found: ${{ env.PUBLISH_DIRECTORY }}"
             exit 1
           fi
-          
           if [ -z "$(ls -A ${{ env.PUBLISH_DIRECTORY }})" ]; then
             echo "❌ Publish directory is empty"
             exit 1
           fi
-          
           echo "✅ Deployment package verified"
           echo "📁 Package contents:"
           ls -la ${{ env.PUBLISH_DIRECTORY }}
-
       - name: Login to Azure
         id: azure-login
         uses: azure/login@v2
@@ -216,13 +193,11 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_BBCD49BBABEB403BBBFF41809E88EFF1}}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F4E6BDB44EE54B8A9AD0E508C38F04B5}}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8413332D7BD843F5AE90CD923D187DA9}}
-
       - name: "Verify Azure authentication"
         run: |
           echo "🔐 Verifying Azure authentication..."
           az account show --query "name" -o tsv
           echo "✅ Azure authentication successful"
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -230,7 +205,6 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           slot-name: 'Production'
           package: ${{ env.PUBLISH_DIRECTORY }}
-
       - name: "Post-deployment verification"
         if: always()
         run: |
