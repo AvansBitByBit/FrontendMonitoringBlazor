@@ -151,6 +151,23 @@
                 <MudText Typo="Typo.body1" Class="text-responsive-body">Geavanceerde analyses en trendgrafieken komen hier...</MudText>
             </MudPaper>
         </MudItem>
+
+        <!-- AI Prediction Quick Test -->
+        <MudItem xs="12" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-mobile-responsive">
+                <MudText Typo="Typo.h6">AI Prediction Demo</MudText>
+                <MudTextField @bind-Value="AiFeaturesInput" Label="Features (comma separated)" />
+                <MudButton OnClick="GetAiPrediction" Variant="Variant.Filled" Color="Color.Secondary">Predict</MudButton>
+                @if (AiPrediction != null)
+                {
+                    <MudText Typo="Typo.body1">Prediction: @string.Join(", ", AiPrediction)</MudText>
+                }
+                @if (!string.IsNullOrEmpty(AiErrorMessage))
+                {
+                    <MudText Typo="Typo.body1" Color="Color.Error">@AiErrorMessage</MudText>
+                }
+            </MudPaper>
+        </MudItem>
     </MudGrid>
 </MudContainer>
 
@@ -245,4 +262,23 @@
         new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
     };
     public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+
+    // AI Prediction Example
+    [Inject] public AiApiClient AiApi { get; set; }
+    private string AiFeaturesInput { get; set; }
+    private List<float> AiPrediction;
+    private string AiErrorMessage;
+    private async Task GetAiPrediction()
+    {
+        AiErrorMessage = null;
+        try
+        {
+            var features = AiFeaturesInput?.Split(',').Select(f => float.Parse(f.Trim())).ToList() ?? new List<float>();
+            AiPrediction = await AiApi.PredictAsync(features);
+        }
+        catch (Exception ex)
+        {
+            AiErrorMessage = $"Error: {ex.Message}";
+        }
+    }
 }

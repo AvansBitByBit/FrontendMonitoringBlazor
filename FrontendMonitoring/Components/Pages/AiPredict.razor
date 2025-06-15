@@ -1,0 +1,41 @@
+@page "/ai-predict"
+@inject FrontendMonitoring.Services.AiApiClient AiApi
+
+<PageTitle>AI Prediction</PageTitle>
+
+<h3>AI Prediction</h3>
+
+<div>
+    <label>Enter features (comma separated):</label>
+    <input @bind="FeaturesInput" />
+    <button @onclick="GetPrediction">Predict</button>
+</div>
+
+@if (Prediction != null)
+{
+    <p>Prediction: @string.Join(", ", Prediction)</p>
+}
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <p style="color:red">@ErrorMessage</p>
+}
+
+@code {
+    private string FeaturesInput { get; set; }
+    private List<float> Prediction;
+    private string ErrorMessage;
+
+    private async Task GetPrediction()
+    {
+        ErrorMessage = null;
+        try
+        {
+            var features = FeaturesInput?.Split(',').Select(f => float.Parse(f.Trim())).ToList() ?? new List<float>();
+            Prediction = await AiApi.PredictAsync(features);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error: {ex.Message}";
+        }
+    }
+}

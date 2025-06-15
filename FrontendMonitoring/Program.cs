@@ -27,6 +27,12 @@ builder.Services.AddAuthorizationCore();
 // Register AfvalApiClient as a service
 builder.Services.AddScoped<FrontendMonitoring.Services.AfvalApiClient>();
 
+// Register AiApiClient as a service
+builder.Services.AddHttpClient<AiApiClient>(client =>
+{
+    client.BaseAddress = new Uri("http://<FASTAPI_URL>/"); // TODO: Replace <FASTAPI_URL> with your FastAPI server URL
+});
+
 // 5. Razor components (Blazor Server)
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
