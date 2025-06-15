@@ -14,7 +14,7 @@ public class HttpRequester
 
     public async Task<T?> GetAsync<T>(string endpoint)
     {
-        var response = await _httpClient.GetAsync($"https://bitbybit-api--0000005.orangecliff-c30465b7.northeurope.azurecontainerapps.io/{endpoint}");
+        var response = await _httpClient.GetAsync($"https://bitbybit-api.orangecliff-c30465b7.northeurope.azurecontainerapps.io/{endpoint}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }
