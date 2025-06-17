@@ -15,7 +15,7 @@ namespace FrontendMonitoring.Services
 
         public Task<AfvalModel?> GetDataAsync()
         {
-            return _httpRequester.GetAsync<AfvalModel>("afval/afval");
+            return _httpRequester.GetAsync<AfvalModel>("api/Dummytrash");
         }
     }
 }
