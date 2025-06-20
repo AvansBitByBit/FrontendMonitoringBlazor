@@ -74,7 +74,9 @@
         <MudItem xs="12" sm="12" md="6" Class="dashboard-grid-item">
             <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
                 <MudText Typo="Typo.h6" Class="text-responsive-h6">Afvalstromen</MudText>
-                <MudText Typo="Typo.body1" Class="text-responsive-body">Grafiek met trends komt hier...</MudText>
+                <MudText Typo="Typo.subtitle1" Class="mb-2">
+                    Meest voorkomend: <b>@MostCommonTrashType</b>
+                </MudText>
             </MudPaper>
             <MudChart ChartType="ChartType.Bar" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%" Height="350px">
                 <CustomGraphics>
@@ -91,6 +93,7 @@
                 </CustomGraphics>
             </MudChart>
         </MudItem>
+
 
         <!-- Locaties (map) -->
         <MudItem xs="12" sm="12" md="6" Class="dashboard-grid-item">
@@ -226,11 +229,18 @@
         await JS.InvokeVoidAsync("downloadCsv", "detections.csv", csv.ToString());
     }
 
+    private string MostCommonTrashType =>
+    FilteredDetections
+        .GroupBy(d => d.TrashType)
+        .OrderByDescending(g => g.Count())
+        .Select(g => g.Key)
+        .FirstOrDefault() ?? "Onbekend";
+
     public List<ChartSeries> Series = new List<ChartSeries>()
     {
-        new ChartSeries() { Name = "United States", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
-        new ChartSeries() { Name = "Germany", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
-        new ChartSeries() { Name = "Sweden", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
+        new ChartSeries() { Name = "Plastic", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
+        new ChartSeries() { Name = "Papier", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
+        new ChartSeries() { Name = "Organisch", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
     };
     public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
 
