@@ -6,6 +6,7 @@
 @using FrontendMonitoring.Models
 @using System.Text
 @using System.Linq
+@using System.Globalization
 @inject ITokenStorage TokenStorage
 @inject AuthenticationStateProvider AuthProvider
 @using FrontendMonitoring.Services
@@ -320,12 +321,28 @@
     private async Task ExportCsv()
     {
         var csv = new StringBuilder();
-        csv.AppendLine("Type,Location,Timestamp,Confidence,Temperature");
+        csv.AppendLine("Type,Location,Timestamp,Temperature,Confidence");
         foreach (var d in FilteredDetections)
         {
-            csv.AppendLine($"{d.TrashType},{d.Location},{d.Time:u},{d.Confidence},{(d.Temperature.HasValue ? d.Temperature.Value.ToString("0.0") : "")}");
+            string type = EscapeCsv(d.TrashType);
+            string location = EscapeCsv(d.Location);
+            string timestamp = d.Time.HasValue ? d.Time.Value.ToString("u") : "";
+            string temperature = d.Temperature.HasValue ? d.Temperature.Value.ToString("0.0", CultureInfo.InvariantCulture) : "";
+            string confidence = d.Confidence.ToString("0.00", CultureInfo.InvariantCulture);
+
+            csv.AppendLine($"{type},{location},{timestamp},{temperature},{confidence}");
         }
         await JS.InvokeVoidAsync("downloadCsv", "detections.csv", csv.ToString());
+    }
+
+    private string EscapeCsv(string? field)
+    {
+        if (string.IsNullOrEmpty(field)) return "";
+        if (field.Contains("\""))
+            field = field.Replace("\"", "\"\"");
+        if (field.Contains(",") || field.Contains("\"") || field.Contains("\n"))
+            return $"\"{field}\"";
+        return field;
     }
 
     private string MostCommonTrashType =>
