@@ -29,7 +29,8 @@
         <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
             <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
                 <MudText Typo="Typo.h6" Class="text-responsive-h6">Periode</MudText>
-                <MudSelect T="FilterOption" @bind-Value="period" ToStringFunc="@converter" Label="Selecteer een periode" Variant="Variant.Outlined" Dense="true" Clearable>
+                <MudSelect T="FilterOption" @bind-Value="period" ToStringFunc="@converter" Label="Selecteer een periode" Variant="Variant.Outlined" Dense="true" Clearable @onchange="OnPeriodChanged">
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Alle tijd" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 1 dag" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 7 dagen" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 30 dagen" })" />
@@ -177,6 +178,9 @@
                             }
                         </MudTd>
                     </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText Class="pa-4" Color="Color.Secondary">Geen data gevonden voor de geselecteerde periode.</MudText>
+                    </NoRecordsContent>
                 </MudTable>
             </MudPaper>
         </MudItem>
@@ -228,13 +232,15 @@
     private bool DateInSelectedPeriod(DateTime? date)
     {
         if (!date.HasValue) return false;
-        var now = DateTime.Now;
+        var now = DateTime.Now.Date;
+        var d = date.Value.Date;
         return period.Name switch
         {
-            "Laatste 1 dag" => date.Value >= now.AddDays(-1),
-            "Laatste 7 dagen" => date.Value >= now.AddDays(-7),
-            "Laatste 30 dagen" => date.Value >= now.AddDays(-30),
-            "Dit jaar" => date.Value.Year == now.Year,
+            "Alle tijd" => true,
+            "Laatste 1 dag" => d >= now.AddDays(-1),
+            "Laatste 7 dagen" => d >= now.AddDays(-7),
+            "Laatste 30 dagen" => d >= now.AddDays(-30),
+            "Dit jaar" => d.Year == now.Year,
             _ => true
         };
     }
@@ -413,5 +419,26 @@
         if (idx > 0)
             return location.Substring(0, idx);
         return location;
+    }
+
+    private void OnPeriodChanged(ChangeEventArgs e)
+    {
+        // Sync the button filter with the dropdown
+        switch (period.Name)
+        {
+            case "Laatste 1 dag":
+                selectedTimeFilter = TimeFilter.Last24Hours;
+                break;
+            case "Laatste 7 dagen":
+                selectedTimeFilter = TimeFilter.Last7Days;
+                break;
+            case "Laatste 30 dagen":
+                selectedTimeFilter = TimeFilter.Last30Days;
+                break;
+            default:
+                selectedTimeFilter = TimeFilter.Last7Days;
+                break;
+        }
+        StateHasChanged();
     }
 }
