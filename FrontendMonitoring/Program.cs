@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Database configuratie
 var connectionString = builder.Configuration.GetValue<string>("connectionString");
-var apiUrl = builder.Configuration.GetValue<string>("apiUrl"); // voeg hier later de apiurl toe
+var apiUrl = builder.Configuration.GetValue<string>("apiUrl"); 
 
 
 // 3. MudBlazor

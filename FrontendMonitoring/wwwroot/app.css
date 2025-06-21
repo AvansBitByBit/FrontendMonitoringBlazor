@@ -620,3 +620,74 @@ h1:focus {
   }
 }
 
+/* Custom table and chip styles */
+.fancy-mud-table {
+    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);
+    box-shadow: 0 4px 24px 0 rgba(60,60,120,0.08);
+    animation: fadeIn 0.8s cubic-bezier(.4,0,.2,1);
+}
+.fancy-header {
+    font-weight: bold;
+    font-size: 1.1rem;
+    background: #e3e9f7;
+    color: #3a3a5a;
+    border-bottom: 2px solid #bfc8e6;
+    letter-spacing: 0.5px;
+}
+.fancy-cell {
+    font-size: 1.05rem;
+    padding: 12px 8px;
+    transition: background 0.2s;
+}
+.fancy-mud-table tr:hover .fancy-cell {
+    background: #f0f4ff;
+}
+.fancy-chip {
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+}
+.fancy-count, .fancy-confidence {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-left: 8px;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: none; }
+}
+
+/* Modern MudBlazor table theme for statistics overview tables */
+.modern-theme-table {
+    background: var(--mud-palette-background-paper);
+    color: var(--mud-palette-text-primary);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px 0 rgba(60,60,120,0.08);
+    font-size: 1.05rem;
+}
+.modern-header {
+    font-weight: bold;
+    font-size: 1.1rem;
+    background: var(--mud-palette-surface);
+    color: var(--mud-palette-primary);
+    border-bottom: 2px solid var(--mud-palette-primary);
+    letter-spacing: 0.5px;
+}
+.modern-cell {
+    font-size: 1.05rem;
+    padding: 12px 8px;
+    color: var(--mud-palette-text-primary);
+    background: transparent;
+    transition: background 0.2s;
+}
+.modern-theme-table tr:hover .modern-cell {
+    background: var(--mud-palette-background-grey);
+}
+.modern-chip {
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    background: var(--mud-palette-primary);
+    color: var(--mud-palette-primary-contrast);
+}
+

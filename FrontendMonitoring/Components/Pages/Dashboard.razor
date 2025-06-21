@@ -13,11 +13,24 @@
 
 <MudContainer Class="dashboard-container fade-in" MaxWidth="MaxWidth.False">
     <MudGrid Spacing="2">
+        <!-- Filter Buttons and Refresh -->
+        <MudItem xs="12" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
+                <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SetTimeFilter(TimeFilter.Last24Hours))" Disabled="@(selectedTimeFilter == TimeFilter.Last24Hours)">Laatste 24 uur</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SetTimeFilter(TimeFilter.Last7Days))" Disabled="@(selectedTimeFilter == TimeFilter.Last7Days)">Laatste 7 dagen</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => SetTimeFilter(TimeFilter.Last30Days))" Disabled="@(selectedTimeFilter == TimeFilter.Last30Days)">Laatste 30 dagen</MudButton>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="RefreshData">🔄 Verversen</MudButton>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
         <!-- Dropdowns -->
         <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
             <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
                 <MudText Typo="Typo.h6" Class="text-responsive-h6">Periode</MudText>
                 <MudSelect T="FilterOption" @bind-Value="period" ToStringFunc="@converter" Label="Selecteer een periode" Variant="Variant.Outlined" Dense="true" Clearable>
+                    <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 1 dag" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 7 dagen" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 30 dagen" })" />
                     <MudSelectItem Value="@(new FilterOption() { Name = "Dit jaar" })" />
@@ -30,9 +43,10 @@
                 <MudText Typo="Typo.h6" Class="text-responsive-h6">Afvaltype</MudText>
                 <MudSelect T="FilterOption" @bind-Value="wasteType" ToStringFunc="@converter" Label="Selecteer afvaltype" Variant="Variant.Outlined" Dense="true" Clearable>
                     <MudSelectItem Value="@(new FilterOption() { Name = "Alle types" })" />
-                    <MudSelectItem Value="@(new FilterOption() { Name = "Plastic" })" />
-                    <MudSelectItem Value="@(new FilterOption() { Name = "Papier" })" />
-                    <MudSelectItem Value="@(new FilterOption() { Name = "Organisch" })" />
+                    @foreach (var type in TrashTypes)
+                    {
+                        <MudSelectItem Value="@(new FilterOption() { Name = type })">@type</MudSelectItem>
+                    }
                 </MudSelect>
             </MudPaper>
         </MudItem>
@@ -42,33 +56,45 @@
                 <MudText Typo="Typo.h6" Class="text-responsive-h6">Locatie</MudText>
                 <MudSelect T="FilterOption" @bind-Value="location" ToStringFunc="@converter" Label="Selecteer locatie" Variant="Variant.Outlined" Dense="true" Clearable>
                     <MudSelectItem Value="@(new FilterOption() { Name = "Alle locaties" })" />
-                    <MudSelectItem Value="@(new FilterOption() { Name = "Sector Noord" })" />
-                    <MudSelectItem Value="@(new FilterOption() { Name = "Sector Zuid" })" />
+                    @foreach (var group in GroupedLocations)
+                    {
+                        <MudSelectGroup Label="@group.Key">
+                            @foreach (var loc in group)
+                            {
+                                <MudSelectItem Value="@(new FilterOption() { Name = loc })">@loc</MudSelectItem>
+                            }
+                        </MudSelectGroup>
+                    }
                 </MudSelect>
             </MudPaper>
         </MudItem>        <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
             <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
-                <MudText Typo="Typo.h6" Class="text-responsive-h6">Totaal Ingezameld</MudText>
-                <MudText Typo="Typo.h4" Class="text-responsive-h4">@FilteredDetections.Count().ToString("N0") kg</MudText>
-                <MudText Typo="Typo.caption" Class="text-responsive-body">+12% t.o.v. vorige maand</MudText>
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Totaal aantal samples</MudText>
+                <MudText Typo="Typo.h4" Class="text-responsive-h4">@FilteredDetections.Count()</MudText>
+                <MudText Typo="Typo.caption" Class="text-responsive-body">Totaal aantal gedetecteerde items</MudText>
             </MudPaper>
         </MudItem>
 
         <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
             <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
                 <MudText Typo="Typo.h6" Class="text-responsive-h6">Weer vandaag</MudText>
-                <MudText Class="text-responsive-body">🌡️ 13°C - Bewolkt met buien</MudText>
-                <MudText Class="text-responsive-body">💨 Wind: 16 km/u ZW</MudText>
-                <MudText Class="text-responsive-body">💧 Luchtvochtigheid: 87%</MudText>
-                <MudText Class="text-responsive-body">🌬️ Luchtkwaliteit: Goed</MudText>
+                @if (apiData?.Weather?.Current != null)
+                {
+                    <MudText Class="text-responsive-body">🌡️ @apiData.Weather.Current.Temperature2m.ToString("0.0")°C</MudText>
+                    <!-- Add more weather fields here if available -->
+                }
+                else
+                {
+                    <MudText Class="text-responsive-body">Geen weerdata beschikbaar</MudText>
+                }
             </MudPaper>
         </MudItem>
 
         <MudItem xs="12" sm="12" md="4" Class="dashboard-grid-item">
             <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
-                <MudText Typo="Typo.h6" Class="text-responsive-h6">Meldingen</MudText>
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Aantal meldingen</MudText>
                 <MudText Typo="Typo.h4" Class="text-responsive-h4">@FilteredDetections.Count()</MudText>
-                <MudText Typo="Typo.caption" Class="text-responsive-body">Nieuwe meldingen vandaag</MudText>
+                <MudText Typo="Typo.caption" Class="text-responsive-body">Nieuwe meldingen in geselecteerde periode</MudText>
             </MudPaper>
         </MudItem>        <!-- Afvalstromen -->
         <MudItem xs="12" sm="12" md="6" Class="dashboard-grid-item">
@@ -109,52 +135,127 @@
             </MudPaper>
         </MudItem>
 
-        <!-- Detections List -->
+        <!-- Detections Table (Summary Table) -->
         <MudItem xs="12" Class="dashboard-grid-item">
             <MudPaper Elevation="2" Class="pa-4 card-mobile-responsive" Style="min-height: 200px;">
-                <MudStack Row="false" Spacing="2" Class="mobile-responsive-stack">
-                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mobile-hidden">
-                        <MudText Typo="Typo.h6" Class="text-responsive-h6">Detections</MudText>
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.h6" Class="text-responsive-h6">Detectie Overzicht</MudText>
+                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.body2" Class="mr-2">Max. rijen:</MudText>
+                        <MudSelect T="int" @bind-Value="maxTableRows" Dense="true" Style="width: 80px;">
+                            <MudSelectItem Value="10">10</MudSelectItem>
+                            <MudSelectItem Value="25">25</MudSelectItem>
+                            <MudSelectItem Value="50">50</MudSelectItem>
+                            <MudSelectItem Value="100">100</MudSelectItem>
+                            <MudSelectItem Value="int.MaxValue">Alle</MudSelectItem>
+                        </MudSelect>
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportCsv" Class="export-btn btn-animate">Export CSV</MudButton>
                     </MudStack>
-                    <div class="mobile-only">
-                        <MudText Typo="Typo.h6" Class="text-responsive-h6 mb-2">Detections</MudText>
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download" OnClick="ExportCsv" Class="export-btn btn-animate" FullWidth="true">Export CSV</MudButton>
-                    </div>
-                </MudStack>                @foreach (var d in FilteredDetections)
-                {
-                    <div class="detection-item fade-in card-mobile-responsive">
-                        <MudText Typo="Typo.subtitle1" Class="text-responsive-body">@d.TrashType (@d.Location) - @(d.Time.HasValue ? d.Time.Value.ToShortDateString() : "Onbekend") | Confidence: @d.Confidence</MudText>
-                        <MudStack Row="true" Spacing="2" Class="mt-2">
-                            <MudCheckBox T="bool" @bind-Checked="d.Verified" Color="Color.Success" Label="Verified" />
-                            <MudCheckBox T="bool" @bind-Checked="d.Cleaned" Color="Color.Info" Label="Cleaned" />
-                        </MudStack>
-                    </div>
-                }
+                </MudStack>
+                <MudTable Items="FilteredDetections.Take(maxTableRows)" Dense="true" Hover="true" Bordered="true" Striped="true" Class="mt-2">
+                    <HeaderContent>
+                        <MudTh>Type</MudTh>
+                        <MudTh>Locatie</MudTh>
+                        <MudTh>Datum</MudTh>
+                        <MudTh>Confidence</MudTh>
+                        <MudTh>Temperatuur</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Type">@context.TrashType</MudTd>
+                        <MudTd DataLabel="Locatie">@context.Location</MudTd>
+                        <MudTd DataLabel="Datum">@(context.Time.HasValue ? context.Time.Value.ToShortDateString() : "Onbekend")</MudTd>
+                        <MudTd DataLabel="Confidence">@context.Confidence.ToString("P0")</MudTd>
+                        <MudTd DataLabel="Temperatuur">
+                            @if (context.Temperature.HasValue)
+                            {
+                                @context.Temperature.Value.ToString("0.0")
+                                <span style="color: var(--mud-palette-text-secondary);">°C</span>
+                            }
+                            else
+                            {
+                                <span style="color: var(--mud-palette-text-secondary);">-</span>
+                            }
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
             </MudPaper>
         </MudItem>
 
-        <!-- Trends -->
-        <MudItem xs="12" Class="dashboard-grid-item">
+        <!-- Top 5 Trash Types and Locations -->
+        <MudItem xs="12" sm="6" md="6" Class="dashboard-grid-item">
             <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
-                <MudText Typo="Typo.h6" Class="text-responsive-h6">Trends & Analyses</MudText>
-                <MudText Typo="Typo.body1" Class="text-responsive-body">Geavanceerde analyses en trendgrafieken komen hier...</MudText>
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Top 5 Afvaltypes</MudText>
+                <MudList T="KeyValuePair<string, int>" Dense="true">
+                    @foreach (var t in TopTrashTypes)
+                    {
+                        <MudListItem T="KeyValuePair<string, int>">@t.Key: @t.Value</MudListItem>
+                    }
+                </MudList>
             </MudPaper>
         </MudItem>
+        <MudItem xs="12" sm="6" md="6" Class="dashboard-grid-item">
+            <MudPaper Elevation="2" Class="pa-4 card-animate card-mobile-responsive dashboard-card">
+                <MudText Typo="Typo.h6" Class="text-responsive-h6">Top 5 Locaties</MudText>
+                <MudList T="KeyValuePair<string, int>" Dense="true">
+                    @foreach (var l in TopLocations)
+                    {
+                        <MudListItem T="KeyValuePair<string, int>">@l.Key: @l.Value</MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+
+       
     </MudGrid>
 </MudContainer>
-
+}
 @code {
     private bool _isLoggedIn = false;
     FilterOption period = new FilterOption { Name = "Laatste 7 dagen" };
     FilterOption wasteType = new FilterOption { Name = "Alle types" };
     FilterOption location = new FilterOption { Name = "Alle locaties" };
 
+    private LitterApiResponse? apiData;
+
     List<AfvalModel> detections = new();
     IEnumerable<AfvalModel> FilteredDetections =>
         detections.Where(d =>
             (wasteType.Name == "Alle types" || d.TrashType == wasteType.Name) &&
-            (location.Name == "Alle locaties" || d.Location == location.Name));
+            (location.Name == "Alle locaties" || d.Location == location.Name) &&
+            DateInSelectedPeriod(d.Time)
+        );
+
+    private bool DateInSelectedPeriod(DateTime? date)
+    {
+        if (!date.HasValue) return false;
+        var now = DateTime.Now;
+        return period.Name switch
+        {
+            "Laatste 1 dag" => date.Value >= now.AddDays(-1),
+            "Laatste 7 dagen" => date.Value >= now.AddDays(-7),
+            "Laatste 30 dagen" => date.Value >= now.AddDays(-30),
+            "Dit jaar" => date.Value.Year == now.Year,
+            _ => true
+        };
+    }
+
+    // Chart data for trash types
+    public List<ChartSeries> Series => new List<ChartSeries>
+    {
+        new ChartSeries
+        {
+            Name = "Aantal",
+            Data = TrashTypeCounts.Values.Select(c => (double)c).ToArray()
+        }
+    };
+
+    public string[] XAxisLabels => TrashTypeCounts.Keys.ToArray();
+
+    private Dictionary<string, int> TrashTypeCounts =>
+        FilteredDetections
+            .GroupBy(d => d.TrashType)
+            .OrderByDescending(g => g.Count())
+            .ToDictionary(g => g.Key, g => g.Count());
 
     public class FilterOption
     {
@@ -187,23 +288,15 @@
         // Load data
         try
         {
-            var data = await AfvalClient.GetDataAsync();
-            if (data != null)
-            {
-                detections = new List<AfvalModel>
-                {
-                    new() { TrashType = data.TrashType ?? "Unknown", Location = data.Location ?? "Unknown Location", Time = data.Time ?? DateTime.Now, Verified = data.Verified, Cleaned = data.Cleaned, Confidence = data.Confidence },
-                };
-            }
+            apiData = await AfvalClient.GetLitterAndWeatherAsync();
+            detections = apiData?.Litter ?? new List<AfvalModel>();
+            // You can now use apiData.Weather for weather visualizations
         }
         catch (Exception ex)
         {
-            // Fallback to placeholder data if API fails
             Console.WriteLine($"API call failed: {ex.Message}");
             detections = new List<AfvalModel>
             {
-                new() { TrashType = "Plastic", Location = "Sector Noord", Time = DateTime.Now.AddDays(-1), Verified = false, Cleaned = false, Confidence = 0.85 },
-                new() { TrashType = "Papier", Location = "Sector Zuid", Time = DateTime.Now.AddDays(-2), Verified = false, Cleaned = false, Confidence = 0.92 },
                 new() { TrashType = "Organisch", Location = "Sector Noord", Time = DateTime.Now.AddDays(-3), Verified = false, Cleaned = false, Confidence = 0.78 }
             };
         }
@@ -227,10 +320,10 @@
     private async Task ExportCsv()
     {
         var csv = new StringBuilder();
-        csv.AppendLine("Type,Location,Timestamp,Verified,Cleaned,Confidence");
+        csv.AppendLine("Type,Location,Timestamp,Confidence,Temperature");
         foreach (var d in FilteredDetections)
         {
-            csv.AppendLine($"{d.TrashType},{d.Location},{d.Time:u},{d.Verified},{d.Cleaned},{d.Confidence}");
+            csv.AppendLine($"{d.TrashType},{d.Location},{d.Time:u},{d.Confidence},{(d.Temperature.HasValue ? d.Temperature.Value.ToString("0.0") : "")}");
         }
         await JS.InvokeVoidAsync("downloadCsv", "detections.csv", csv.ToString());
     }
@@ -242,19 +335,83 @@
         .Select(g => g.Key)
         .FirstOrDefault() ?? "Onbekend";
 
-    public List<ChartSeries> Series = new List<ChartSeries>
-{
-    new ChartSeries
+    private TimeFilter selectedTimeFilter = TimeFilter.Last7Days;
+
+    private void SetTimeFilter(TimeFilter filter)
     {
-        Name = "Litter frequency",
-        Data = new double[] { 12, 24, 19, 15, 29, 67, 45, 50, 31, 9 }
+        selectedTimeFilter = filter;
+        // Update the period based on the selected filter
+        switch (filter)
+        {
+            case TimeFilter.Last24Hours:
+                period = new FilterOption { Name = "Laatste 1 dag" };
+                break;
+            case TimeFilter.Last7Days:
+                period = new FilterOption { Name = "Laatste 7 dagen" };
+                break;
+            case TimeFilter.Last30Days:
+                period = new FilterOption { Name = "Laatste 30 dagen" };
+                break;
+        }
+        // Refresh the data based on the new filter
+        RefreshData();
     }
-};
 
-    public string[] XAxisLabels = new string[]
+    private async Task RefreshData()
     {
-    "battery", "can", "cardboard", "carton", "glass",
-    "paper", "p. bag", "p. bottle", "p. cap", " pop tab"
-    };
+        try
+        {
+            apiData = await AfvalClient.GetLitterAndWeatherAsync();
+            detections = apiData?.Litter ?? new List<AfvalModel>();
+            StateHasChanged(); // Refresh the UI
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"API call failed: {ex.Message}");
+        }
+    }
 
+    // Add this property to dynamically get trash types from detections
+    private IEnumerable<string> TrashTypes => detections.Select(d => d.TrashType).Distinct().OrderBy(x => x);
+
+    public enum TimeFilter
+    {
+        Last24Hours,
+        Last7Days,
+        Last30Days
+    }
+
+    // Top 5 trash types
+    private IEnumerable<KeyValuePair<string, int>> TopTrashTypes =>
+        FilteredDetections.GroupBy(d => d.TrashType)
+            .OrderByDescending(g => g.Count())
+            .Take(5)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+    // Top 5 locations
+    private IEnumerable<KeyValuePair<string, int>> TopLocations =>
+        FilteredDetections.GroupBy(d => d.Location)
+            .OrderByDescending(g => g.Count())
+            .Take(5)
+            .ToDictionary(g => g.Key, g => g.Count());
+
+    private int maxTableRows = 25;
+
+    // Group locations by prefix (e.g., first word or up to first space/comma)
+    private IEnumerable<IGrouping<string, string>> GroupedLocations =>
+        detections.Select(d => d.Location)
+            .Where(l => !string.IsNullOrWhiteSpace(l))
+            .Distinct()
+            .OrderBy(l => l)
+            .GroupBy(l => l.Split(' ')[0]);
+
+    // Helper to extract group key (e.g., first word or up to first comma)
+    private string GetLocationGroupKey(string location)
+    {
+        if (string.IsNullOrWhiteSpace(location)) return "Onbekend";
+        var idx = location.IndexOf(' ');
+        if (idx > 0)
+            return location.Substring(0, idx);
+        return location;
+    }
 }
