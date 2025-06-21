@@ -17,5 +17,10 @@ namespace FrontendMonitoring.Services
         {
             return _httpRequester.GetAsync<AfvalModel>("api/Dummytrash");
         }
+
+        public Task<LitterApiResponse?> GetLitterAndWeatherAsync()
+        {
+            return _httpRequester.GetAsync<LitterApiResponse>("litter");
+        }
     }
 }
