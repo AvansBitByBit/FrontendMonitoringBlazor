@@ -5,157 +5,381 @@
 
 <PageTitle>Statistieken</PageTitle>
 
-<MudPaper Class="responsive-padding mx-auto fade-in" MaxWidth="800px">
-    <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-4 text-responsive-h3">
-        <MudIcon Icon="@Icons.Material.Filled.Analytics" Class="mr-2" />
-        Afvaldetectie Statistieken
-    </MudText>
-    <MudText Typo="Typo.body1" Class="mb-6 text-responsive-body">
-        Uitgebreide analyses en inzichten van ons AI-aangedreven afvalmonitoringsysteem in Breda.
-    </MudText>
-
-    <MudAlert Severity="Severity.Info" Class="mb-4">
-        <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-2" />
-        De volgende statistieken zijn gebaseerd op gegevens van de geobserveerde afvaldetecties in Breda. Deze gegevens worden regelmatig bijgewerkt en kunnen variëren afhankelijk van de laatste meldingen.
-    </MudAlert>
-
-    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Huidige Statistieken</MudText>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-6">
+    <MudPaper Elevation="3" Class="pa-8 mb-6" Style="border-radius: 20px; background: linear-gradient(135deg, var(--mud-palette-primary), var(--mud-palette-primary-darken)); color: white; position: relative; overflow: hidden;">
+        <MudStack Spacing="4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Analytics" Style="font-size: 3rem; opacity: 0.9;" />
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h3" Style="font-weight: 700; margin: 0;">
+                        Afvaldetectie Statistieken
+                    </MudText>
+                    <MudText Typo="Typo.subtitle1" Style="opacity: 0.9; margin: 0;">
+                        Uitgebreide analyses en inzichten van ons AI-aangedreven afvalmonitoringsysteem
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudStack>
+        <div style="position: absolute; top: -30px; right: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
+    </MudPaper>    <MudAlert Severity="Severity.Info" 
+              Variant="Variant.Filled" 
+              Class="mb-6" 
+              Style="border-radius: 16px; border-left: 6px solid var(--mud-palette-info-darken);">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Info" />
+            <MudText Style="margin: 0;">
+                De volgende statistieken zijn gebaseerd op gegevens van de geobserveerde afvaldetecties in Breda en worden regelmatig bijgewerkt.
+            </MudText>
+        </MudStack>
+    </MudAlert>    <MudPaper Elevation="2" Class="pa-4 mb-6" Style="border-radius: 16px; border-left: 6px solid var(--mud-palette-primary);">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Color="Color.Primary" Style="font-size: 1.5rem;" />
+            <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Huidige Statistieken</MudText>
+        </MudStack>
+    </MudPaper>
     
-    <MudGrid Spacing="2" Class="mb-6">
-        <MudItem xs="12" sm="6" md="3">
-            <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
-                <MudIcon Icon="@Icons.Material.Filled.DeleteSweep" Style="font-size: 2.5rem; color: var(--mud-palette-primary);" Class="mb-2" />
-                <MudText Typo="Typo.h4" Class="text-responsive-h4" Style="color: var(--mud-palette-primary);">@detections.Count</MudText>
-                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Totale Detecties</MudText>
-                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">Totaal ontvangen</MudText>
+    <MudGrid Spacing="4" Class="mb-8">
+        <MudItem xs="12" sm="6" lg="3">
+            <MudPaper Elevation="4" Class="pa-6 text-center" Style="border-radius: 20px; background: linear-gradient(135deg, var(--mud-palette-primary), var(--mud-palette-primary-lighten)); color: white; position: relative; overflow: hidden; min-height: 180px;">
+                <MudStack AlignItems="AlignItems.Center" Spacing="3">
+                    <MudIcon Icon="@Icons.Material.Filled.DeleteSweep" Style="font-size: 3rem; opacity: 0.9;" />
+                    <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                        <MudText Typo="Typo.h3" Style="font-weight: 700; margin: 0;">@detections.Count</MudText>
+                        <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9; margin: 0;">Totale Detecties</MudText>
+                        <MudText Typo="Typo.body2" Style="opacity: 0.8; margin: 0;">Totaal ontvangen</MudText>
+                    </MudStack>
+                </MudStack>
+                <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
             </MudPaper>
         </MudItem>
-        <MudItem xs="12" sm="6" md="3">
-            <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
-                <MudIcon Icon="@Icons.Material.Filled.BarChart" Style="font-size: 2.5rem; color: var(--mud-palette-success);" Class="mb-2" />
-                <MudText Typo="Typo.h4" Class="text-responsive-h4" Style="color: var(--mud-palette-success);">@MostCommonTrashType</MudText>
-                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Meest Voorkomend</MudText>
-                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">Afvaltype</MudText>
+        <MudItem xs="12" sm="6" lg="3">
+            <MudPaper Elevation="4" Class="pa-6 text-center" Style="border-radius: 20px; background: linear-gradient(135deg, var(--mud-palette-success), var(--mud-palette-success-lighten)); color: white; position: relative; overflow: hidden; min-height: 180px;">
+                <MudStack AlignItems="AlignItems.Center" Spacing="3">
+                    <MudIcon Icon="@Icons.Material.Filled.BarChart" Style="font-size: 3rem; opacity: 0.9;" />
+                    <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                        <MudText Typo="Typo.h4" Style="font-weight: 700; margin: 0; font-size: 1.5rem;">@MostCommonTrashType</MudText>
+                        <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9; margin: 0;">Meest Voorkomend</MudText>
+                        <MudText Typo="Typo.body2" Style="opacity: 0.8; margin: 0;">Afvaltype</MudText>
+                    </MudStack>
+                </MudStack>
+                <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
             </MudPaper>
         </MudItem>
-        <MudItem xs="12" sm="12" md="6">
-            <MudPaper Elevation="2" Class="responsive-padding card-animate text-center" Style="min-width:320px;">
-                <MudIcon Icon="@Icons.Material.Filled.LocationOn" Style="font-size: 2.5rem; color: var(--mud-palette-warning);" Class="mb-2" />
-                <MudTooltip Text="@TopLocation">
-                    <MudText Typo="Typo.h4" Class="text-responsive-h4" Style="color: var(--mud-palette-warning); white-space: normal; overflow: visible; text-overflow: initial; max-width: 100%; margin: 0 auto;">@ShortLocation</MudText>
-                </MudTooltip>
-                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Top Locatie</MudText>
-                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">Meeste meldingen</MudText>
+        <MudItem xs="12" sm="6" lg="3">
+            <MudPaper Elevation="4" Class="pa-6 text-center" Style="border-radius: 20px; background: linear-gradient(135deg, var(--mud-palette-warning), var(--mud-palette-warning-lighten)); color: white; position: relative; overflow: hidden; min-height: 180px;">
+                <MudStack AlignItems="AlignItems.Center" Spacing="3">
+                    <MudIcon Icon="@Icons.Material.Filled.LocationOn" Style="font-size: 3rem; opacity: 0.9;" />
+                    <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                        <MudTooltip Text="@TopLocation">
+                            <MudText Typo="Typo.h4" Style="font-weight: 700; margin: 0; font-size: 1.5rem; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@ShortLocation</MudText>
+                        </MudTooltip>
+                        <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9; margin: 0;">Top Locatie</MudText>
+                        <MudText Typo="Typo.body2" Style="opacity: 0.8; margin: 0;">Meeste meldingen</MudText>
+                    </MudStack>
+                </MudStack>
+                <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
             </MudPaper>
         </MudItem>
-        <MudItem xs="12" sm="6" md="3">
-            <MudPaper Elevation="2" Class="responsive-padding card-animate text-center">
-                <MudIcon Icon="@Icons.Material.Filled.Timeline" Style="font-size: 2.5rem; color: var(--mud-palette-info);" Class="mb-2" />
-                <MudText Typo="Typo.h4" Class="text-responsive-h4" Style="color: var(--mud-palette-info);">@AverageConfidence.ToString("P0")</MudText>
-                <MudText Typo="Typo.subtitle1" Class="text-responsive-body">Gem. Vertrouwen</MudText>
-                <MudText Typo="Typo.caption" Class="text-responsive-body" Style="color: var(--mud-palette-text-secondary);">AI Score</MudText>
+        <MudItem xs="12" sm="6" lg="3">
+            <MudPaper Elevation="4" Class="pa-6 text-center" Style="border-radius: 20px; background: linear-gradient(135deg, var(--mud-palette-info), var(--mud-palette-info-lighten)); color: white; position: relative; overflow: hidden; min-height: 180px;">
+                <MudStack AlignItems="AlignItems.Center" Spacing="3">
+                    <MudIcon Icon="@Icons.Material.Filled.Timeline" Style="font-size: 3rem; opacity: 0.9;" />
+                    <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                        <MudText Typo="Typo.h3" Style="font-weight: 700; margin: 0;">@AverageConfidence.ToString("P0")</MudText>
+                        <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9; margin: 0;">Gem. Vertrouwen</MudText>
+                        <MudText Typo="Typo.body2" Style="opacity: 0.8; margin: 0;">AI Score</MudText>
+                    </MudStack>
+                </MudStack>
+                <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
             </MudPaper>
         </MudItem>
-    </MudGrid>
-
-    <MudDivider Class="my-6" />
-
-    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Detecties per Dag</MudText>
-    <MudPaper Elevation="4" Class="responsive-padding mb-6 card-animate mud-theme-background mud-theme-text" Style="border-radius: 16px;">
-        <MudTable Items="@DailyStats" Dense="false" Hover="true" Bordered="false" Striped="true" Elevation="2" Class="mud-theme-background mud-theme-text" Style="border-radius: 16px; overflow: hidden;">
+    </MudGrid>    <MudPaper Elevation="2" Class="pa-4 mb-6" Style="border-radius: 16px; border-left: 6px solid var(--mud-palette-secondary);">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Color="Color.Secondary" Style="font-size: 1.5rem;" />
+            <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Detecties per Dag</MudText>
+        </MudStack>
+    </MudPaper>
+    
+    <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+        <MudTable Items="@DailyStats" 
+                 Dense="false" 
+                 Hover="true" 
+                 Bordered="false" 
+                 Striped="false" 
+                 Elevation="0"
+                 Style="border-radius: 12px; overflow: hidden;">
             <HeaderContent>
-                <MudTh Class="fancy-header">Datum</MudTh>
-                <MudTh Class="fancy-header">Aantal</MudTh>
+                <MudTh Style="background: var(--mud-palette-primary); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Size="Size.Small" />
+                        <span>Datum</span>
+                    </MudStack>
+                </MudTh>
+                <MudTh Style="background: var(--mud-palette-primary); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Size="Size.Small" />
+                        <span>Aantal</span>
+                    </MudStack>
+                </MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Datum" Class="fancy-cell">@context.Date.ToShortDateString()</MudTd>
-                <MudTd DataLabel="Aantal" Class="fancy-cell">
-                    <MudProgressLinear Color="Color.Primary" Value="@((double)context.Count / (double)MaxDailyCount * 100)" Style="height: 8px; border-radius: 4px; margin-bottom: 4px;" Animated="true" />
-                    <span class="fancy-count">@context.Count</span>
+                <MudTd DataLabel="Datum" Style="padding: 16px; font-weight: 500;">
+                    @context.Date.ToShortDateString()
+                </MudTd>
+                <MudTd DataLabel="Aantal" Style="padding: 16px;">
+                    <MudStack AlignItems="AlignItems.Start" Spacing="2">
+                        <MudProgressLinear Color="Color.Primary" 
+                                         Value="@((double)context.Count / (double)MaxDailyCount * 100)" 
+                                         Style="height: 12px; border-radius: 6px; width: 200px;" />
+                        <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Small" Style="font-weight: 600;">
+                            @context.Count
+                        </MudChip>
+                    </MudStack>
                 </MudTd>
             </RowTemplate>
+            <NoRecordsContent>
+                <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="pa-8">
+                    <MudIcon Icon="@Icons.Material.Filled.SearchOff" Style="font-size: 3rem; color: var(--mud-palette-text-secondary);" />
+                    <MudText Typo="Typo.h6" Style="color: var(--mud-palette-text-secondary);">Geen data beschikbaar</MudText>
+                </MudStack>
+            </NoRecordsContent>
         </MudTable>
+    </MudPaper>    <MudPaper Elevation="2" Class="pa-4 mb-6" Style="border-radius: 16px; border-left: 6px solid var(--mud-palette-info);">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Psychology" Color="Color.Info" Style="font-size: 1.5rem;" />
+            <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Gemiddelde Vertrouwen per Dag</MudText>
+        </MudStack>
     </MudPaper>
-
-    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Gemiddelde Vertrouwen per Dag</MudText>
-    <MudPaper Elevation="4" Class="responsive-padding mb-6 card-animate mud-theme-background mud-theme-text" Style="border-radius: 16px;">
-        <MudTable Items="@DailyConfidenceStats" Dense="false" Hover="true" Bordered="false" Striped="true" Elevation="2" Class="mud-theme-background mud-theme-text" Style="border-radius: 16px; overflow: hidden;">
+    
+    <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+        <MudTable Items="@DailyConfidenceStats" 
+                 Dense="false" 
+                 Hover="true" 
+                 Bordered="false" 
+                 Striped="false" 
+                 Elevation="0"
+                 Style="border-radius: 12px; overflow: hidden;">
             <HeaderContent>
-                <MudTh Class="fancy-header">Datum</MudTh>
-                <MudTh Class="fancy-header">Gem. Vertrouwen</MudTh>
+                <MudTh Style="background: var(--mud-palette-info); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Size="Size.Small" />
+                        <span>Datum</span>
+                    </MudStack>
+                </MudTh>
+                <MudTh Style="background: var(--mud-palette-info); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.Psychology" Size="Size.Small" />
+                        <span>Gem. Vertrouwen</span>
+                    </MudStack>
+                </MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Datum" Class="fancy-cell">@context.Date.ToShortDateString()</MudTd>
-                <MudTd DataLabel="Gem. Vertrouwen" Class="fancy-cell">
-                    <MudProgressCircular Color="Color.Info" Value="@((int)(context.AvgConfidence * 100))" Size="Size.Medium" Class="mr-2" Animated="true" />
-                    <span class="fancy-confidence">@context.AvgConfidence.ToString("P0")</span>
+                <MudTd DataLabel="Datum" Style="padding: 16px; font-weight: 500;">
+                    @context.Date.ToShortDateString()
+                </MudTd>
+                <MudTd DataLabel="Gem. Vertrouwen" Style="padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                        <MudProgressCircular Color="@GetConfidenceColor(context.AvgConfidence)" 
+                                           Value="@((int)(context.AvgConfidence * 100))" 
+                                           Size="Size.Medium" />
+                        <MudChip T="string" Color="@GetConfidenceColor(context.AvgConfidence)" Variant="Variant.Filled" Size="Size.Small" Style="font-weight: 600;">
+                            @context.AvgConfidence.ToString("P0")
+                        </MudChip>
+                    </MudStack>
                 </MudTd>
             </RowTemplate>
+            <NoRecordsContent>
+                <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="pa-8">
+                    <MudIcon Icon="@Icons.Material.Filled.SearchOff" Style="font-size: 3rem; color: var(--mud-palette-text-secondary);" />
+                    <MudText Typo="Typo.h6" Style="color: var(--mud-palette-text-secondary);">Geen data beschikbaar</MudText>
+                </MudStack>
+            </NoRecordsContent>
         </MudTable>
+    </MudPaper>    <MudPaper Elevation="2" Class="pa-4 mb-6" Style="border-radius: 16px; border-left: 6px solid var(--mud-palette-success);">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Category" Color="Color.Success" Style="font-size: 1.5rem;" />
+            <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Detecties per Afvaltype per Dag</MudText>
+        </MudStack>
     </MudPaper>
-
-    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Detecties per Afvaltype per Dag</MudText>
-    <MudPaper Elevation="4" Class="responsive-padding mb-6 card-animate mud-theme-background mud-theme-text" Style="border-radius: 16px;">
-        <MudTable Items="@TypePerDayStats" Dense="false" Hover="true" Bordered="false" Striped="true" Elevation="2" Class="mud-theme-background mud-theme-text" Style="border-radius: 16px; overflow: hidden;">
+    
+    <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+        <MudTable Items="@TypePerDayStats" 
+                 Dense="false" 
+                 Hover="true" 
+                 Bordered="false" 
+                 Striped="false" 
+                 Elevation="0"
+                 Style="border-radius: 12px; overflow: hidden;">
             <HeaderContent>
-                <MudTh Class="fancy-header">Datum</MudTh>
-                <MudTh Class="fancy-header">Type</MudTh>
-                <MudTh Class="fancy-header">Aantal</MudTh>
+                <MudTh Style="background: var(--mud-palette-success); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Size="Size.Small" />
+                        <span>Datum</span>
+                    </MudStack>
+                </MudTh>
+                <MudTh Style="background: var(--mud-palette-success); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.Category" Size="Size.Small" />
+                        <span>Type</span>
+                    </MudStack>
+                </MudTh>
+                <MudTh Style="background: var(--mud-palette-success); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Size="Size.Small" />
+                        <span>Aantal</span>
+                    </MudStack>
+                </MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Datum" Class="fancy-cell">@context.Date.ToShortDateString()</MudTd>
-                <MudTd DataLabel="Type" Class="fancy-cell">
-                    <MudChip T="string" Color="Color.Secondary" Variant="Variant.Filled" Class="fancy-chip mud-theme-background mud-theme-text">@context.Type</MudChip>
+                <MudTd DataLabel="Datum" Style="padding: 16px; font-weight: 500;">
+                    @context.Date.ToShortDateString()
                 </MudTd>
-                <MudTd DataLabel="Aantal" Class="fancy-cell">
-                    <MudProgressLinear Color="Color.Success" Value="@((double)context.Count / (double)MaxTypeCount * 100)" Style="height: 8px; border-radius: 4px; margin-bottom: 4px;" Animated="true" />
-                    <span class="fancy-count">@context.Count</span>
+                <MudTd DataLabel="Type" Style="padding: 16px;">
+                    <MudChip T="string" Color="Color.Secondary" Variant="Variant.Filled" Size="Size.Small" Style="border-radius: 12px; font-weight: 600;">
+                        @context.Type
+                    </MudChip>
+                </MudTd>
+                <MudTd DataLabel="Aantal" Style="padding: 16px;">
+                    <MudStack AlignItems="AlignItems.Start" Spacing="2">
+                        <MudProgressLinear Color="Color.Success" 
+                                         Value="@((double)context.Count / (double)MaxTypeCount * 100)" 
+                                         Style="height: 12px; border-radius: 6px; width: 200px;" />
+                        <MudChip T="string" Color="Color.Success" Variant="Variant.Filled" Size="Size.Small" Style="font-weight: 600;">
+                            @context.Count
+                        </MudChip>
+                    </MudStack>
                 </MudTd>
             </RowTemplate>
+            <NoRecordsContent>
+                <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="pa-8">
+                    <MudIcon Icon="@Icons.Material.Filled.SearchOff" Style="font-size: 3rem; color: var(--mud-palette-text-secondary);" />
+                    <MudText Typo="Typo.h6" Style="color: var(--mud-palette-text-secondary);">Geen data beschikbaar</MudText>
+                </MudStack>
+            </NoRecordsContent>
         </MudTable>
+    </MudPaper>    <MudPaper Elevation="2" Class="pa-4 mb-6" Style="border-radius: 16px; border-left: 6px solid var(--mud-palette-tertiary);">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Inventory" Color="Color.Tertiary" Style="font-size: 1.5rem;" />
+            <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Overzicht per Afvaltype</MudText>
+        </MudStack>
     </MudPaper>
-
-    <MudDivider Class="my-6" />
-
-    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Overzicht per Afvaltype</MudText>
-    <MudPaper Elevation="2" Class="responsive-padding mb-6 card-animate" Style="background-color: var(--mud-palette-background-paper); border-radius: 16px;">
-        <MudTable Items="@TrashTypeStats" Dense="true" Hover="true" Bordered="true" Striped="true" Class="modern-theme-table" Style="border-radius: 16px;">
+    
+    <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+        <MudTable Items="@TrashTypeStats" 
+                 Dense="false" 
+                 Hover="true" 
+                 Bordered="false" 
+                 Striped="false" 
+                 Elevation="0"
+                 Style="border-radius: 12px; overflow: hidden;">
             <HeaderContent>
-                <MudTh Class="modern-header">Type</MudTh>
-                <MudTh Class="modern-header">Aantal</MudTh>
-                <MudTh Class="modern-header">Gem. Vertrouwen</MudTh>
+                <MudTh Style="background: var(--mud-palette-tertiary); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.Category" Size="Size.Small" />
+                        <span>Type</span>
+                    </MudStack>
+                </MudTh>
+                <MudTh Style="background: var(--mud-palette-tertiary); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.Numbers" Size="Size.Small" />
+                        <span>Aantal</span>
+                    </MudStack>
+                </MudTh>
+                <MudTh Style="background: var(--mud-palette-tertiary); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.Psychology" Size="Size.Small" />
+                        <span>Gem. Vertrouwen</span>
+                    </MudStack>
+                </MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Type" Class="modern-cell">
-                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled" Class="modern-chip">@context.Type</MudChip>
+                <MudTd DataLabel="Type" Style="padding: 16px;">
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Filled" Size="Size.Medium" Style="border-radius: 12px; font-weight: 600;">
+                        @context.Type
+                    </MudChip>
                 </MudTd>
-                <MudTd DataLabel="Aantal" Class="modern-cell">@context.Count</MudTd>
-                <MudTd DataLabel="Gem. Vertrouwen" Class="modern-cell">@context.AvgConfidence.ToString("P0")</MudTd>
+                <MudTd DataLabel="Aantal" Style="padding: 16px; font-weight: 600; font-size: 1.1rem;">
+                    @context.Count
+                </MudTd>
+                <MudTd DataLabel="Gem. Vertrouwen" Style="padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudProgressCircular Color="@GetConfidenceColor(context.AvgConfidence)" 
+                                           Value="@((int)(context.AvgConfidence * 100))" 
+                                           Size="Size.Small" />
+                        <MudText Style="font-weight: 600;">@context.AvgConfidence.ToString("P0")</MudText>
+                    </MudStack>
+                </MudTd>
             </RowTemplate>
+            <NoRecordsContent>
+                <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="pa-8">
+                    <MudIcon Icon="@Icons.Material.Filled.SearchOff" Style="font-size: 3rem; color: var(--mud-palette-text-secondary);" />
+                    <MudText Typo="Typo.h6" Style="color: var(--mud-palette-text-secondary);">Geen data beschikbaar</MudText>
+                </MudStack>
+            </NoRecordsContent>
         </MudTable>
+    </MudPaper>    <MudPaper Elevation="2" Class="pa-4 mb-6" Style="border-radius: 16px; border-left: 6px solid var(--mud-palette-warning);">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.LocationOn" Color="Color.Warning" Style="font-size: 1.5rem;" />
+            <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Overzicht per Locatie</MudText>
+        </MudStack>
     </MudPaper>
-
-    <MudDivider Class="my-6" />
-
-    <MudText Typo="Typo.h4" GutterBottom="true" Class="mb-4 text-responsive-h4">Overzicht per Locatie</MudText>
-    <MudPaper Elevation="2" Class="responsive-padding mb-6 card-animate" Style="background-color: var(--mud-palette-background-paper); border-radius: 16px;">
-        <MudTable Items="@LocationStats" Dense="true" Hover="true" Bordered="true" Striped="true" Class="modern-theme-table" Style="border-radius: 16px;">
+    
+    <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+        <MudTable Items="@LocationStats" 
+                 Dense="false" 
+                 Hover="true" 
+                 Bordered="false" 
+                 Striped="false" 
+                 Elevation="0"
+                 Style="border-radius: 12px; overflow: hidden;">
             <HeaderContent>
-                <MudTh Class="modern-header">Locatie</MudTh>
-                <MudTh Class="modern-header">Aantal</MudTh>
-                <MudTh Class="modern-header">Gem. Vertrouwen</MudTh>
+                <MudTh Style="background: var(--mud-palette-warning); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.LocationOn" Size="Size.Small" />
+                        <span>Locatie</span>
+                    </MudStack>
+                </MudTh>
+                <MudTh Style="background: var(--mud-palette-warning); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.Numbers" Size="Size.Small" />
+                        <span>Aantal</span>
+                    </MudStack>
+                </MudTh>
+                <MudTh Style="background: var(--mud-palette-warning); color: white; font-weight: 600; padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.Psychology" Size="Size.Small" />
+                        <span>Gem. Vertrouwen</span>
+                    </MudStack>
+                </MudTh>
             </HeaderContent>
             <RowTemplate>
-                <MudTd DataLabel="Locatie" Class="modern-cell">
-                    <MudIcon Icon="@Icons.Material.Filled.LocationOn" Style="font-size: 1.1rem; color: var(--mud-palette-warning); margin-right: 6px; vertical-align: middle;" />
-                    <span style="vertical-align: middle;">@context.Location</span>
+                <MudTd DataLabel="Locatie" Style="padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Place" Color="Color.Warning" Size="Size.Small" />
+                        <MudText Style="font-weight: 500;">@context.Location</MudText>
+                    </MudStack>
                 </MudTd>
-                <MudTd DataLabel="Aantal" Class="modern-cell">@context.Count</MudTd>
-                <MudTd DataLabel="Gem. Vertrouwen" Class="modern-cell">@context.AvgConfidence.ToString("P0")</MudTd>
+                <MudTd DataLabel="Aantal" Style="padding: 16px; font-weight: 600; font-size: 1.1rem;">
+                    @context.Count
+                </MudTd>
+                <MudTd DataLabel="Gem. Vertrouwen" Style="padding: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudProgressCircular Color="@GetConfidenceColor(context.AvgConfidence)" 
+                                           Value="@((int)(context.AvgConfidence * 100))" 
+                                           Size="Size.Small" />
+                        <MudText Style="font-weight: 600;">@context.AvgConfidence.ToString("P0")</MudText>
+                    </MudStack>
+                </MudTd>
             </RowTemplate>
+            <NoRecordsContent>
+                <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="pa-8">
+                    <MudIcon Icon="@Icons.Material.Filled.SearchOff" Style="font-size: 3rem; color: var(--mud-palette-text-secondary);" />
+                    <MudText Typo="Typo.h6" Style="color: var(--mud-palette-text-secondary);">Geen data beschikbaar</MudText>
+                </MudStack>
+            </NoRecordsContent>
         </MudTable>
     </MudPaper>
-</MudPaper>
+</MudContainer>
 
 @code {
     [Inject] public FrontendMonitoring.Services.AfvalApiClient AfvalClient { get; set; }
@@ -232,8 +456,16 @@
     // Real statistics
     private double CleanupPercentage => detections.Count == 0 ? 0 : detections.Count(d => d.Cleaned) / (double)detections.Count;
     private double AverageResponseTime => detections.Count == 0 ? 0 : detections.Where(d => d.Cleaned && d.Time.HasValue && d.CleanedTime.HasValue).Select(d => (d.CleanedTime.Value - d.Time.Value).TotalHours).DefaultIfEmpty(0).Average();
-    private int ActiveZones => detections.Select(d => d.Location).Distinct().Count();
-
-    private int MaxDailyCount => DailyStats.Any() ? DailyStats.Max(x => x.Count) : 1;
+    private int ActiveZones => detections.Select(d => d.Location).Distinct().Count();    private int MaxDailyCount => DailyStats.Any() ? DailyStats.Max(x => x.Count) : 1;
     private int MaxTypeCount => TypePerDayStats.Any() ? TypePerDayStats.Max(x => x.Count) : 1;
+
+    private Color GetConfidenceColor(double confidence)
+    {
+        return confidence switch
+        {
+            >= 0.8 => Color.Success,
+            >= 0.6 => Color.Warning,
+            _ => Color.Error
+        };
+    }
 }

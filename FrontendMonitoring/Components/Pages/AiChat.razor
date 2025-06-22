@@ -1,0 +1,185 @@
+@page "/ai-chat"
+@using MudBlazor
+@using System.Net.Http.Json
+@using System.Text.Json
+@using System.Text
+@inject HttpClient Http
+@inject FrontendMonitoring.Services.AfvalApiClient AfvalClient
+@inject ISnackbar Snackbar
+@inject NavigationManager Nav
+
+
+<PageTitle>AI Analyse Chat</PageTitle>
+
+<MudPaper Class="responsive-padding mx-auto fade-in main-home-content" MaxWidth="800px">
+    <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-2 text-gradient text-responsive-h3">AI Analyse Chat</MudText>
+    <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body">
+        Stel een vraag over het afvaldata, kies een periode, of vraag om voorspellingen. De AI analyseert de data en geeft direct antwoord.
+    </MudText>    <MudStack Spacing="2" Class="mb-4">
+        <MudSelect T="FilterOption" @bind-Value="selectedPeriodOption" ToStringFunc="@converter" Label="Periode" Variant="Variant.Outlined" Dense="true" Style="width: 220px;">
+            <MudSelectItem Value="@(new FilterOption() { Name = "Alle tijd", Value = "all" })" />
+            <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 30 dagen", Value = "30days" })" />
+            <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 7 dagen", Value = "7days" })" />
+            <MudSelectItem Value="@(new FilterOption() { Name = "Voorspel morgen", Value = "prediction" })" />
+        </MudSelect>
+        <MudTextField @bind-Value="userPrompt" Label="Je vraag aan de AI" Variant="Variant.Outlined" FullWidth="true" OnKeyDown="OnPromptKeyDown" />        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SendPrompt" Disabled="isLoading || string.IsNullOrWhiteSpace(userPrompt)">
+            @if (isLoading)
+            {
+                <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2" />
+                <span>Versturen...</span>
+            }
+            else
+            {
+                <span>Verstuur</span>
+            }
+        </MudButton>
+    </MudStack>
+    <MudPaper Elevation="2" Class="pa-4 mb-2" Style="min-height: 200px; background: var(--mud-palette-background-paper);">
+        <MudText Typo="Typo.subtitle1" Class="mb-2">AI Antwoord:</MudText>        <MudText Typo="Typo.body1" Class="ai-response-area" Style="white-space: pre-line;">
+            @if (isLoading)
+            {
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudProgressCircular Indeterminate="true" Size="Size.Medium" />
+                    <span>Bezig met analyseren...</span>
+                </MudStack>
+            }
+            else if (!string.IsNullOrWhiteSpace(aiResponse))
+            {
+                @aiResponse
+            }
+            else
+            {
+                <span class="mud-secondary-text">Nog geen antwoord.</span>
+            }
+        </MudText>
+    </MudPaper>
+</MudPaper>
+
+@code {
+    private FilterOption selectedPeriodOption = new FilterOption { Name = "Alle tijd", Value = "all" };
+    private string userPrompt = string.Empty;
+    private string aiResponse = string.Empty;
+    private bool isLoading = false;
+
+    private List<FrontendMonitoring.Models.AfvalModel> trashData = new();
+
+    public class FilterOption
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+
+        public override bool Equals(object? o) => (o as FilterOption)?.Value == Value;
+        public override int GetHashCode() => Value?.GetHashCode() ?? 0;
+    }
+
+    Func<FilterOption, string> converter = p => p?.Name ?? string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var apiData = await AfvalClient.GetLitterAndWeatherAsync();
+            trashData = apiData?.Litter ?? new();
+        }
+        catch
+        {
+            Snackbar.Add("Kon afvaldata niet laden.", Severity.Error);
+        }
+    }
+
+    private async Task SendPrompt()
+    {
+        isLoading = true;
+        aiResponse = string.Empty;
+        StateHasChanged();        // Compose the prompt with selected data
+        var dataForPrompt = GetDataForPeriod(selectedPeriodOption.Value);
+        var prompt = ComposePrompt(userPrompt, selectedPeriodOption.Value, dataForPrompt);
+
+        var request = new
+        {
+            model = "tinyllama:latest",
+            prompt = prompt,
+            stream = true
+        };
+
+        try
+        {
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://llm.coderize.nl/api/generate")
+            {
+                Content = JsonContent.Create(request)
+            };
+            using var response = await Http.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+            using var stream = await response.Content.ReadAsStreamAsync();
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+            var sb = new StringBuilder();
+            while (!reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync();
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                try
+                {
+                    var json = JsonDocument.Parse(line);
+                    if (json.RootElement.TryGetProperty("response", out var resp))
+                    {
+                        sb.Append(resp.GetString());
+                        aiResponse = sb.ToString();
+                        StateHasChanged();
+                    }
+                    if (json.RootElement.TryGetProperty("done", out var done) && done.GetBoolean())
+                        break;
+                }
+                catch { }
+            }
+        }
+        catch (Exception ex)
+        {
+            aiResponse = $"Fout bij AI-analyse: {ex.Message}";
+        }
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    private string ComposePrompt(string userPrompt, string period, List<FrontendMonitoring.Models.AfvalModel> data)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine($"Analyseer de volgende afvaldata voor periode: {PeriodToText(period)}.");
+        sb.AppendLine("Data:");
+        foreach (var d in data.Take(100)) // Limit to 100 rows for prompt size
+        {
+            sb.AppendLine($"Type: {d.TrashType}, Locatie: {d.Location}, Datum: {d.Time:yyyy-MM-dd}, Temperatuur: {d.Temperature}, Confidence: {d.Confidence:0.00}");
+        }
+        sb.AppendLine($"Vraag: {userPrompt}");
+        return sb.ToString();
+    }
+
+    private List<FrontendMonitoring.Models.AfvalModel> GetDataForPeriod(string period)
+    {
+        var now = DateTime.Now;
+        return period switch
+        {
+            "all" => trashData,
+            "30days" => trashData.Where(d => d.Time.HasValue && d.Time.Value >= now.AddDays(-30)).ToList(),
+            "7days" => trashData.Where(d => d.Time.HasValue && d.Time.Value >= now.AddDays(-7)).ToList(),
+            "prediction" => trashData, // For prediction, send all data
+            _ => trashData
+        };
+    }
+
+    private string PeriodToText(string period) => period switch
+    {
+        "all" => "Alle tijd",
+        "30days" => "Laatste 30 dagen",
+        "7days" => "Laatste 7 dagen",
+        "prediction" => "Voorspel morgen",
+        _ => period
+    };
+
+    private async Task OnPromptKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !isLoading && !string.IsNullOrWhiteSpace(userPrompt))
+        {
+            await SendPrompt();
+        }
+    }
+}
