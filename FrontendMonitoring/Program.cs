@@ -27,6 +27,9 @@ builder.Services.AddAuthorizationCore();
 // Register AfvalApiClient as a service
 builder.Services.AddScoped<FrontendMonitoring.Services.AfvalApiClient>();
 
+// Register PythonPredictionApiClient as a service
+builder.Services.AddHttpClient<PythonPredictionApiClient>();
+
 // 5. Razor components (Blazor Server)
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
