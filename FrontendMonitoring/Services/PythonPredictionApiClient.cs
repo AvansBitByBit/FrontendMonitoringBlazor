@@ -109,6 +109,47 @@ namespace FrontendMonitoring.Services
                 return null;
             }
         }
+
+        public async Task<TrainingResponse?> TrainModelFromApiAsync()
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync($"{API_BASE_URL}/training/train_from_api", null);
+                response.EnsureSuccessStatusCode(); 
+                return await response.Content.ReadFromJsonAsync<TrainingResponse>();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<TrainingResponse?> TrainModelWithDataAsync(TrainingDataBatch trainingData)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync($"{API_BASE_URL}/training/train_new_model", trainingData);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadFromJsonAsync<TrainingResponse>();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<ModelMetrics?> GetModelMetricsAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<ModelMetrics>($"{API_BASE_URL}/training/model_metrics");
+                return response;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 
     // Response Models
@@ -193,6 +234,48 @@ namespace FrontendMonitoring.Services
         public string? Message { get; set; }
     }
 
+    public class TrainingResponse
+    {
+        [JsonPropertyName("status")]
+        public string Status { get; set; } = "";
+
+        [JsonPropertyName("message")]
+        public string Message { get; set; } = "";
+
+        [JsonPropertyName("model_accuracy")]
+        public double? ModelAccuracy { get; set; }
+
+        [JsonPropertyName("training_samples")]
+        public int TrainingSamples { get; set; }
+
+        [JsonPropertyName("model_version")]
+        public string ModelVersion { get; set; } = "";
+
+        [JsonPropertyName("timestamp")]
+        public DateTime Timestamp { get; set; }
+    }
+
+    public class ModelMetrics
+    {
+        [JsonPropertyName("accuracy")]
+        public double Accuracy { get; set; }
+
+        [JsonPropertyName("mean_squared_error")]
+        public double MeanSquaredError { get; set; }
+
+        [JsonPropertyName("feature_importance")]
+        public Dictionary<string, double> FeatureImportance { get; set; } = new();
+
+        [JsonPropertyName("training_samples")]
+        public int TrainingSamples { get; set; }
+
+        [JsonPropertyName("model_version")]
+        public string ModelVersion { get; set; } = "";
+
+        [JsonPropertyName("training_date")]
+        public DateTime TrainingDate { get; set; }
+    }
+
     // Request Models
     public class FuturePredictionRequest
     {
@@ -225,5 +308,35 @@ namespace FrontendMonitoring.Services
     {
         [JsonPropertyName("features")]
         public List<double> Features { get; set; } = new();
+    }
+
+    public class TrainingDataPoint
+    {
+        [JsonPropertyName("confidence")]
+        public double Confidence { get; set; }
+
+        [JsonPropertyName("temperature")]
+        public double Temperature { get; set; }
+
+        [JsonPropertyName("hour")]
+        public int Hour { get; set; }
+
+        [JsonPropertyName("target")]
+        public double Target { get; set; }
+
+        [JsonPropertyName("location")]
+        public string? Location { get; set; }
+
+        [JsonPropertyName("trash_type")]
+        public string? TrashType { get; set; }
+    }
+
+    public class TrainingDataBatch
+    {
+        [JsonPropertyName("data_points")]
+        public List<TrainingDataPoint> DataPoints { get; set; } = new();
+
+        [JsonPropertyName("model_name")]
+        public string? ModelName { get; set; }
     }
 }

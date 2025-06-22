@@ -357,15 +357,136 @@
                         </MudItem>
                     </MudGrid>
                 </MudStack>
+            </MudPaper>        </MudItem>
+
+        <!-- Model Training Section -->
+        <MudItem xs="12">
+            <MudPaper Elevation="4" Class="pa-6 mb-4" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+                <MudStack Spacing="4">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.ModelTraining" Color="Color.Secondary" Style="font-size: 2rem;" />
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Model Training</MudText>
+                            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                                Train een nieuw Random Forest model met echte data
+                            </MudText>
+                        </MudStack>
+                    </MudStack>
+
+                    <MudDivider />
+
+                    <MudGrid Spacing="4">
+                        <!-- Train from API -->
+                        <MudItem xs="12" md="6">
+                            <MudPaper Elevation="2" Class="pa-4" Style="border-radius: 12px; border: 2px solid var(--mud-palette-secondary-lighten);">
+                                <MudStack Spacing="3">
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                        <MudIcon Icon="@Icons.Material.Filled.CloudDownload" Color="Color.Secondary" />
+                                        <MudText Typo="Typo.h6" Style="font-weight: 600;">Train met API Data</MudText>
+                                    </MudStack>
+                                    
+                                    <MudText Typo="Typo.body2">
+                                        Gebruik alle beschikbare data uit de bestaande API om een nieuw model te trainen.
+                                        Dit gebruikt alle historische afvaldetectie data.
+                                    </MudText>
+
+                                    <MudButton Variant="Variant.Filled" 
+                                             Color="Color.Secondary" 
+                                             OnClick="TrainModelFromApi"
+                                             Disabled="isTraining"
+                                             FullWidth="true"
+                                             StartIcon="@Icons.Material.Filled.PlayArrow">
+                                        @if (isTraining)
+                                        {
+                                            <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                                            <span>Trainen...</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Start Training</span>
+                                        }
+                                    </MudButton>
+                                </MudStack>
+                            </MudPaper>
+                        </MudItem>
+
+                        <!-- Model Metrics -->
+                        <MudItem xs="12" md="6">
+                            <MudPaper Elevation="2" Class="pa-4" Style="border-radius: 12px; border: 2px solid var(--mud-palette-info-lighten);">
+                                <MudStack Spacing="3">
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                        <MudIcon Icon="@Icons.Material.Filled.Analytics" Color="Color.Info" />
+                                        <MudText Typo="Typo.h6" Style="font-weight: 600;">Model Statistieken</MudText>
+                                    </MudStack>
+                                    
+                                    @if (modelMetrics != null)
+                                    {
+                                        <MudStack Spacing="2">
+                                            <MudText Typo="Typo.body2">
+                                                <strong>Nauwkeurigheid:</strong> @($"{modelMetrics.Accuracy:P2}")
+                                            </MudText>
+                                            <MudText Typo="Typo.body2">
+                                                <strong>Training Samples:</strong> @modelMetrics.TrainingSamples
+                                            </MudText>
+                                            <MudText Typo="Typo.body2">
+                                                <strong>Model Versie:</strong> @modelMetrics.ModelVersion
+                                            </MudText>
+                                            <MudText Typo="Typo.body2">
+                                                <strong>Training Datum:</strong> @modelMetrics.TrainingDate.ToString("dd-MM-yyyy HH:mm")
+                                            </MudText>
+                                        </MudStack>
+                                    }
+                                    else
+                                    {
+                                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                                            Geen statistieken beschikbaar
+                                        </MudText>
+                                    }
+
+                                    <MudButton Variant="Variant.Outlined" 
+                                             Color="Color.Info" 
+                                             OnClick="LoadModelMetrics"
+                                             FullWidth="true"
+                                             StartIcon="@Icons.Material.Filled.Refresh">
+                                        Vernieuw Statistieken
+                                    </MudButton>
+                                </MudStack>
+                            </MudPaper>
+                        </MudItem>
+                    </MudGrid>
+
+                    <!-- Training Results -->
+                    @if (trainingResult != null)
+                    {
+                        <MudAlert Severity="@(trainingResult.Status == "success" ? Severity.Success : Severity.Error)" 
+                                Class="mt-3">
+                            <MudText Typo="Typo.body1" Style="font-weight: 600;">
+                                Training @(trainingResult.Status == "success" ? "Succesvol" : "Gefaald")
+                            </MudText>
+                            <MudText Typo="Typo.body2">
+                                @trainingResult.Message
+                            </MudText>
+                            @if (trainingResult.ModelAccuracy.HasValue)
+                            {
+                                <MudText Typo="Typo.body2">
+                                    <strong>Model Accuraatheid:</strong> @($"{trainingResult.ModelAccuracy.Value:P2}")
+                                </MudText>
+                            }
+                            <MudText Typo="Typo.body2">
+                                <strong>Training Samples:</strong> @trainingResult.TrainingSamples
+                            </MudText>
+                        </MudAlert>
+                    }
+                </MudStack>
             </MudPaper>
         </MudItem>
     </MudGrid>
 </MudContainer>
 
-@code {
-    private string apiStatus = "";
+@code {    private string apiStatus = "";
     private bool isLoading = false;
     private bool isLoadingHotspots = false;
+    private bool isTraining = false;
     
     // Single prediction inputs
     private SinglePredictionInput singlePrediction = new();
@@ -378,6 +499,10 @@
     
     // Model info
     private ModelInfoResponse? modelInfo;
+    
+    // Training
+    private TrainingResponse? trainingResult;
+    private ModelMetrics? modelMetrics;
     
     // Data from existing APIs
     private LitterApiResponse? apiData;
@@ -514,6 +639,57 @@
         }
     }
     
+    private async Task TrainModelFromApi()
+    {
+        isTraining = true;
+        trainingResult = null;
+        StateHasChanged();
+
+        try
+        {
+            var result = await PredictionApiClient.TrainModelFromApiAsync();
+            
+            if (result != null)
+            {
+                trainingResult = result;
+                Snackbar.Add($"Model training {(result.Status == "success" ? "succesvol" : "gefaald")}!", 
+                           result.Status == "success" ? Severity.Success : Severity.Error);
+                
+                // Reload model metrics if training was successful
+                if (result.Status == "success")
+                {
+                    await LoadModelMetrics();
+                }
+            }
+            else
+            {
+                Snackbar.Add("Kon geen verbinding maken met de training API", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error tijdens training: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isTraining = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadModelMetrics()
+    {
+        try
+        {
+            modelMetrics = await PredictionApiClient.GetModelMetricsAsync();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Fout bij laden model statistieken: {ex.Message}", Severity.Warning);
+        }
+    }
+
     // Helper methods for display
     private IEnumerable<KeyValuePair<string, double>> GetSortedLocationPredictions()
     {
