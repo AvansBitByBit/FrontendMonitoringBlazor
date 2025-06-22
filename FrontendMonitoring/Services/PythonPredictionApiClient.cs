@@ -11,10 +11,7 @@ namespace FrontendMonitoring.Services
         public PythonPredictionApiClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
-<<<<<<< HEAD
             _httpClient.Timeout = TimeSpan.FromSeconds(30); // Set timeout
-=======
->>>>>>> 493fae7f1ea8ea1c618b728c0093797dd3758028
         }
 
         public async Task<string> CheckApiStatusAsync()
@@ -30,7 +27,6 @@ namespace FrontendMonitoring.Services
             }
         }
 
-<<<<<<< HEAD
         public async Task<ApiHealthResponse?> GetHealthAsync()
         {
             try
@@ -57,8 +53,6 @@ namespace FrontendMonitoring.Services
             }
         }
 
-=======
->>>>>>> 493fae7f1ea8ea1c618b728c0093797dd3758028
         public async Task<PredictionResponse?> MakeFuturePredictionAsync(FuturePredictionRequest request)
         {
             try
@@ -100,7 +94,6 @@ namespace FrontendMonitoring.Services
                 return null;
             }
         }
-<<<<<<< HEAD
 
         public async Task<string?> ReloadModelAsync()
         {
@@ -119,11 +112,6 @@ namespace FrontendMonitoring.Services
     }
 
     // Enhanced Request/Response models to match the Python API
-=======
-    }
-
-    // Request/Response models
->>>>>>> 493fae7f1ea8ea1c618b728c0093797dd3758028
     public class FuturePredictionRequest
     {
         [JsonPropertyName("id")]
@@ -161,7 +149,6 @@ namespace FrontendMonitoring.Services
     {
         [JsonPropertyName("prediction")]
         public List<double>? Prediction { get; set; }
-<<<<<<< HEAD
 
         [JsonPropertyName("timestamp")]
         public DateTime Timestamp { get; set; }
@@ -180,8 +167,6 @@ namespace FrontendMonitoring.Services
 
         [JsonPropertyName("upper")]
         public double Upper { get; set; }
-=======
->>>>>>> 493fae7f1ea8ea1c618b728c0093797dd3758028
     }
 
     public class HotspotPredictionResponse
@@ -191,7 +176,6 @@ namespace FrontendMonitoring.Services
 
         [JsonPropertyName("location_predictions")]
         public Dictionary<string, double>? LocationPredictions { get; set; }
-<<<<<<< HEAD
 
         [JsonPropertyName("total_locations")]
         public int TotalLocations { get; set; }
@@ -234,7 +218,5 @@ namespace FrontendMonitoring.Services
 
         [JsonPropertyName("endpoints_available")]
         public List<string>? EndpointsAvailable { get; set; }
-=======
->>>>>>> 493fae7f1ea8ea1c618b728c0093797dd3758028
     }
 }
