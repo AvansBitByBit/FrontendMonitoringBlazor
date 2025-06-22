@@ -1,0 +1,576 @@
+@page "/predictions"
+@using MudBlazor
+@using System.Net.Http.Json
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using FrontendMonitoring.Models
+@using FrontendMonitoring.Services
+@inject FrontendMonitoring.Services.PythonPredictionApiClient PredictionApiClient
+@inject ISnackbar Snackbar
+@inject NavigationManager Nav
+@inject FrontendMonitoring.Services.AfvalApiClient AfvalClient
+
+<PageTitle>AI Voorspellingen</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-6">
+    <!-- Hero Section -->
+    <MudPaper Elevation="3" Class="pa-8 mb-6" Style="border-radius: 20px; background: linear-gradient(135deg, var(--mud-palette-tertiary), var(--mud-palette-tertiary-darken)); color: white; position: relative; overflow: hidden;">
+        <MudStack Spacing="4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.PsychologyAlt" Style="font-size: 3rem; opacity: 0.9;" />
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h3" Style="font-weight: 700; margin: 0;">
+                        AI Voorspellingen
+                    </MudText>
+                    <MudText Typo="Typo.subtitle1" Style="opacity: 0.9; margin: 0;">
+                        Random Forest Machine Learning model voor afvaldetectie en hotspot voorspellingen
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudStack>
+        <div style="position: absolute; top: -30px; right: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
+    </MudPaper>
+
+    <!-- API Status Check -->
+    <MudPaper Elevation="2" Class="pa-4 mb-6" Style="border-radius: 16px; border-left: 6px solid var(--mud-palette-info);">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.HealthAndSafety" Color="Color.Info" Style="font-size: 1.5rem;" />
+            <MudText Typo="Typo.h6" Style="font-weight: 600; margin: 0;">API Status</MudText>
+            <MudSpacer />
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" OnClick="CheckApiStatus" StartIcon="@Icons.Material.Filled.Refresh">
+                Check Status
+            </MudButton>
+        </MudStack>
+        @if (!string.IsNullOrEmpty(apiStatus))
+        {
+            <MudAlert Severity="@(apiStatus.Contains("live") ? Severity.Success : Severity.Error)" Class="mt-3">
+                @apiStatus
+            </MudAlert>
+        }
+    </MudPaper>
+
+    <MudGrid Spacing="6">
+        <!-- Hotspot Prediction Card -->
+        <MudItem xs="12" lg="8">
+            <MudPaper Elevation="4" Class="pa-6" Style="border-radius: 20px; background: var(--mud-palette-surface); min-height: 600px;">
+                <MudStack Spacing="4">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.LocationOn" Color="Color.Warning" Style="font-size: 2rem;" />
+                        <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Afval Hotspots Voorspelling</MudText>
+                    </MudStack>
+                    
+                    <MudText Typo="Typo.body1" Style="color: var(--mud-palette-text-secondary);">
+                        Voorspel waar de meeste afval detecties zullen plaatsvinden op basis van historische data en weersinformatie.
+                    </MudText>
+
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                        <MudNumericField @bind-Value="hotspotDays" 
+                                       Label="Dagen vooruit kijken" 
+                                       Variant="Variant.Outlined"
+                                       Min="1" Max="30" 
+                                       Style="width: 200px;" />
+                        <MudButton Variant="Variant.Filled" 
+                                 Color="Color.Warning" 
+                                 OnClick="PredictHotspots"
+                                 StartIcon="@Icons.Material.Filled.TravelExplore"
+                                 Disabled="isLoadingHotspots">
+                            @if (isLoadingHotspots)
+                            {
+                                <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                                <span style="margin-left: 8px;">Voorspellen...</span>
+                            }
+                            else
+                            {
+                                <span>Voorspel Hotspots</span>
+                            }
+                        </MudButton>
+                    </MudStack>
+
+                    @if (hotspotResult != null)
+                    {
+                        <MudDivider />
+                        
+                        <!-- Top Hotspots -->
+                        @if (hotspotResult.Hotspots?.Any() == true)
+                        {
+                            <MudStack Spacing="3">
+                                <MudText Typo="Typo.h6" Style="font-weight: 600;">🔥 Top Hotspots</MudText>
+                                <MudStack Spacing="2">                                    @foreach (var hotspot in hotspotResult.Hotspots.Take(3))
+                                    {
+                                        <MudChip T="string" Variant="Variant.Filled" 
+                                               Color="Color.Warning" 
+                                               Icon="@Icons.Material.Filled.Warning"
+                                               Style="font-weight: 600;">
+                                            @hotspot
+                                        </MudChip>
+                                    }
+                                </MudStack>
+                            </MudStack>
+                        }
+
+                        <!-- All Location Predictions -->
+                        @if (hotspotResult.LocationPredictions?.Any() == true)
+                        {
+                            <MudStack Spacing="3">
+                                <MudText Typo="Typo.h6" Style="font-weight: 600;">📍 Alle Locatie Voorspellingen</MudText>
+                                <MudTable Items="@GetSortedLocationPredictions()" 
+                                        Dense="false" 
+                                        Hover="true" 
+                                        Bordered="false" 
+                                        Striped="false" 
+                                        Elevation="0"
+                                        Style="border-radius: 12px; overflow: hidden;">
+                                    <HeaderContent>
+                                        <MudTh Style="font-weight: 600; background: var(--mud-palette-grey-lighten-4);">
+                                            <MudIcon Icon="@Icons.Material.Filled.LocationOn" Style="margin-right: 8px;" />
+                                            Locatie
+                                        </MudTh>
+                                        <MudTh Style="font-weight: 600; background: var(--mud-palette-grey-lighten-4);">
+                                            <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Style="margin-right: 8px;" />
+                                            Voorspelling
+                                        </MudTh>
+                                        <MudTh Style="font-weight: 600; background: var(--mud-palette-grey-lighten-4);">
+                                            <MudIcon Icon="@Icons.Material.Filled.Speed" Style="margin-right: 8px;" />
+                                            Intensiteit
+                                        </MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate>
+                                        <MudTd>
+                                            <MudText Typo="Typo.body2" Style="font-weight: 500;">
+                                                @GetShortLocation(context.Key)
+                                            </MudText>
+                                        </MudTd>                                        <MudTd>
+                                            <MudText Typo="Typo.body2" Style="font-weight: 600;" Color="@GetMudColor(context.Value)">
+                                                @context.Value.ToString("F2")
+                                            </MudText>
+                                        </MudTd>
+                                        <MudTd>
+                                            <MudProgressLinear Value="@GetProgressValue(context.Value)" 
+                                                             Color="@GetProgressColor(context.Value)" 
+                                                             Size="Size.Medium" 
+                                                             Style="width: 120px; border-radius: 8px;" />
+                                        </MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+                            </MudStack>
+                        }
+                    }
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+        <!-- Single Prediction & Model Info Card -->
+        <MudItem xs="12" lg="4">
+            <MudStack Spacing="4">
+                <!-- Single Prediction -->
+                <MudPaper Elevation="4" Class="pa-6" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+                    <MudStack Spacing="4">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <MudIcon Icon="@Icons.Material.Filled.Psychology" Color="Color.Primary" Style="font-size: 1.5rem;" />
+                            <MudText Typo="Typo.h6" Style="font-weight: 600; margin: 0;">Enkele Voorspelling</MudText>
+                        </MudStack>
+                        
+                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                            Maak een voorspelling op basis van specifieke parameters.
+                        </MudText>
+
+                        <MudStack Spacing="3">
+                            <MudTextField @bind-Value="singlePrediction.Location"
+                                        Label="Locatie"
+                                        Variant="Variant.Outlined"
+                                        Adornment="Adornment.Start"
+                                        AdornmentIcon="@Icons.Material.Filled.LocationOn" />
+
+                            <MudTextField @bind-Value="singlePrediction.TrashType"
+                                        Label="Afval Type"
+                                        Variant="Variant.Outlined"
+                                        Adornment="Adornment.Start"
+                                        AdornmentIcon="@Icons.Material.Filled.Category" />
+
+                            <MudNumericField @bind-Value="singlePrediction.Confidence"
+                                           Label="Vertrouwen (0-1)"
+                                           Variant="Variant.Outlined"
+                                           Min="0" Max="1" Step="0.1"
+                                           Adornment="Adornment.Start"
+                                           AdornmentIcon="@Icons.Material.Filled.Psychology" />
+
+                            <MudNumericField @bind-Value="singlePrediction.Temperature"
+                                           Label="Temperatuur (°C)"
+                                           Variant="Variant.Outlined"
+                                           Adornment="Adornment.Start"
+                                           AdornmentIcon="@Icons.Material.Filled.Thermostat" />
+
+                            <MudTimePicker @bind-Time="selectedTime"
+                                         Label="Tijd van de dag"
+                                         Variant="Variant.Outlined"
+                                         Adornment="Adornment.Start"
+                                         AdornmentIcon="@Icons.Material.Filled.Schedule" />
+
+                            <MudButton Variant="Variant.Filled" 
+                                     Color="Color.Primary" 
+                                     OnClick="MakeSinglePrediction"
+                                     FullWidth="true"
+                                     StartIcon="@Icons.Material.Filled.AutoAwesome"
+                                     Disabled="isLoading">
+                                @if (isLoading)
+                                {
+                                    <MudProgressCircular Size="Size.Small" Indeterminate="true" />
+                                    <span style="margin-left: 8px;">Voorspellen...</span>
+                                }
+                                else
+                                {
+                                    <span>Maak Voorspelling</span>
+                                }
+                            </MudButton>
+
+                            @if (singleResult.HasValue)
+                            {
+                                <MudAlert Severity="Severity.Success" Variant="Variant.Filled">
+                                    <MudText Typo="Typo.body1" Style="font-weight: 600;">
+                                        Voorspelling: @singleResult.Value.ToString("F3")
+                                    </MudText>
+                                </MudAlert>
+                            }
+                        </MudStack>
+                    </MudStack>
+                </MudPaper>
+
+                <!-- Model Information -->
+                <MudPaper Elevation="4" Class="pa-6" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+                    <MudStack Spacing="3">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <MudIcon Icon="@Icons.Material.Filled.ModelTraining" Color="Color.Info" Style="font-size: 1.5rem;" />
+                            <MudText Typo="Typo.h6" Style="font-weight: 600; margin: 0;">Model Info</MudText>
+                        </MudStack>
+
+                        @if (modelInfo != null)
+                        {
+                            <MudStack Spacing="2">
+                                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                                    <MudText Typo="Typo.body2">Status:</MudText>                                    <MudChip T="string" Size="Size.Small" 
+                                           Color="@(modelInfo.ModelLoaded ? Color.Success : Color.Error)"
+                                           Variant="Variant.Filled">
+                                        @(modelInfo.ModelLoaded ? "Geladen" : "Niet geladen")
+                                    </MudChip>
+                                </MudStack>
+                                
+                                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                                    <MudText Typo="Typo.body2">Versie:</MudText>
+                                    <MudText Typo="Typo.body2" Style="font-weight: 600;">@modelInfo.ModelVersion</MudText>
+                                </MudStack>
+                                
+                                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                                    <MudText Typo="Typo.body2">Features:</MudText>
+                                    <MudText Typo="Typo.body2" Style="font-weight: 600;">@modelInfo.FeaturesCount</MudText>
+                                </MudStack>
+                            </MudStack>
+                        }
+
+                        <MudButton Variant="Variant.Outlined" 
+                                 Color="Color.Info" 
+                                 OnClick="LoadModelInfo"
+                                 FullWidth="true"
+                                 StartIcon="@Icons.Material.Filled.Refresh">
+                            Herlaad Model Info
+                        </MudButton>
+                    </MudStack>
+                </MudPaper>
+            </MudStack>
+        </MudItem>
+
+        <!-- Advanced Features -->
+        <MudItem xs="12">
+            <MudPaper Elevation="4" Class="pa-6" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+                <MudStack Spacing="4">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Science" Color="Color.Secondary" Style="font-size: 2rem;" />
+                        <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Geavanceerde Functies</MudText>
+                    </MudStack>
+
+                    <MudGrid Spacing="4">
+                        <!-- Weather Integration -->
+                        <MudItem xs="12" md="4">
+                            <MudStack Spacing="3">
+                                <MudText Typo="Typo.h6" Style="font-weight: 600;">
+                                    <MudIcon Icon="@Icons.Material.Filled.WbSunny" Style="margin-right: 8px;" />
+                                    Weer Integratie
+                                </MudText>
+                                @if (weather != null)
+                                {
+                                    <MudStack Spacing="2">
+                                        <MudText Typo="Typo.body2">
+                                            <strong>Huidige Temp:</strong> @weather.Current?.Temperature2m°C
+                                        </MudText>
+                                        @if (weather.Hourly?.Temperature2m?.Any() == true)
+                                        {
+                                            <MudText Typo="Typo.body2">
+                                                <strong>Gem. Temp (24u):</strong> @weather.Hourly.Temperature2m.Take(24).Average().ToString("F1")°C
+                                            </MudText>
+                                        }
+                                    </MudStack>
+                                }
+                                else
+                                {
+                                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                                        Weer data wordt geladen...
+                                    </MudText>
+                                }
+                            </MudStack>
+                        </MudItem>
+
+                        <!-- Data Statistics -->
+                        <MudItem xs="12" md="4">
+                            <MudStack Spacing="3">
+                                <MudText Typo="Typo.h6" Style="font-weight: 600;">
+                                    <MudIcon Icon="@Icons.Material.Filled.Analytics" Style="margin-right: 8px;" />
+                                    Data Statistieken
+                                </MudText>
+                                <MudStack Spacing="2">
+                                    <MudText Typo="Typo.body2">
+                                        <strong>Totaal Detecties:</strong> @detections.Count
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        <strong>Unieke Locaties:</strong> @detections.Select(d => d.Location).Distinct().Count()
+                                    </MudText>
+                                    <MudText Typo="Typo.body2">
+                                        <strong>Gem. Vertrouwen:</strong> @(detections.Count > 0 ? detections.Average(d => d.Confidence).ToString("F2") : "0.00")
+                                    </MudText>
+                                </MudStack>
+                            </MudStack>
+                        </MudItem>
+
+                        <!-- Model Training Info -->
+                        <MudItem xs="12" md="4">
+                            <MudStack Spacing="3">
+                                <MudText Typo="Typo.h6" Style="font-weight: 600;">
+                                    <MudIcon Icon="@Icons.Material.Filled.School" Style="margin-right: 8px;" />
+                                    Model Training
+                                </MudText>
+                                <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
+                                    Het Random Forest model is getraind op historische data met features:
+                                </MudText>                                <MudStack Spacing="1">
+                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">Vertrouwen</MudChip>
+                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">Temperatuur</MudChip>
+                                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">Uur van de dag</MudChip>
+                                </MudStack>
+                            </MudStack>
+                        </MudItem>
+                    </MudGrid>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private string apiStatus = "";
+    private bool isLoading = false;
+    private bool isLoadingHotspots = false;
+    
+    // Single prediction inputs
+    private SinglePredictionInput singlePrediction = new();
+    private TimeSpan? selectedTime = TimeSpan.FromHours(12);
+    private double? singleResult;
+    
+    // Hotspot prediction
+    private int hotspotDays = 7;
+    private HotspotPredictionResponse? hotspotResult;
+    
+    // Model info
+    private ModelInfoResponse? modelInfo;
+    
+    // Data from existing APIs
+    private LitterApiResponse? apiData;
+    private List<AfvalModel> detections = new();
+    private WeatherModel? weather;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CheckApiStatus();
+        await LoadDataFromExistingApis();
+        await LoadModelInfo();
+    }
+    
+    private async Task LoadDataFromExistingApis()
+    {
+        try
+        {
+            apiData = await AfvalClient.GetLitterAndWeatherAsync();
+            detections = apiData?.Litter ?? new List<AfvalModel>();
+            weather = apiData?.Weather;
+            
+            // Auto-fill some data if available
+            if (detections.Any())
+            {
+                var lastDetection = detections.OrderByDescending(d => d.Time).First();
+                singlePrediction.Location = lastDetection.Location;
+                singlePrediction.TrashType = lastDetection.TrashType;
+                singlePrediction.Confidence = lastDetection.Confidence;
+            }
+              if (weather?.Current?.Temperature2m != null)
+            {
+                singlePrediction.Temperature = weather.Current.Temperature2m;
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Fout bij laden bestaande data: {ex.Message}", Severity.Warning);
+        }
+    }
+
+    private async Task CheckApiStatus()
+    {
+        try
+        {
+            var response = await PredictionApiClient.CheckApiStatusAsync();
+            apiStatus = response.Contains("live") || response.Contains("healthy") ? "Python AI FastAPI model is live! ✅" : response;
+        }
+        catch (Exception ex)
+        {
+            apiStatus = $"API niet bereikbaar: {ex.Message}";
+        }
+    }
+    
+    private async Task LoadModelInfo()
+    {
+        try
+        {
+            modelInfo = await PredictionApiClient.GetModelInfoAsync();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Fout bij laden model info: {ex.Message}", Severity.Warning);
+        }
+    }
+
+    private async Task MakeSinglePrediction()
+    {
+        if (singlePrediction.Confidence < 0 || singlePrediction.Confidence > 1)
+        {
+            Snackbar.Add("Confidence moet tussen 0 en 1 zijn", Severity.Warning);
+            return;
+        }
+
+        isLoading = true;
+        try
+        {
+            var request = new FuturePredictionRequest
+            {
+                Id = Guid.NewGuid().ToString(),
+                Time = DateTime.Now.Date.Add(selectedTime ?? TimeSpan.FromHours(12)).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                TrashType = singlePrediction.TrashType ?? "unknown",
+                Location = singlePrediction.Location ?? "unknown",
+                Confidence = singlePrediction.Confidence,
+                Celcius = singlePrediction.Temperature
+            };
+
+            var result = await PredictionApiClient.MakeFuturePredictionAsync(request);
+            
+            if (result?.Prediction?.Any() == true)
+            {
+                singleResult = result.Prediction[0];
+                Snackbar.Add("Voorspelling succesvol gemaakt!", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add("Geen resultaat ontvangen van de API", Severity.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task PredictHotspots()
+    {
+        isLoadingHotspots = true;
+        try
+        {
+            var request = new HotspotPredictionRequest { Days = hotspotDays };
+            var result = await PredictionApiClient.PredictHotspotsAsync(request);
+            
+            if (result != null)
+            {
+                hotspotResult = result;
+                Snackbar.Add($"Hotspots voorspelling voltooid voor {hotspotDays} dagen!", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add("Geen hotspot data ontvangen", Severity.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoadingHotspots = false;
+        }
+    }
+    
+    // Helper methods for display
+    private IEnumerable<KeyValuePair<string, double>> GetSortedLocationPredictions()
+    {
+        return hotspotResult?.LocationPredictions?
+            .OrderByDescending(x => x.Value)
+            .Take(10) ?? Enumerable.Empty<KeyValuePair<string, double>>();
+    }
+    
+    private string GetShortLocation(string location)
+    {
+        if (string.IsNullOrWhiteSpace(location)) return "Onbekend";
+        var parts = location.Split(',');
+        return parts.Length > 0 ? parts[0].Trim() : location;
+    }
+    
+    private string GetPredictionColor(double value)
+    {
+        return value switch
+        {
+            >= 0.7 => "var(--mud-palette-error)",
+            >= 0.4 => "var(--mud-palette-warning)",
+            _ => "var(--mud-palette-success)"
+        };
+    }
+    
+    private Color GetProgressColor(double value)
+    {
+        return value switch
+        {
+            >= 0.7 => Color.Error,
+            >= 0.4 => Color.Warning,
+            _ => Color.Success
+        };
+    }    private double GetProgressValue(double value)
+    {
+        if (hotspotResult?.LocationPredictions == null || !hotspotResult.LocationPredictions.Any())
+            return 0;
+        
+        var max = hotspotResult.LocationPredictions.Values.Max();
+        return max == 0 ? 0 : (value / max) * 100;
+    }
+
+    private Color GetMudColor(double value)
+    {
+        return value switch
+        {
+            >= 0.7 => Color.Error,
+            >= 0.4 => Color.Warning,
+            _ => Color.Success
+        };
+    }
+
+    public class SinglePredictionInput
+    {
+        public double Confidence { get; set; } = 0.8;
+        public double Temperature { get; set; } = 20.0;
+        public string? TrashType { get; set; }
+        public string? Location { get; set; }
+    }
+}
