@@ -53,14 +53,15 @@ public class ModelsTests
         var soort = "PMD";
         var datum = DateTime.Now;
        string location = "Avans";
-        
-        // Act
+          // Act
         var afvalModel = new AfvalModel
         {
             Id = id,
             TrashType = soort,
             Time = datum,
             Location = location,
+            Latitude = 51.5877167,
+            Longitude = 4.7762418,
             Confidence = 0.95
         };
         
@@ -68,6 +69,9 @@ public class ModelsTests
         Assert.AreEqual(id, afvalModel.Id);
         Assert.AreEqual(soort, afvalModel.TrashType);
         Assert.AreEqual(datum, afvalModel.Time);
+        Assert.AreEqual(location, afvalModel.Location);
+        Assert.AreEqual(51.5877167, afvalModel.Latitude);
+        Assert.AreEqual(4.7762418, afvalModel.Longitude);
         Assert.AreEqual(0.95, afvalModel.Confidence);
     }
 
@@ -151,19 +155,22 @@ public class ModelsTests
 
     [TestMethod]
     public void AfvalModel_NullValues_HandledCorrectly()
-    {
-        // Act
+    {        // Act
         var afvalModel = new AfvalModel
         {
             Id = null,
             TrashType = null,
             Time = null,
             Location = null,
+            Latitude = null,
+            Longitude = null,
             Confidence = 0
         };
 
         // Assert
         Assert.IsNull(afvalModel.Id);
+        Assert.IsNull(afvalModel.Latitude);
+        Assert.IsNull(afvalModel.Longitude);
         Assert.IsNull(afvalModel.TrashType);
         Assert.IsNull(afvalModel.Time);
         Assert.IsNull(afvalModel.Location);

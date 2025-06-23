@@ -26,13 +26,14 @@ public class ApiClientTests
         var tijd = DateTime.Now;
         string location = "avans";
         
-        var mockHandler = new Mock<HttpMessageHandler>();
-        var afvalModel = new AfvalModel
+        var mockHandler = new Mock<HttpMessageHandler>();        var afvalModel = new AfvalModel
         { 
             Id = id, 
             TrashType = soort, 
             Time = tijd,
             Location = location,
+            Latitude = 51.5877167,
+            Longitude = 4.7762418,
             Confidence = 0.88
         };
         var json = JsonSerializer.Serialize(afvalModel);

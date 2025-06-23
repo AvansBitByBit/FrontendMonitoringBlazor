@@ -514,10 +514,9 @@ else
 }
 
 @code {
-    [Inject] public FrontendMonitoring.Services.AfvalApiClient AfvalClient { get; set; } = null!;
-    private LitterApiResponse? apiData;
+    [Inject] public FrontendMonitoring.Services.AfvalApiClient AfvalClient { get; set; } = null!;    private LitterApiResponse? apiData;
     private List<AfvalModel> detections = new();
-    private WeatherModel? weather;
+    private string? weather;
     private bool _isLoading = true;
     private bool _isRefreshing = false;
 

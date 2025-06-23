@@ -1,8 +1,13 @@
+using System.Text.Json.Serialization;
+
 namespace FrontendMonitoring.Models
 {
     public class LitterApiResponse
     {
+        [JsonPropertyName("litter")]
         public List<AfvalModel>? Litter { get; set; }
-        public WeatherModel? Weather { get; set; }
+        
+        [JsonPropertyName("weather")]
+        public string? Weather { get; set; }
     }
 }
