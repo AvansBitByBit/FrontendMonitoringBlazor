@@ -593,12 +593,15 @@ else
     private bool _isLoggedIn = false;
     private bool _isLoading = true;
     private bool _isRefreshing = false;
+    private double? currentTemperature;
+    private PredictionResponse? predictionResult;
+
     FilterOption period = new FilterOption { Name = "Laatste 7 dagen" };
     FilterOption wasteType = new FilterOption { Name = "Alle types" };
     FilterOption location = new FilterOption { Name = "Alle locaties" };
 
     private LitterApiResponse? apiData;
-    
+
     // Chart options for better styling
     private ChartOptions chartOptions = new()
     {
