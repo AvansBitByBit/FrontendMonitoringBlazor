@@ -12,6 +12,32 @@
 @using FrontendMonitoring.Services
 @using Microsoft.AspNetCore.Components.Authorization
 
+@if (_isLoading)
+{
+    <!-- Loading Screen -->
+    <MudContainer Class="loading-container loading-fade-in" MaxWidth="MaxWidth.False">
+        <MudPaper Elevation="3" Class="loading-card loading-pulse">
+            <MudStack AlignItems="AlignItems.Center" Spacing="4">
+                <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" Style="width: 60px; height: 60px;" />
+                <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                    <MudText Typo="Typo.h5" Style="font-weight: 600; color: var(--mud-palette-primary);">
+                        Dashboard laden...
+                    </MudText>
+                    <MudText Typo="Typo.body1" Style="color: var(--mud-palette-text-secondary);">
+                        Data wordt opgehaald van de server
+                    </MudText>
+                </MudStack>
+                <MudStack Spacing="2" Style="width: 100%;">
+                    <MudSkeleton Width="100%" Height="8px" Animation="Animation.Wave" Style="border-radius: 4px;" />
+                    <MudSkeleton Width="75%" Height="8px" Animation="Animation.Wave" Style="border-radius: 4px;" />
+                    <MudSkeleton Width="90%" Height="8px" Animation="Animation.Wave" Style="border-radius: 4px;" />
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    </MudContainer>
+}
+else
+{
 <MudContainer Class="dashboard-container fade-in" MaxWidth="MaxWidth.False">
     <MudGrid Spacing="2">        <!-- Filter Buttons and Refresh -->
         <MudItem xs="12" Class="dashboard-grid-item">
@@ -20,35 +46,44 @@
                     <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
                         <MudIcon Icon="@Icons.Material.Filled.FilterList" Color="Color.Primary" Style="font-size: 1.5rem;" />
                         <MudText Typo="Typo.h6" Style="font-weight: 600;">Snelle Filters</MudText>
-                    </MudStack>
-                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Style="flex-wrap: wrap;">
+                    </MudStack>                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Class="filter-button-container">
                         <MudButton Variant="@(selectedTimeFilter == TimeFilter.Last24Hours ? Variant.Filled : Variant.Outlined)" 
                                   Color="Color.Primary" 
                                   OnClick="@(() => SetTimeFilter(TimeFilter.Last24Hours))" 
                                   StartIcon="@Icons.Material.Filled.Schedule"
-                                  Style="border-radius: 20px; text-transform: none;">
+                                  Class="filter-button">
                             24 uur
                         </MudButton>
                         <MudButton Variant="@(selectedTimeFilter == TimeFilter.Last7Days ? Variant.Filled : Variant.Outlined)" 
                                   Color="Color.Primary" 
                                   OnClick="@(() => SetTimeFilter(TimeFilter.Last7Days))" 
                                   StartIcon="@Icons.Material.Filled.DateRange"
-                                  Style="border-radius: 20px; text-transform: none;">
+                                  Class="filter-button">
                             7 dagen
-                        </MudButton>
-                        <MudButton Variant="@(selectedTimeFilter == TimeFilter.Last30Days ? Variant.Filled : Variant.Outlined)" 
+                        </MudButton>                        <MudButton Variant="@(selectedTimeFilter == TimeFilter.Last30Days ? Variant.Filled : Variant.Outlined)" 
                                   Color="Color.Primary" 
                                   OnClick="@(() => SetTimeFilter(TimeFilter.Last30Days))" 
                                   StartIcon="@Icons.Material.Filled.CalendarMonth"
-                                  Style="border-radius: 20px; text-transform: none;">
+                                  Class="filter-button">
                             30 dagen
                         </MudButton>
                         <MudButton Variant="Variant.Text" 
                                   Color="Color.Secondary" 
                                   OnClick="RefreshData" 
-                                  StartIcon="@Icons.Material.Filled.Refresh"
-                                  Style="border-radius: 20px; text-transform: none;">
-                            Verversen
+                                  StartIcon="@(_isRefreshing ? Icons.Material.Filled.Refresh : Icons.Material.Filled.Refresh)"
+                                  Disabled="_isRefreshing"
+                                  Class="filter-button">
+                            @if (_isRefreshing)
+                            {
+                                <div class="refresh-button-loading">
+                                    <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="loading-spinner" />
+                                    <span>Laden...</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <span>Verversen</span>
+                            }
                         </MudButton>
                     </MudStack>
                 </MudStack>
@@ -117,46 +152,49 @@
                               Variant="Variant.Outlined" 
                               Dense="false" 
                               Clearable
-                              Style="border-radius: 12px;">
-                        <MudSelectItem Value="@(new FilterOption() { Name = "Alle locaties" })" />
+                              Style="border-radius: 12px;">                        <MudSelectItem Value="@(new FilterOption() { Name = "Alle locaties" })" />
                         @foreach (var group in GroupedLocations)
                         {
-                            <MudSelectGroup Label="@group.Key">
-                                @foreach (var loc in group)
-                                {
-                                    <MudSelectItem Value="@(new FilterOption() { Name = loc })">@loc</MudSelectItem>
-                                }
-                            </MudSelectGroup>                        }
+                            @foreach (var loc in group)
+                            {
+                                <MudSelectItem Value="@(new FilterOption() { Name = loc })">@loc</MudSelectItem>
+                            }
+                        }
                     </MudSelect>
                 </MudStack>
             </MudPaper>
-        </MudItem>
-
-        <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
-            <MudPaper Elevation="3" Class="pa-6 card-animate card-mobile-responsive" 
-                     Style="border-radius: 16px; background: linear-gradient(135deg, var(--mud-palette-primary), var(--mud-palette-primary-darken)); color: white; position: relative; overflow: hidden;">
+        </MudItem>        <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
+            <MudPaper Elevation="3" Class="pa-6 card-animate card-mobile-responsive stat-card-gradient-primary">
                 <MudStack Spacing="3">
                     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
                         <MudStack Spacing="1">
                             <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9;">Totaal Samples</MudText>
-                            <MudText Typo="Typo.h3" Style="font-weight: 700; line-height: 1;">@FilteredDetections.Count()</MudText>
+                            @if (_isRefreshing)
+                            {
+                                <MudSkeleton Width="60%" Height="40px" Animation="Animation.Wave" Class="loading-skeleton-white" />
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.h3" Style="font-weight: 700; line-height: 1;">@FilteredDetections.Count()</MudText>
+                            }
                         </MudStack>
                         <MudIcon Icon="@Icons.Material.Filled.Analytics" Style="font-size: 2.5rem; opacity: 0.7;" />
                     </MudStack>
                     <MudText Typo="Typo.body2" Style="opacity: 0.8;">Gedetecteerde items</MudText>
                 </MudStack>
-                <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
+                <div class="stat-card-decoration"></div>
             </MudPaper>
-        </MudItem>
-
-        <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
-            <MudPaper Elevation="3" Class="pa-6 card-animate card-mobile-responsive" 
-                     Style="border-radius: 16px; background: linear-gradient(135deg, var(--mud-palette-info), var(--mud-palette-info-darken)); color: white; position: relative; overflow: hidden;">
+        </MudItem>        <MudItem xs="12" sm="6" md="4" Class="dashboard-grid-item">
+            <MudPaper Elevation="3" Class="pa-6 card-animate card-mobile-responsive stat-card-gradient-info">
                 <MudStack Spacing="3">
                     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
                         <MudStack Spacing="1">
                             <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9;">Weer Vandaag</MudText>
-                            @if (apiData?.Weather?.Current != null)
+                            @if (_isRefreshing)
+                            {
+                                <MudSkeleton Width="60%" Height="40px" Animation="Animation.Wave" Class="loading-skeleton-white" />
+                            }
+                            else if (apiData?.Weather?.Current != null)
                             {
                                 <MudText Typo="Typo.h3" Style="font-weight: 700; line-height: 1;">@apiData.Weather.Current.Temperature2m.ToString("0.0")°C</MudText>
                             }
@@ -168,7 +206,11 @@
                         <MudIcon Icon="@Icons.Material.Filled.Thermostat" Style="font-size: 2.5rem; opacity: 0.7;" />
                     </MudStack>
                     <MudText Typo="Typo.body2" Style="opacity: 0.8;">
-                        @if (apiData?.Weather?.Current != null)
+                        @if (_isRefreshing)
+                        {
+                            <MudSkeleton Width="80%" Height="14px" Animation="Animation.Wave" Class="loading-skeleton-white" />
+                        }
+                        else if (apiData?.Weather?.Current != null)
                         {
                             <span>Actuele temperatuur</span>
                         }
@@ -178,53 +220,71 @@
                         }
                     </MudText>
                 </MudStack>
-                <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
+                <div class="stat-card-decoration"></div>
             </MudPaper>
-        </MudItem>
-
-        <MudItem xs="12" sm="12" md="4" Class="dashboard-grid-item">
-            <MudPaper Elevation="3" Class="pa-6 card-animate card-mobile-responsive" 
-                     Style="border-radius: 16px; background: linear-gradient(135deg, var(--mud-palette-success), var(--mud-palette-success-darken)); color: white; position: relative; overflow: hidden;">
+        </MudItem>        <MudItem xs="12" sm="12" md="4" Class="dashboard-grid-item">
+            <MudPaper Elevation="3" Class="pa-6 card-animate card-mobile-responsive stat-card-gradient-success">
                 <MudStack Spacing="3">
                     <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
                         <MudStack Spacing="1">
                             <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9;">Meldingen</MudText>
-                            <MudText Typo="Typo.h3" Style="font-weight: 700; line-height: 1;">@FilteredDetections.Count()</MudText>
+                            @if (_isRefreshing)
+                            {
+                                <MudSkeleton Width="60%" Height="40px" Animation="Animation.Wave" Class="loading-skeleton-white" />
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.h3" Style="font-weight: 700; line-height: 1;">@FilteredDetections.Count()</MudText>
+                            }
                         </MudStack>
                         <MudIcon Icon="@Icons.Material.Filled.Notifications" Style="font-size: 2.5rem; opacity: 0.7;" />
                     </MudStack>
                     <MudText Typo="Typo.body2" Style="opacity: 0.8;">In geselecteerde periode</MudText>
                 </MudStack>
-                <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
+                <div class="stat-card-decoration"></div>
             </MudPaper>        </MudItem>
-        
-        <!-- Afvalstromen Chart -->
+          <!-- Afvalstromen Chart -->
         <MudItem xs="12" sm="12" md="6" Class="dashboard-grid-item">
             <MudPaper Elevation="3" Class="pa-6 card-animate card-mobile-responsive" Style="border-radius: 16px; background: var(--mud-palette-surface);">
                 <MudStack Spacing="4">
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
                         <MudIcon Icon="@Icons.Material.Filled.BarChart" Color="Color.Primary" Style="font-size: 1.5rem;" />
                         <MudText Typo="Typo.h6" Style="font-weight: 600;">Afvalstromen Analyse</MudText>
-                    </MudStack>
-                    <MudPaper Elevation="1" Class="pa-4" Style="border-radius: 12px; background: var(--mud-palette-background);">
-                        <MudChart ChartType="ChartType.Bar" 
-                                 ChartSeries="@Series" 
-                                 XAxisLabels="@XAxisLabels" 
-                                 Width="100%" 
-                                 Height="280px"
-                                 ChartOptions="chartOptions">
-                            <CustomGraphics>
-                                <style>
-                                    .mud-chart-bar {
-                                        border-radius: 4px;
-                                    }
-                                    .mud-chart-legend {
-                                        font-size: 12px;
-                                        font-weight: 500;
-                                    }
-                                </style>
-                            </CustomGraphics>
-                        </MudChart>
+                    </MudStack>                    <MudPaper Elevation="1" Class="pa-4" Style="border-radius: 12px; background: var(--mud-palette-background);">
+                        @if (_isRefreshing)
+                        {
+                            <div class="chart-loading">
+                                <MudProgressCircular Color="Color.Primary" Size="Size.Medium" Indeterminate="true" />
+                                <MudText Typo="Typo.body2" Class="chart-loading-text">Grafiek wordt geladen...</MudText>
+                                <div class="data-viz-skeleton">
+                                    <MudSkeleton Width="100%" Height="20px" Animation="Animation.Wave" />
+                                    <MudSkeleton Width="80%" Height="20px" Animation="Animation.Wave" />
+                                    <MudSkeleton Width="90%" Height="20px" Animation="Animation.Wave" />
+                                    <MudSkeleton Width="70%" Height="20px" Animation="Animation.Wave" />
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <MudChart ChartType="ChartType.Bar" 
+                                     ChartSeries="@Series" 
+                                     XAxisLabels="@XAxisLabels" 
+                                     Width="100%" 
+                                     Height="280px"
+                                     ChartOptions="chartOptions">
+                                <CustomGraphics>
+                                    <style>
+                                        .mud-chart-bar {
+                                            border-radius: 4px;
+                                        }
+                                        .mud-chart-legend {
+                                            font-size: 12px;
+                                            font-weight: 500;
+                                        }
+                                    </style>
+                                </CustomGraphics>
+                            </MudChart>
+                        }
                     </MudPaper>
                 </MudStack>
             </MudPaper>
@@ -264,19 +324,30 @@
                                   Color="Color.Primary" 
                                   StartIcon="@Icons.Material.Filled.Download" 
                                   OnClick="ExportCsv" 
-                                  Style="border-radius: 20px; text-transform: none; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);">
+                                  Class="btn-animate filter-button">
                             Export CSV
                         </MudButton>
                     </MudStack>
                 </MudStack>
-                
-                <MudTable Items="FilteredDetections.Take(maxTableRows)" 
+                  <MudTable Items="FilteredDetections.Take(maxTableRows)" 
                          Dense="false" 
                          Hover="true" 
                          Bordered="false" 
                          Striped="false" 
                          Elevation="0"
-                         Style="border-radius: 12px; overflow: hidden; border: 1px solid var(--mud-palette-lines-default);">
+                         Loading="_isRefreshing"
+                         LoadingProgressColor="Color.Primary"
+                         Style="border-radius: 12px; overflow: hidden; border: 1px solid var(--mud-palette-lines-default);">                    <LoadingContent>
+                        <div class="table-loading">
+                            <MudProgressCircular Color="Color.Primary" Size="Size.Medium" Indeterminate="true" />
+                            <MudText Typo="Typo.h6" Class="table-loading-text">Data wordt ververst...</MudText>
+                            <div class="data-viz-skeleton">
+                                <MudSkeleton Width="100%" Height="40px" Animation="Animation.Wave" />
+                                <MudSkeleton Width="90%" Height="40px" Animation="Animation.Wave" />
+                                <MudSkeleton Width="95%" Height="40px" Animation="Animation.Wave" />
+                            </div>
+                        </div>
+                    </LoadingContent>
                     <HeaderContent>
                         <MudTh Style="background: var(--mud-palette-grey-lighter); font-weight: 600; color: var(--mud-palette-text-primary);">
                             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
@@ -429,6 +500,8 @@
 }
 @code {
     private bool _isLoggedIn = false;
+    private bool _isLoading = true;
+    private bool _isRefreshing = false;
     FilterOption period = new FilterOption { Name = "Laatste 7 dagen" };
     FilterOption wasteType = new FilterOption { Name = "Alle types" };
     FilterOption location = new FilterOption { Name = "Alle locaties" };
@@ -494,10 +567,10 @@
         public override int GetHashCode() => Name?.GetHashCode() ?? 0;
     }
 
-    Func<FilterOption, string> converter = p => p?.Name ?? string.Empty;
-
-    protected override async Task OnInitializedAsync()
+    Func<FilterOption, string> converter = p => p?.Name ?? string.Empty;    protected override async Task OnInitializedAsync()
     {
+        _isLoading = true;
+        
         // Check authentication first
         try
         {
@@ -528,6 +601,11 @@
             {
                 new() { TrashType = "Organisch", Location = "Sector Noord", Time = DateTime.Now.AddDays(-3), Verified = false, Cleaned = false, Confidence = 0.78 }
             };
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
         }
     }
 
@@ -580,9 +658,7 @@
         .Select(g => g.Key)
         .FirstOrDefault() ?? "Onbekend";
 
-    private TimeFilter selectedTimeFilter = TimeFilter.Last7Days;
-
-    private void SetTimeFilter(TimeFilter filter)
+    private TimeFilter selectedTimeFilter = TimeFilter.Last7Days;    private async Task SetTimeFilter(TimeFilter filter)
     {
         selectedTimeFilter = filter;
         // Update the period based on the selected filter
@@ -599,20 +675,25 @@
                 break;
         }
         // Refresh the data based on the new filter
-        RefreshData();
-    }
-
-    private async Task RefreshData()
+        await RefreshData();
+    }private async Task RefreshData()
     {
+        _isRefreshing = true;
+        StateHasChanged();
+        
         try
         {
             apiData = await AfvalClient.GetLitterAndWeatherAsync();
             detections = apiData?.Litter ?? new List<AfvalModel>();
-            StateHasChanged(); // Refresh the UI
         }
         catch (Exception ex)
         {
             Console.WriteLine($"API call failed: {ex.Message}");
+        }
+        finally
+        {
+            _isRefreshing = false;
+            StateHasChanged(); // Refresh the UI
         }
     }
 

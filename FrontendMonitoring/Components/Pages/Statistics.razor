@@ -5,23 +5,68 @@
 
 <PageTitle>Statistieken</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-6">
-    <MudPaper Elevation="3" Class="pa-8 mb-6" Style="border-radius: 20px; background: linear-gradient(135deg, var(--mud-palette-primary), var(--mud-palette-primary-darken)); color: white; position: relative; overflow: hidden;">
-        <MudStack Spacing="4">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                <MudIcon Icon="@Icons.Material.Filled.Analytics" Style="font-size: 3rem; opacity: 0.9;" />
-                <MudStack Spacing="1">
-                    <MudText Typo="Typo.h3" Style="font-weight: 700; margin: 0;">
-                        Afvaldetectie Statistieken
-                    </MudText>
-                    <MudText Typo="Typo.subtitle1" Style="opacity: 0.9; margin: 0;">
-                        Uitgebreide analyses en inzichten van ons AI-aangedreven afvalmonitoringsysteem
-                    </MudText>
+@if (_isLoading)
+{
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-6">
+        <MudPaper Elevation="0" Class="loading-screen">
+            <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="4" Style="min-height: 60vh;">
+                <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" Class="loading-spinner-main" />
+                <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                    <MudText Typo="Typo.h6" Style="font-weight: 600;">Statistieken worden geladen...</MudText>
+                    <MudText Typo="Typo.body2" Style="opacity: 0.7;">Even geduld, we verzamelen de data voor u</MudText>
                 </MudStack>
+                <MudStack Spacing="2" Style="width: 100%; max-width: 600px;">
+                    <MudSkeleton Width="100%" Height="80px" Animation="Animation.Wave" />
+                    <MudStack Row="true" Spacing="2">
+                        <MudSkeleton Width="48%" Height="120px" Animation="Animation.Wave" />
+                        <MudSkeleton Width="48%" Height="120px" Animation="Animation.Wave" />
+                    </MudStack>
+                    <MudSkeleton Width="100%" Height="200px" Animation="Animation.Wave" />
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    </MudContainer>
+}
+else
+{
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-6">    <MudPaper Elevation="3" Class="pa-8 mb-6" Style="border-radius: 20px; background: linear-gradient(135deg, var(--mud-palette-primary), var(--mud-palette-primary-darken)); color: white; position: relative; overflow: hidden;">
+        <MudStack Spacing="4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <MudIcon Icon="@Icons.Material.Filled.Analytics" Style="font-size: 3rem; opacity: 0.9;" />
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.h3" Style="font-weight: 700; margin: 0;">
+                            Afvaldetectie Statistieken
+                        </MudText>
+                        <MudText Typo="Typo.subtitle1" Style="opacity: 0.9; margin: 0;">
+                            Uitgebreide analyses en inzichten van ons AI-aangedreven afvalmonitoringsysteem
+                        </MudText>
+                    </MudStack>
+                </MudStack>
+                <MudButton Variant="Variant.Text" 
+                          Color="Color.Surface" 
+                          OnClick="RefreshData" 
+                          StartIcon="@(_isRefreshing ? Icons.Material.Filled.Refresh : Icons.Material.Filled.Refresh)"
+                          Disabled="_isRefreshing"
+                          Class="filter-button"
+                          Style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);">
+                    @if (_isRefreshing)
+                    {
+                        <div class="refresh-button-loading">
+                            <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="loading-spinner" Style="color: white;" />
+                            <span style="color: white;">Laden...</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <span style="color: white;">Verversen</span>
+                    }
+                </MudButton>
             </MudStack>
         </MudStack>
         <div style="position: absolute; top: -30px; right: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
-    </MudPaper>    <MudAlert Severity="Severity.Info" 
+    </MudPaper><MudAlert Severity="Severity.Info" 
               Variant="Variant.Filled" 
               Class="mb-6" 
               Style="border-radius: 16px; border-left: 6px solid var(--mud-palette-info-darken);">
@@ -38,13 +83,19 @@
         </MudStack>
     </MudPaper>
     
-    <MudGrid Spacing="4" Class="mb-8">
-        <MudItem xs="12" sm="6" lg="3">
+    <MudGrid Spacing="4" Class="mb-8">        <MudItem xs="12" sm="6" lg="3">
             <MudPaper Elevation="4" Class="pa-6 text-center" Style="border-radius: 20px; background: linear-gradient(135deg, var(--mud-palette-primary), var(--mud-palette-primary-lighten)); color: white; position: relative; overflow: hidden; min-height: 180px;">
                 <MudStack AlignItems="AlignItems.Center" Spacing="3">
                     <MudIcon Icon="@Icons.Material.Filled.DeleteSweep" Style="font-size: 3rem; opacity: 0.9;" />
                     <MudStack AlignItems="AlignItems.Center" Spacing="1">
-                        <MudText Typo="Typo.h3" Style="font-weight: 700; margin: 0;">@detections.Count</MudText>
+                        @if (_isRefreshing)
+                        {
+                            <MudSkeleton Width="60%" Height="40px" Animation="Animation.Wave" Class="loading-skeleton-white" />
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.h3" Style="font-weight: 700; margin: 0;">@detections.Count</MudText>
+                        }
                         <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9; margin: 0;">Totale Detecties</MudText>
                         <MudText Typo="Typo.body2" Style="opacity: 0.8; margin: 0;">Totaal ontvangen</MudText>
                     </MudStack>
@@ -57,7 +108,14 @@
                 <MudStack AlignItems="AlignItems.Center" Spacing="3">
                     <MudIcon Icon="@Icons.Material.Filled.BarChart" Style="font-size: 3rem; opacity: 0.9;" />
                     <MudStack AlignItems="AlignItems.Center" Spacing="1">
-                        <MudText Typo="Typo.h4" Style="font-weight: 700; margin: 0; font-size: 1.5rem;">@MostCommonTrashType</MudText>
+                        @if (_isRefreshing)
+                        {
+                            <MudSkeleton Width="80%" Height="30px" Animation="Animation.Wave" Class="loading-skeleton-white" />
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.h4" Style="font-weight: 700; margin: 0; font-size: 1.5rem;">@MostCommonTrashType</MudText>
+                        }
                         <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9; margin: 0;">Meest Voorkomend</MudText>
                         <MudText Typo="Typo.body2" Style="opacity: 0.8; margin: 0;">Afvaltype</MudText>
                     </MudStack>
@@ -70,9 +128,16 @@
                 <MudStack AlignItems="AlignItems.Center" Spacing="3">
                     <MudIcon Icon="@Icons.Material.Filled.LocationOn" Style="font-size: 3rem; opacity: 0.9;" />
                     <MudStack AlignItems="AlignItems.Center" Spacing="1">
-                        <MudTooltip Text="@TopLocation">
-                            <MudText Typo="Typo.h4" Style="font-weight: 700; margin: 0; font-size: 1.5rem; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@ShortLocation</MudText>
-                        </MudTooltip>
+                        @if (_isRefreshing)
+                        {
+                            <MudSkeleton Width="70%" Height="30px" Animation="Animation.Wave" Class="loading-skeleton-white" />
+                        }
+                        else
+                        {
+                            <MudTooltip Text="@TopLocation">
+                                <MudText Typo="Typo.h4" Style="font-weight: 700; margin: 0; font-size: 1.5rem; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@ShortLocation</MudText>
+                            </MudTooltip>
+                        }
                         <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9; margin: 0;">Top Locatie</MudText>
                         <MudText Typo="Typo.body2" Style="opacity: 0.8; margin: 0;">Meeste meldingen</MudText>
                     </MudStack>
@@ -85,7 +150,14 @@
                 <MudStack AlignItems="AlignItems.Center" Spacing="3">
                     <MudIcon Icon="@Icons.Material.Filled.Timeline" Style="font-size: 3rem; opacity: 0.9;" />
                     <MudStack AlignItems="AlignItems.Center" Spacing="1">
-                        <MudText Typo="Typo.h3" Style="font-weight: 700; margin: 0;">@AverageConfidence.ToString("P0")</MudText>
+                        @if (_isRefreshing)
+                        {
+                            <MudSkeleton Width="50%" Height="40px" Animation="Animation.Wave" Class="loading-skeleton-white" />
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.h3" Style="font-weight: 700; margin: 0;">@AverageConfidence.ToString("P0")</MudText>
+                        }
                         <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9; margin: 0;">Gem. Vertrouwen</MudText>
                         <MudText Typo="Typo.body2" Style="opacity: 0.8; margin: 0;">AI Score</MudText>
                     </MudStack>
@@ -99,15 +171,27 @@
             <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Detecties per Dag</MudText>
         </MudStack>
     </MudPaper>
-    
-    <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+      <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
         <MudTable Items="@DailyStats" 
                  Dense="false" 
                  Hover="true" 
                  Bordered="false" 
                  Striped="false" 
                  Elevation="0"
+                 Loading="_isRefreshing"
+                 LoadingProgressColor="Color.Primary"
                  Style="border-radius: 12px; overflow: hidden;">
+            <LoadingContent>
+                <div class="table-loading">
+                    <MudProgressCircular Color="Color.Primary" Size="Size.Medium" Indeterminate="true" />
+                    <MudText Typo="Typo.h6" Class="table-loading-text">Data wordt ververst...</MudText>
+                    <div class="data-viz-skeleton">
+                        <MudSkeleton Width="100%" Height="40px" Animation="Animation.Wave" />
+                        <MudSkeleton Width="90%" Height="40px" Animation="Animation.Wave" />
+                        <MudSkeleton Width="95%" Height="40px" Animation="Animation.Wave" />
+                    </div>
+                </div>
+            </LoadingContent>
             <HeaderContent>
                 <MudTh Style="background: var(--mud-palette-primary); color: white; font-weight: 600; padding: 16px;">
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
@@ -150,15 +234,27 @@
             <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Gemiddelde Vertrouwen per Dag</MudText>
         </MudStack>
     </MudPaper>
-    
-    <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+      <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
         <MudTable Items="@DailyConfidenceStats" 
                  Dense="false" 
                  Hover="true" 
                  Bordered="false" 
                  Striped="false" 
                  Elevation="0"
+                 Loading="_isRefreshing"
+                 LoadingProgressColor="Color.Info"
                  Style="border-radius: 12px; overflow: hidden;">
+            <LoadingContent>
+                <div class="table-loading">
+                    <MudProgressCircular Color="Color.Info" Size="Size.Medium" Indeterminate="true" />
+                    <MudText Typo="Typo.h6" Class="table-loading-text">Vertrouwensdata wordt geladen...</MudText>
+                    <div class="data-viz-skeleton">
+                        <MudSkeleton Width="100%" Height="40px" Animation="Animation.Wave" />
+                        <MudSkeleton Width="85%" Height="40px" Animation="Animation.Wave" />
+                        <MudSkeleton Width="95%" Height="40px" Animation="Animation.Wave" />
+                    </div>
+                </div>
+            </LoadingContent>
             <HeaderContent>
                 <MudTh Style="background: var(--mud-palette-info); color: white; font-weight: 600; padding: 16px;">
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
@@ -201,15 +297,27 @@
             <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Detecties per Afvaltype per Dag</MudText>
         </MudStack>
     </MudPaper>
-    
-    <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+      <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
         <MudTable Items="@TypePerDayStats" 
                  Dense="false" 
                  Hover="true" 
                  Bordered="false" 
                  Striped="false" 
                  Elevation="0"
+                 Loading="_isRefreshing"
+                 LoadingProgressColor="Color.Success"
                  Style="border-radius: 12px; overflow: hidden;">
+            <LoadingContent>
+                <div class="table-loading">
+                    <MudProgressCircular Color="Color.Success" Size="Size.Medium" Indeterminate="true" />
+                    <MudText Typo="Typo.h6" Class="table-loading-text">Afvaltype data wordt geladen...</MudText>
+                    <div class="data-viz-skeleton">
+                        <MudSkeleton Width="100%" Height="40px" Animation="Animation.Wave" />
+                        <MudSkeleton Width="90%" Height="40px" Animation="Animation.Wave" />
+                        <MudSkeleton Width="85%" Height="40px" Animation="Animation.Wave" />
+                    </div>
+                </div>
+            </LoadingContent>
             <HeaderContent>
                 <MudTh Style="background: var(--mud-palette-success); color: white; font-weight: 600; padding: 16px;">
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
@@ -263,15 +371,27 @@
             <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Overzicht per Afvaltype</MudText>
         </MudStack>
     </MudPaper>
-    
-    <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+      <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
         <MudTable Items="@TrashTypeStats" 
                  Dense="false" 
                  Hover="true" 
                  Bordered="false" 
                  Striped="false" 
                  Elevation="0"
+                 Loading="_isRefreshing"
+                 LoadingProgressColor="Color.Tertiary"
                  Style="border-radius: 12px; overflow: hidden;">
+            <LoadingContent>
+                <div class="table-loading">
+                    <MudProgressCircular Color="Color.Tertiary" Size="Size.Medium" Indeterminate="true" />
+                    <MudText Typo="Typo.h6" Class="table-loading-text">Afvaltype statistieken worden geladen...</MudText>
+                    <div class="data-viz-skeleton">
+                        <MudSkeleton Width="100%" Height="40px" Animation="Animation.Wave" />
+                        <MudSkeleton Width="80%" Height="40px" Animation="Animation.Wave" />
+                        <MudSkeleton Width="90%" Height="40px" Animation="Animation.Wave" />
+                    </div>
+                </div>
+            </LoadingContent>
             <HeaderContent>
                 <MudTh Style="background: var(--mud-palette-tertiary); color: white; font-weight: 600; padding: 16px;">
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
@@ -323,15 +443,27 @@
             <MudText Typo="Typo.h5" Style="font-weight: 600; margin: 0;">Overzicht per Locatie</MudText>
         </MudStack>
     </MudPaper>
-    
-    <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
+      <MudPaper Elevation="4" Class="pa-6 mb-8" Style="border-radius: 20px; background: var(--mud-palette-surface);">
         <MudTable Items="@LocationStats" 
                  Dense="false" 
                  Hover="true" 
                  Bordered="false" 
                  Striped="false" 
                  Elevation="0"
+                 Loading="_isRefreshing"
+                 LoadingProgressColor="Color.Warning"
                  Style="border-radius: 12px; overflow: hidden;">
+            <LoadingContent>
+                <div class="table-loading">
+                    <MudProgressCircular Color="Color.Warning" Size="Size.Medium" Indeterminate="true" />
+                    <MudText Typo="Typo.h6" Class="table-loading-text">Locatie statistieken worden geladen...</MudText>
+                    <div class="data-viz-skeleton">
+                        <MudSkeleton Width="100%" Height="40px" Animation="Animation.Wave" />
+                        <MudSkeleton Width="85%" Height="40px" Animation="Animation.Wave" />
+                        <MudSkeleton Width="90%" Height="40px" Animation="Animation.Wave" />
+                    </div>
+                </div>
+            </LoadingContent>
             <HeaderContent>
                 <MudTh Style="background: var(--mud-palette-warning); color: white; font-weight: 600; padding: 16px;">
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
@@ -376,29 +508,63 @@
                     <MudIcon Icon="@Icons.Material.Filled.SearchOff" Style="font-size: 3rem; color: var(--mud-palette-text-secondary);" />
                     <MudText Typo="Typo.h6" Style="color: var(--mud-palette-text-secondary);">Geen data beschikbaar</MudText>
                 </MudStack>
-            </NoRecordsContent>
-        </MudTable>
+            </NoRecordsContent>        </MudTable>
     </MudPaper>
 </MudContainer>
+}
 
 @code {
-    [Inject] public FrontendMonitoring.Services.AfvalApiClient AfvalClient { get; set; }
+    [Inject] public FrontendMonitoring.Services.AfvalApiClient AfvalClient { get; set; } = null!;
     private LitterApiResponse? apiData;
     private List<AfvalModel> detections = new();
     private WeatherModel? weather;
+    private bool _isLoading = true;
+    private bool _isRefreshing = false;
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadData();
+    }    private async Task LoadData()
+    {
+        _isLoading = true;
+        StateHasChanged();
+        
         try
         {
             apiData = await AfvalClient.GetLitterAndWeatherAsync();
             detections = apiData?.Litter ?? new List<AfvalModel>();
             weather = apiData?.Weather;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Handle error or fallback to dummy data
             detections = new List<AfvalModel>();
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }    private async Task RefreshData()
+    {
+        _isRefreshing = true;
+        StateHasChanged();
+        
+        try
+        {
+            apiData = await AfvalClient.GetLitterAndWeatherAsync();
+            detections = apiData?.Litter ?? new List<AfvalModel>();
+            weather = apiData?.Weather;
+        }
+        catch (Exception)
+        {
+            // Handle error or fallback to dummy data
+            detections = new List<AfvalModel>();
+        }
+        finally
+        {
+            _isRefreshing = false;
+            StateHasChanged();
         }
     }
 

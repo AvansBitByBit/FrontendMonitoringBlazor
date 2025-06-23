@@ -691,3 +691,284 @@ h1:focus {
     color: var(--mud-palette-primary-contrast);
 }
 
+/* Loading animations for Dashboard */
+.loading-fade-in {
+    animation: loadingFadeIn 0.5s ease-in-out;
+}
+
+.loading-pulse {
+    animation: loadingPulse 2s infinite ease-in-out;
+}
+
+.shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes loadingFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes loadingPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.card-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+    z-index: 10;
+}
+
+/* Dashboard loading screen styles */
+.loading-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--mud-palette-background);
+}
+
+.loading-card {
+    border-radius: 20px;
+    background: var(--mud-palette-surface);
+    max-width: 400px;
+    width: 100%;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Loading skeleton styles for cards */
+.loading-skeleton-card {
+    border-radius: 4px;
+    background-color: rgba(255,255,255,0.2);
+}
+
+.loading-skeleton-white {
+    background-color: rgba(255,255,255,0.2);
+    border-radius: 4px;
+}
+
+/* Chart loading animations */
+.chart-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    gap: 1rem;
+}
+
+.chart-loading-text {
+    color: var(--mud-palette-text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Table loading improvements */
+.table-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    gap: 1rem;
+}
+
+.table-loading-text {
+    color: var(--mud-palette-text-secondary);
+    font-weight: 600;
+}
+
+/* Refresh button loading state */
+.refresh-button-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.refresh-button-loading .loading-spinner {
+    margin-right: 8px;
+}
+
+/* Enhanced card animations for dashboard */
+.dashboard-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+/* Statistics card specific styles */
+.stat-card-gradient-primary {
+    background: linear-gradient(135deg, var(--mud-palette-primary), var(--mud-palette-primary-darken));
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card-gradient-info {
+    background: linear-gradient(135deg, var(--mud-palette-info), var(--mud-palette-info-darken));
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card-gradient-success {
+    background: linear-gradient(135deg, var(--mud-palette-success), var(--mud-palette-success-darken));
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card-decoration {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 100px;
+    height: 100px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+/* Filter button styles */
+.filter-button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.filter-button {
+    border-radius: 20px;
+    text-transform: none;
+    transition: all 0.2s ease;
+}
+
+.filter-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Responsive loading adjustments */
+@media (max-width: 768px) {
+    .loading-card {
+        padding: 1.5rem;
+        margin: 1rem;
+        max-width: 95vw;
+    }
+    
+    .chart-loading {
+        padding: 1.5rem 1rem;
+    }
+    
+    .table-loading {
+        padding: 1.5rem;
+    }
+    
+    .stat-card-decoration {
+        width: 80px;
+        height: 80px;
+        top: -15px;
+        right: -15px;
+    }
+    
+    .filter-button-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-button {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Loading state for data visualization components */
+.data-viz-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    gap: 1rem;
+    padding: 2rem;
+}
+
+.data-viz-skeleton {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Enhanced progress indicators */
+.loading-progress-enhanced {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-progress-enhanced::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top: 2px solid var(--mud-palette-primary);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Smooth transitions for content appearance */
+.content-fade-in {
+    animation: contentFadeIn 0.6s ease-out;
+}
+
+@keyframes contentFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading overlay for individual components */
+.component-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(var(--mud-palette-surface-rgb), 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(2px);
+}
+
