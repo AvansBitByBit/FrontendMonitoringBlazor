@@ -288,36 +288,6 @@
                     </MudStack>
 
                     <MudGrid Spacing="4">
-                        <!-- Weather Integration -->
-                        <MudItem xs="12" md="4">
-                            <MudStack Spacing="3">
-                                <MudText Typo="Typo.h6" Style="font-weight: 600;">
-                                    <MudIcon Icon="@Icons.Material.Filled.WbSunny" Style="margin-right: 8px;" />
-                                    Weer Integratie
-                                </MudText>
-                                @if (weather != null)
-                                {
-                                    <MudStack Spacing="2">
-                                        <MudText Typo="Typo.body2">
-                                            <strong>Huidige Temp:</strong> @weather.Current?.Temperature2m°C
-                                        </MudText>
-                                        @if (weather.Hourly?.Temperature2m?.Any() == true)
-                                        {
-                                            <MudText Typo="Typo.body2">
-                                                <strong>Gem. Temp (24u):</strong> @weather.Hourly.Temperature2m.Take(24).Average().ToString("F1")°C
-                                            </MudText>
-                                        }
-                                    </MudStack>
-                                }
-                                else
-                                {
-                                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary);">
-                                        Weer data wordt geladen...
-                                    </MudText>
-                                }
-                            </MudStack>
-                        </MudItem>
-
                         <!-- Data Statistics -->
                         <MudItem xs="12" md="4">
                             <MudStack Spacing="3">
@@ -507,7 +477,6 @@
     // Data from existing APIs
     private LitterApiResponse? apiData;
     private List<AfvalModel> detections = new();
-    private WeatherModel? weather;
 
     protected override async Task OnInitializedAsync()
     {
@@ -522,8 +491,7 @@
         {
             apiData = await AfvalClient.GetLitterAndWeatherAsync();
             detections = apiData?.Litter ?? new List<AfvalModel>();
-            weather = apiData?.Weather;
-            
+
             // Auto-fill some data if available
             if (detections.Any())
             {
@@ -531,10 +499,7 @@
                 singlePrediction.Location = lastDetection.Location;
                 singlePrediction.TrashType = lastDetection.TrashType;
                 singlePrediction.Confidence = lastDetection.Confidence;
-            }
-              if (weather?.Current?.Temperature2m != null)
-            {
-                singlePrediction.Temperature = weather.Current.Temperature2m;
+                singlePrediction.Temperature = lastDetection.Temperature ?? 0;
             }
         }
         catch (Exception ex)
