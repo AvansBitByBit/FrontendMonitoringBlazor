@@ -6,7 +6,6 @@ namespace FrontendMonitoring.Services
     public class PythonPredictionApiClient
     {
         private readonly HttpClient _httpClient;
-        private const string API_BASE_URL = "https://pythonbitbybit.orangecliff-c30465b7.northeurope.azurecontainerapps.io";
 
         public PythonPredictionApiClient(HttpClient httpClient)
         {
@@ -18,25 +17,38 @@ namespace FrontendMonitoring.Services
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync($"{API_BASE_URL}/prediction", request);
+                var response = await _httpClient.PostAsJsonAsync("https://pythonbitbybit.orangecliff-c30465b7.northeurope.azurecontainerapps.io/Predict", request);
+                Console.WriteLine("Response Status Code: " + response.StatusCode);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.TemporaryRedirect && response.Headers.Location != null)
+                {
+                    // Follow the redirect manually
+                    var redirectUrl = response.Headers.Location.ToString();
+                    Console.WriteLine("Redirecting to: " + redirectUrl);
+
+                    // Resend the POST request to the redirected URL
+                    var jsonContent = JsonContent.Create(request);
+                    response = await _httpClient.PostAsync(redirectUrl, jsonContent);
+                    Console.WriteLine("Response Status Code after redirect: " + response.StatusCode);
+                }
+
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadFromJsonAsync<PredictionResponse>();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error occurred while making prediction: {ex.Message}");
                 return null;
             }
         }
     }
 
-    // Request Model
     public class PredictionRequest
     {
         [JsonPropertyName("features")]
         public List<double> Features { get; set; } = new();
     }
 
-    // Response Model
     public class PredictionResponse
     {
         [JsonPropertyName("AdresPredection")]
