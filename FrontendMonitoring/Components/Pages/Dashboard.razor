@@ -9,6 +9,8 @@
 @using System.Globalization
 @inject ITokenStorage TokenStorage
 @inject AuthenticationStateProvider AuthProvider
+@inject PythonPredictionApiClient PredictionApiClient
+@inject WeatherApiClient WeatherClient
 @using FrontendMonitoring.Services
 @using Microsoft.AspNetCore.Components.Authorization
 
@@ -188,34 +190,68 @@ else
             <MudPaper Elevation="3" Class="pa-6 card-animate card-mobile-responsive stat-card-gradient-info">
                 <MudStack Spacing="3">                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
                         <MudStack Spacing="1">
-                            <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9;">Weer Info</MudText>
-                            @if (_isRefreshing)
+                            <MudText Typo="Typo.h6" Style="font-weight: 600; opacity: 0.9;">AI Voorspellingen</MudText>
+                            @if (_isRefreshing || _isPredictionLoading)
                             {
                                 <MudSkeleton Width="60%" Height="40px" Animation="Animation.Wave" Class="loading-skeleton-white" />
                             }
-                            else if (!string.IsNullOrEmpty(apiData?.Weather))
+                            else if (todayPrediction != null)
                             {
-                                <MudText Typo="Typo.h6" Style="font-weight: 500; line-height: 1;">Beschikbaar</MudText>
+                                <MudText Typo="Typo.h6" Style="font-weight: 500; line-height: 1;">@todayPrediction.CountOfPossibleLitter items</MudText>
                             }
                             else
                             {
                                 <MudText Typo="Typo.h6" Style="font-weight: 500; line-height: 1;">Niet beschikbaar</MudText>
                             }
                         </MudStack>
-                        <MudIcon Icon="@Icons.Material.Filled.Cloud" Style="font-size: 2.5rem; opacity: 0.7;" />
+                        <MudIcon Icon="@Icons.Material.Filled.PsychologyAlt" Style="font-size: 2.5rem; opacity: 0.7;" />
                     </MudStack>
                     <MudText Typo="Typo.body2" Style="opacity: 0.8;">
-                        @if (_isRefreshing)
+                        @if (_isRefreshing || _isPredictionLoading)
                         {
                             <MudSkeleton Width="80%" Height="14px" Animation="Animation.Wave" Class="loading-skeleton-white" />
                         }
-                        else if (!string.IsNullOrEmpty(apiData?.Weather))
+                        else if (todayPrediction != null)
                         {
-                            <span>@apiData.Weather</span>
+                            <MudStack Spacing="1">
+                                <MudText Typo="Typo.body2" Style="font-weight: 600;">
+                                    Vandaag: @todayPrediction.CountOfPossibleLitter items
+                                </MudText>
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudIcon Icon="@Icons.Material.Filled.Thermostat" Size="Size.Small" />
+                                    <MudText Typo="Typo.caption">
+                                        Temperatuur: @(todayTemperature?.ToString("F1") ?? "20")°C
+                                    </MudText>
+                                </MudStack>
+                                <MudText Typo="Typo.caption">
+                                    Vertrouwen: @todayPrediction.Confidence.ToString("P1")
+                                </MudText>
+                                <MudText Typo="Typo.caption">
+                                    Match: @todayPrediction.MatchWithModel.ToString("F1")%
+                                </MudText>
+                                @if (tomorrowPrediction != null)
+                                {
+                                    <MudText Typo="Typo.body2" Style="font-weight: 600; margin-top: 8px;">
+                                        Morgen: @tomorrowPrediction.CountOfPossibleLitter items
+                                    </MudText>
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                                        <MudIcon Icon="@Icons.Material.Filled.Thermostat" Size="Size.Small" />
+                                        <MudText Typo="Typo.caption">
+                                            Temperatuur: @(tomorrowTemperature?.ToString("F1") ?? "20")°C
+                                        </MudText>
+                                    </MudStack>
+                                    <MudText Typo="Typo.caption">
+                                        Vertrouwen: @tomorrowPrediction.Confidence.ToString("P1")
+                                    </MudText>
+                                    <MudText Typo="Typo.caption">
+                                        Match: @tomorrowPrediction.MatchWithModel.ToString("F1")%
+                                    </MudText>
+                                }
+                            </MudStack>
                         }
                         else
                         {
-                            <span>Geen weerdata beschikbaar</span>
+                            <span>Geen voorspellingen beschikbaar</span>
                         }
                     </MudText>
                 </MudStack>
@@ -594,7 +630,12 @@ else
     private bool _isLoading = true;
     private bool _isRefreshing = false;
     private double? currentTemperature;
+    private double? todayTemperature;
+    private double? tomorrowTemperature;
     private PredictionResponse? predictionResult;
+    private PredictionResponse? todayPrediction;
+    private PredictionResponse? tomorrowPrediction;
+    private bool _isPredictionLoading = false;
 
     FilterOption period = new FilterOption { Name = "Laatste 7 dagen" };
     FilterOption wasteType = new FilterOption { Name = "Alle types" };
@@ -702,6 +743,9 @@ else
                     Weather = "No weather data available"
                 };
             }
+            
+            // Load AI predictions after loading detection data
+            await LoadPredictions();
         }
         catch (Exception ex)
         {
@@ -721,6 +765,9 @@ else
                     Longitude = 4.7762418
                 }
             };
+            
+            // Load AI predictions even if detection data fails
+            await LoadPredictions();
         }
         finally
         {
@@ -841,6 +888,9 @@ else
                 };
             }
             
+            // Refresh AI predictions
+            await LoadPredictions();
+            
             // Update the map with new data
             await UpdateMap();
         }
@@ -941,6 +991,74 @@ else
         }        
         StateHasChanged();
         await UpdateMap(); // Update map when filter changes
+    }    private async Task LoadPredictions()
+    {
+        Console.WriteLine("LoadPredictions: Starting...");
+        _isPredictionLoading = true;
+        try
+        {
+            var today = DateTime.Now.Date;
+            var tomorrow = today.AddDays(1);
+            Console.WriteLine($"LoadPredictions: Today={today:yyyy-MM-dd}, Tomorrow={tomorrow:yyyy-MM-dd}");
+            
+            // Fetch real weather data for today and tomorrow
+            double todayTemp = 20.0; // fallback temperature
+            double tomorrowTemp = 20.0; // fallback temperature
+            
+            try
+            {
+                Console.WriteLine("LoadPredictions: Fetching weather data for today and tomorrow...");
+                var (todayTemperature, tomorrowTemperature) = await WeatherClient.GetTodayAndTomorrowTemperaturesAsync();
+                todayTemp = todayTemperature;
+                tomorrowTemp = tomorrowTemperature;
+                currentTemperature = todayTemp; // Store current temperature for display
+                this.todayTemperature = todayTemp; // Store today's temperature
+                this.tomorrowTemperature = tomorrowTemp; // Store tomorrow's temperature
+                Console.WriteLine($"LoadPredictions: Using real temperatures - Today: {todayTemp:F1}°C, Tomorrow: {tomorrowTemp:F1}°C");
+            }
+            catch (Exception weatherEx)
+            {
+                Console.WriteLine($"LoadPredictions: Failed to fetch weather data: {weatherEx.Message}. Using fallback temperatures: 20°C");
+                currentTemperature = 20.0;
+                todayTemperature = 20.0;
+                tomorrowTemperature = 20.0;
+            }
+
+            // Get today's prediction with today's temperature
+            Console.WriteLine("LoadPredictions: Making today's prediction request...");
+            var todayRequest = new PredictionRequest
+            {
+                Date = today,
+                Temperature = (int)Math.Round(todayTemp)
+            };
+            Console.WriteLine($"LoadPredictions: Today request - Date: {todayRequest.Date:yyyy-MM-dd}, Temperature: {todayRequest.Temperature}°C");
+            todayPrediction = await PredictionApiClient.MakePredictionAsync(todayRequest);
+            Console.WriteLine($"LoadPredictions: Today prediction result - {(todayPrediction != null ? $"Success: {todayPrediction.CountOfPossibleLitter} items" : "Failed: null response")}");
+
+            // Get tomorrow's prediction with tomorrow's temperature
+            Console.WriteLine("LoadPredictions: Making tomorrow's prediction request...");
+            var tomorrowRequest = new PredictionRequest
+            {
+                Date = tomorrow,
+                Temperature = (int)Math.Round(tomorrowTemp)
+            };
+            Console.WriteLine($"LoadPredictions: Tomorrow request - Date: {tomorrowRequest.Date:yyyy-MM-dd}, Temperature: {tomorrowRequest.Temperature}°C");
+            tomorrowPrediction = await PredictionApiClient.MakePredictionAsync(tomorrowRequest);
+            Console.WriteLine($"LoadPredictions: Tomorrow prediction result - {(tomorrowPrediction != null ? $"Success: {tomorrowPrediction.CountOfPossibleLitter} items" : "Failed: null response")}");
+
+            Console.WriteLine($"LoadPredictions: Completed - Today: {todayPrediction?.CountOfPossibleLitter ?? 0} items (Temp: {todayTemp:F1}°C), Tomorrow: {tomorrowPrediction?.CountOfPossibleLitter ?? 0} items (Temp: {tomorrowTemp:F1}°C)");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"LoadPredictions: Exception occurred: {ex.Message}");
+            Console.WriteLine($"LoadPredictions: Stack trace: {ex.StackTrace}");
+        }
+        finally
+        {
+            _isPredictionLoading = false;
+            Console.WriteLine("LoadPredictions: Setting _isPredictionLoading to false and calling StateHasChanged");
+            StateHasChanged();
+        }
     }private Color GetConfidenceColor(double confidence)
     {
         return confidence switch

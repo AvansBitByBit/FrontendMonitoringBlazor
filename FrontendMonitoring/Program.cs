@@ -30,6 +30,9 @@ builder.Services.AddScoped<FrontendMonitoring.Services.AfvalApiClient>();
 // Register PythonPredictionApiClient as a service
 builder.Services.AddHttpClient<FrontendMonitoring.Services.PythonPredictionApiClient>();
 
+// Register WeatherApiClient as a service
+builder.Services.AddScoped<FrontendMonitoring.Services.WeatherApiClient>();
+
 // 5. Razor components (Blazor Server)
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
