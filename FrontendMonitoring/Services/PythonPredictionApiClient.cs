@@ -17,7 +17,7 @@ namespace FrontendMonitoring.Services
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("https://pythonbitbybit.orangecliff-c30465b7.northeurope.azurecontainerapps.io/Predict", request);
+                var response = await _httpClient.PostAsJsonAsync("https://pythonbitbybit.orangecliff-c30465b7.northeurope.azurecontainerapps.io/Predict/", request);
                 Console.WriteLine("Response Status Code: " + response.StatusCode);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.TemporaryRedirect && response.Headers.Location != null)
