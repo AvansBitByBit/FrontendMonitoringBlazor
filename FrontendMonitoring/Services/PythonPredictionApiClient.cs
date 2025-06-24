@@ -26,7 +26,6 @@ namespace FrontendMonitoring.Services
                     var redirectUrl = response.Headers.Location.ToString();
                     Console.WriteLine("Redirecting to: " + redirectUrl);
 
-                    // Resend the POST request to the redirected URL
                     var jsonContent = JsonContent.Create(request);
                     response = await _httpClient.PostAsync(redirectUrl, jsonContent);
                     Console.WriteLine("Response Status Code after redirect: " + response.StatusCode);
@@ -45,8 +44,11 @@ namespace FrontendMonitoring.Services
 
     public class PredictionRequest
     {
-        [JsonPropertyName("features")]
-        public List<double> Features { get; set; } = new();
+        [JsonPropertyName("date")]
+        public DateTime Date { get; set; }
+
+        [JsonPropertyName("temperature")]
+        public int Temperature { get; set; }
     }
 
     public class PredictionResponse

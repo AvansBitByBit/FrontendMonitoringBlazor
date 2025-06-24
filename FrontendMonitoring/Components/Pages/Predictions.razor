@@ -10,6 +10,10 @@
     <MudPaper Elevation="2" Class="pa-4" Style="border-radius: 12px;">
         <MudStack Spacing="3">
             <MudText Typo="Typo.h5" Style="font-weight: 600;">Make a Prediction</MudText>
+            <MudDatePicker @bind-Date="selectedDate"
+                           Label="Select Date"
+                           Variant="Variant.Outlined"
+                           Style="width: 200px;" />
             <MudNumericField @bind-Value="temperature"
                              Label="Temperature (°C)"
                              Variant="Variant.Outlined"
@@ -33,11 +37,11 @@
             @if (response != null)
             {
                 <MudAlert Severity="Severity.Success" Variant="Variant.Filled">
-                    <MudText Typo="Typo.body1">Predicted Address: @response.AdresPrediction</MudText>
-                    <MudText Typo="Typo.body1">Possible Litter Count: @response.CountOfPossibleLitter</MudText>
-                    <MudText Typo="Typo.body1">Match With Model: @response.MatchWithModel:F2%</MudText>
-                    <MudText Typo="Typo.body1">Confidence: @response.Confidence:F2%</MudText>
-                    <MudText Typo="Typo.body1">Timestamp: @response.Timestamp</MudText>
+                    <MudText Typo="Typo.body1">Smerigste adres: @response.AdresPrediction</MudText>
+                    <MudText Typo="Typo.body1">Verwacht aantal vuilitems: @response.CountOfPossibleLitter</MudText>
+                    <MudText Typo="Typo.body1">Match met eerdere gegevens: @response.MatchWithModel%</MudText>
+                    <MudText Typo="Typo.body1">Confidence: @response.Confidence%</MudText>
+                    <MudText Typo="Typo.body1">Tijd van voorspelling: @response.Timestamp</MudText>
                 </MudAlert>
             }
         </MudStack>
@@ -45,6 +49,7 @@
 </MudContainer>
 
 @code {
+    private DateTime? selectedDate = DateTime.Now; // Default date
     private double temperature = 20.0; // Default temperature
     private bool isLoading = false;
     private PredictionResponse? response;
@@ -54,16 +59,27 @@
         isLoading = true;
         try
         {
-            var request = new PredictionRequest { Features = new List<double> { temperature } };
-            response = await PredictionApiClient.MakePredictionAsync(request);
-
-            if (response != null)
+            if (selectedDate.HasValue)
             {
-                Snackbar.Add("Prediction received successfully!", Severity.Success);
+                var request = new PredictionRequest
+                {
+                    Date = selectedDate.Value,
+                    Temperature = (int)temperature
+                };
+                response = await PredictionApiClient.MakePredictionAsync(request);
+
+                if (response != null)
+                {
+                    Snackbar.Add("Prediction received successfully!", Severity.Success);
+                }
+                else
+                {
+                    Snackbar.Add("Failed to get a response from the API.", Severity.Warning);
+                }
             }
             else
             {
-                Snackbar.Add("Failed to get a response from the API.", Severity.Warning);
+                Snackbar.Add("Please select a valid date.", Severity.Warning);
             }
         }
         catch (Exception ex)
