@@ -1,29 +1,318 @@
 ﻿@page "/map"
+@using MudBlazor
 @inject IJSRuntime JS
+@inject NavigationManager Nav
+@inject FrontendMonitoring.Services.AfvalApiClient AfvalClient
 @using FrontendMonitoring.Models
+@using System.Text
+@using System.Linq
+@using System.Globalization
+@inject ITokenStorage TokenStorage
+@inject AuthenticationStateProvider AuthProvider
+@using FrontendMonitoring.Services
+@using Microsoft.AspNetCore.Components.Authorization
 
-<div class="mud-paper mud-elevation-3 pa-6 card-animate card-mobile-responsive"
-     style="border-radius: 16px; background: var(--mud-palette-surface); min-height: 400px; display: flex; justify-content: center;">
-    <div role="group" class="d-flex flex-column gap-4" style="width: 100%; max-width: 1000px;">
-        <div role="group" class="d-flex flex-row align-center gap-2">
-            <MudIcon Icon="@Icons.Material.Filled.Map" Color="Color.Primary" Style="font-size: 1.5rem;" />
-            <MudText Typo="Typo.h6" Style="font-weight: 600;">Locatiekaart</MudText>
-        </div>
+@if (_isLoading)
+{
+    <!-- Loading Screen -->
+    <MudContainer Class="loading-container loading-fade-in" MaxWidth="MaxWidth.False">
+        <MudPaper Elevation="3" Class="loading-card loading-pulse">
+            <MudStack AlignItems="AlignItems.Center" Spacing="4">
+                <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" Style="width: 60px; height: 60px;" />
+                <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                    <MudText Typo="Typo.h6" Style="font-weight: 600;">Kaart wordt geladen...</MudText>
+                    <MudText Typo="Typo.body2" Style="opacity: 0.7;">Detecties worden opgehaald</MudText>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    </MudContainer>
+}
+else
+{
+<MudContainer Class="map-container fade-in" MaxWidth="MaxWidth.False">
+    <MudGrid Spacing="3">
+        
+        <!-- Header and Controls -->
+        <MudItem xs="12">
+            <MudPaper Elevation="3" Class="pa-6 card-animate" Style="border-radius: 16px; background: var(--mud-palette-surface);">
+                <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                        <MudIcon Icon="@Icons.Material.Filled.Map" Color="Color.Primary" Style="font-size: 2rem;" />
+                        <MudStack Spacing="1">
+                            <MudText Typo="Typo.h4" Style="font-weight: 700;">Interactieve Afvalkaart</MudText>
+                            <MudText Typo="Typo.body1" Style="opacity: 0.7;">
+                                @FilteredDetections.Count() detecties weergegeven van @detections.Count totaal
+                            </MudText>
+                        </MudStack>
+                    </MudStack>
+                    <MudStack Row="true" Spacing="2">
+                        <MudButton Variant="Variant.Outlined" 
+                                  Color="Color.Primary" 
+                                  OnClick="RefreshData" 
+                                  StartIcon="@(_isRefreshing ? Icons.Material.Filled.Refresh : Icons.Material.Filled.Refresh)"
+                                  Disabled="_isRefreshing">
+                            @if (_isRefreshing) { <span>Verversen...</span> } else { <span>Verversen</span> }
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" 
+                                  Color="Color.Secondary" 
+                                  OnClick="ExportMapData" 
+                                  StartIcon="@Icons.Material.Filled.Download">
+                            Exporteren
+                        </MudButton>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
 
-        <div class="mud-paper mud-elevation-2"
-             style="border-radius: 12px; overflow: hidden; background-color: #2a2833;">
-            <div id="map" style="height: 500px; width: 60vw; margin: auto; position: relative; background-color: lime; border: 5px solid red;"></div>
-        </div>
-    </div>
-</div>
+        <!-- Filters -->
+        <MudItem xs="12">
+            <MudPaper Elevation="3" Class="pa-4 card-animate" Style="border-radius: 16px; background: var(--mud-palette-surface);">
+                <MudGrid Spacing="3" AlignItems="AlignItems.Center">
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudSelect T="FilterOption" Value="period" ValueChanged="@((FilterOption value) => OnPeriodChanged(value))" Label="Periode" Variant="Variant.Outlined" ToStringFunc="@converter">
+                            <MudSelectItem Value="@(new FilterOption { Name = "Alle tijd" })" />
+                            <MudSelectItem Value="@(new FilterOption { Name = "Laatste 1 dag" })" />
+                            <MudSelectItem Value="@(new FilterOption { Name = "Laatste 7 dagen" })" />
+                            <MudSelectItem Value="@(new FilterOption { Name = "Laatste 30 dagen" })" />
+                            <MudSelectItem Value="@(new FilterOption { Name = "Dit jaar" })" />
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudSelect T="FilterOption" Value="wasteType" ValueChanged="@((FilterOption value) => OnWasteTypeChanged(value))" Label="Afvaltype" Variant="Variant.Outlined" ToStringFunc="@converter">
+                            <MudSelectItem Value="@(new FilterOption { Name = "Alle types" })" />
+                            @foreach (var type in TrashTypes)
+                            {
+                                <MudSelectItem Value="@(new FilterOption { Name = type })" />
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudSelect T="FilterOption" Value="location" ValueChanged="@((FilterOption value) => OnLocationChanged(value))" Label="Locatie" Variant="Variant.Outlined" ToStringFunc="@converter">
+                            <MudSelectItem Value="@(new FilterOption { Name = "Alle locaties" })" />
+                            @foreach (var loc in UniqueLocations.Take(10))
+                            {
+                                <MudSelectItem Value="@(new FilterOption { Name = loc })" />
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="3">
+                        <MudSwitch Value="showOnlyCleaned" ValueChanged="@((bool value) => OnShowOnlyCleanedChanged(value))" Label="Alleen opgeruimde items" Color="Color.Success" />
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+
+        <!-- Map Statistics Cards -->
+        <MudItem xs="12">
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="6" md="3">
+                    <MudPaper Elevation="3" Class="pa-4 text-center stat-card-gradient-primary">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                            <MudIcon Icon="@Icons.Material.Filled.LocationOn" Style="font-size: 2rem; color: white;" />
+                            <MudText Typo="Typo.h4" Style="color: white; font-weight: 700;">@FilteredDetections.Count()</MudText>
+                            <MudText Typo="Typo.body2" Style="color: rgba(255,255,255,0.8);">Zichtbare Detecties</MudText>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudPaper Elevation="3" Class="pa-4 text-center stat-card-gradient-success">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Style="font-size: 2rem; color: white;" />
+                            <MudText Typo="Typo.h4" Style="color: white; font-weight: 700;">@FilteredDetections.Count(d => d.Cleaned)</MudText>
+                            <MudText Typo="Typo.body2" Style="color: rgba(255,255,255,0.8);">Opgeruimd</MudText>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudPaper Elevation="3" Class="pa-4 text-center stat-card-gradient-info">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                            <MudIcon Icon="@Icons.Material.Filled.VerifiedUser" Style="font-size: 2rem; color: white;" />
+                            <MudText Typo="Typo.h4" Style="color: white; font-weight: 700;">@FilteredDetections.Count(d => d.Verified)</MudText>
+                            <MudText Typo="Typo.body2" Style="color: rgba(255,255,255,0.8);">Geverifieerd</MudText>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="3">
+                    <MudPaper Elevation="3" Class="pa-4 text-center stat-card-gradient-warning">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                            <MudIcon Icon="@Icons.Material.Filled.Category" Style="font-size: 2rem; color: white;" />
+                            <MudText Typo="Typo.h4" Style="color: white; font-weight: 700;">@TrashTypes.Count()</MudText>
+                            <MudText Typo="Typo.body2" Style="color: rgba(255,255,255,0.8);">Afvaltypes</MudText>
+                        </MudStack>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+
+        <!-- Main Map -->
+        <MudItem xs="12">
+            <MudPaper Elevation="3" Class="pa-4 card-animate" Style="border-radius: 16px; background: var(--mud-palette-surface);">
+                <MudStack Spacing="3">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <MudIcon Icon="@Icons.Material.Filled.Map" Color="Color.Primary" Style="font-size: 1.5rem;" />
+                            <MudText Typo="Typo.h6" Style="font-weight: 600;">Locatiekaart</MudText>
+                        </MudStack>
+                        <MudStack Row="true" Spacing="2">
+                            <MudButton Variant="Variant.Text" 
+                                      Size="Size.Small" 
+                                      OnClick="FitMapToMarkers"
+                                      StartIcon="@Icons.Material.Filled.CenterFocusStrong">
+                                Centreren
+                            </MudButton>
+                            <MudButton Variant="Variant.Text" 
+                                      Size="Size.Small" 
+                                      OnClick="ToggleClusterView"
+                                      StartIcon="@Icons.Material.Filled.BubbleChart">
+                                @(useClusterView ? "Losse Markers" : "Cluster View")
+                            </MudButton>
+                        </MudStack>
+                    </MudStack>
+                    
+                    <div class="mud-paper mud-elevation-2" style="border-radius: 12px; overflow: hidden;">
+                        <div id="map" style="height: 600px; width: 100%; position: relative;"></div>
+                    </div>
+                    
+                    <!-- Map Legend -->
+                    <MudStack Row="true" Spacing="4" AlignItems="AlignItems.Center" Justify="Justify.Center" Class="mt-3">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <div style="width: 16px; height: 16px; border-radius: 50%; background-color: #f44336;"></div>
+                            <MudText Typo="Typo.caption">Niet opgeruimd</MudText>
+                        </MudStack>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <div style="width: 16px; height: 16px; border-radius: 50%; background-color: #4caf50;"></div>
+                            <MudText Typo="Typo.caption">Opgeruimd</MudText>
+                        </MudStack>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <div style="width: 16px; height: 16px; border-radius: 50%; background-color: #2196f3;"></div>
+                            <MudText Typo="Typo.caption">Geverifieerd</MudText>
+                        </MudStack>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <div style="width: 16px; height: 16px; border-radius: 50%; background-color: #ff9800;"></div>
+                            <MudText Typo="Typo.caption">Hoge nauwkeurigheid (>80%)</MudText>
+                        </MudStack>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>
+}
 
 @code {
-    private readonly List<MapDataPoint> mapData = new List<MapDataPoint>
+    private bool _isLoggedIn = false;
+    private bool _isLoading = true;
+    private bool _isRefreshing = false;
+    private bool showOnlyCleaned = false;
+    private bool useClusterView = false;
+
+    FilterOption period = new FilterOption { Name = "Laatste 7 dagen" };
+    FilterOption wasteType = new FilterOption { Name = "Alle types" };
+    FilterOption location = new FilterOption { Name = "Alle locaties" };
+
+    private LitterApiResponse? apiData;
+    List<AfvalModel> detections = new();
+    
+    IEnumerable<AfvalModel> FilteredDetections =>
+        detections.Where(d =>
+            (wasteType.Name == "Alle types" || d.TrashType == wasteType.Name) &&
+            (location.Name == "Alle locaties" || d.Location == location.Name) &&
+            (!showOnlyCleaned || d.Cleaned) &&
+            DateInSelectedPeriod(d.Time) &&
+            d.Latitude.HasValue && d.Longitude.HasValue
+        );
+
+    private bool DateInSelectedPeriod(DateTime? date)
     {
-        new MapDataPoint { Lat = 51.5893, Lng = 4.7750, Type = "Plastic" },
-        new MapDataPoint { Lat = 51.5910, Lng = 4.7740, Type = "Glass" },
-        new MapDataPoint { Lat = 51.5925, Lng = 4.7765, Type = "Paper" }
-    };
+        if (!date.HasValue) return false;
+        var now = DateTime.Now.Date;
+        var d = date.Value.Date;
+        return period.Name switch
+        {
+            "Alle tijd" => true,
+            "Laatste 1 dag" => d >= now.AddDays(-1),
+            "Laatste 7 dagen" => d >= now.AddDays(-7),
+            "Laatste 30 dagen" => d >= now.AddDays(-30),
+            "Dit jaar" => d.Year == now.Year,
+            _ => true
+        };
+    }
+
+    // Dynamic data properties
+    private IEnumerable<string> TrashTypes => detections.Select(d => d.TrashType).Where(t => !string.IsNullOrEmpty(t)).Cast<string>().Distinct().OrderBy(x => x);
+    private IEnumerable<string> UniqueLocations => detections.Select(d => GetShortLocation(d.Location)).Where(l => !string.IsNullOrEmpty(l)).Cast<string>().Distinct().OrderBy(x => x);
+
+    public class FilterOption
+    {
+        public string Name { get; set; } = string.Empty;
+        public override bool Equals(object? o) => (o as FilterOption)?.Name == Name;
+        public override int GetHashCode() => Name?.GetHashCode() ?? 0;
+    }
+
+    Func<FilterOption, string> converter = p => p?.Name ?? string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoading = true;
+        
+        // Check authentication first
+        try
+        {
+            _isLoggedIn = await JS.InvokeAsync<bool>("hasAuthToken");
+            if (!_isLoggedIn)
+            {
+                Nav.NavigateTo("/login");
+                return;
+            }
+        }
+        catch
+        {
+            Nav.NavigateTo("/login");
+            return;
+        }
+
+        // Load data
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        try
+        {
+            // Try to get structured response first
+            try
+            {
+                apiData = await AfvalClient.GetLitterAndWeatherAsync();
+                detections = apiData?.Litter ?? new List<AfvalModel>();
+            }
+            catch (Exception structuredException)
+            {
+                Console.WriteLine($"Structured API call failed: {structuredException.Message}");
+                // Fallback to individual calls if needed
+                try
+                {
+                    var litterResponse = await AfvalClient.GetLitterDataAsync();
+                    detections = litterResponse ?? new List<AfvalModel>();
+                }
+                catch (Exception fallbackException)
+                {
+                    Console.WriteLine($"Fallback API call failed: {fallbackException.Message}");
+                    detections = new List<AfvalModel>();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"All API calls failed: {ex.Message}");
+            detections = new List<AfvalModel>();
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -31,12 +320,148 @@
         {
             try
             {
-                await JS.InvokeVoidAsync("initLeafletMap", mapData);
+                await UpdateMap();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error invoking JS: {ex.Message}");
+                Console.WriteLine($"Error initializing map: {ex.Message}");
             }
         }
+    }
+
+    private async Task RefreshData()
+    {
+        _isRefreshing = true;
+        StateHasChanged();
+        
+        await LoadData();
+        await UpdateMap();
+        
+        _isRefreshing = false;
+        StateHasChanged();
+    }
+
+    private async Task UpdateMap()
+    {
+        try
+        {
+            var mapData = FilteredDetections.Select(d => new
+            {
+                id = d.Id?.ToString() ?? Guid.NewGuid().ToString(),
+                lat = d.Latitude!.Value,
+                lng = d.Longitude!.Value,
+                type = d.TrashType ?? "Onbekend",
+                location = d.Location ?? "Onbekende locatie",
+                confidence = d.Confidence,
+                verified = d.Verified,
+                cleaned = d.Cleaned,
+                time = d.Time?.ToString("dd-MM-yyyy HH:mm") ?? "Onbekend",
+                temperature = d.Temperature?.ToString("F1") ?? "Onbekend",
+                cleanedTime = d.CleanedTime?.ToString("dd-MM-yyyy HH:mm")
+            }).ToArray();
+
+            await JS.InvokeVoidAsync("updateAdvancedMapMarkers", mapData, useClusterView);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Map update failed: {ex.Message}");
+        }
+    }
+
+    private async Task FitMapToMarkers()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("fitMapToMarkers");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fit map to markers failed: {ex.Message}");
+        }
+    }
+
+    private async Task ToggleClusterView()
+    {
+        useClusterView = !useClusterView;
+        await UpdateMap();
+    }
+
+    private async Task ExportMapData()
+    {
+        var csv = new StringBuilder();
+        csv.AppendLine("ID,Type,Location,Latitude,Longitude,Timestamp,Temperature,Confidence,Verified,Cleaned,CleanedTime");
+        
+        foreach (var d in FilteredDetections)
+        {
+            string id = EscapeCsv(d.Id?.ToString());
+            string type = EscapeCsv(d.TrashType);
+            string locationStr = EscapeCsv(d.Location);
+            string latitude = d.Latitude?.ToString("F6", CultureInfo.InvariantCulture) ?? "";
+            string longitude = d.Longitude?.ToString("F6", CultureInfo.InvariantCulture) ?? "";
+            string timestamp = d.Time.HasValue ? d.Time.Value.ToString("u") : "";
+            string temperature = d.Temperature.HasValue ? d.Temperature.Value.ToString("0.0", CultureInfo.InvariantCulture) : "";
+            string confidence = d.Confidence.ToString("0.00", CultureInfo.InvariantCulture);
+            string verified = d.Verified.ToString();
+            string cleaned = d.Cleaned.ToString();
+            string cleanedTime = d.CleanedTime.HasValue ? d.CleanedTime.Value.ToString("u") : "";
+
+            csv.AppendLine($"{id},{type},{locationStr},{latitude},{longitude},{timestamp},{temperature},{confidence},{verified},{cleaned},{cleanedTime}");
+        }
+        
+        await JS.InvokeVoidAsync("downloadCsv", "map-detections.csv", csv.ToString());
+    }
+
+    private string EscapeCsv(string? field)
+    {
+        if (string.IsNullOrEmpty(field)) return "";
+        if (field.Contains("\""))
+            field = field.Replace("\"", "\"\"");
+        if (field.Contains(",") || field.Contains("\"") || field.Contains("\n"))
+            return $"\"{field}\"";
+        return field;
+    }
+
+    private string GetShortLocation(string? location)
+    {
+        if (string.IsNullOrWhiteSpace(location)) 
+            return "Onbekend";
+        
+        // Get the first part before comma (street name)
+        var parts = location.Split(',');
+        return parts[0].Trim();
+    }
+
+    // Event handlers for filter changes
+    private async Task OnPeriodChanged(FilterOption newPeriod)
+    {
+        period = newPeriod;
+        await UpdateMap();
+        StateHasChanged();
+    }
+
+    private async Task OnWasteTypeChanged(FilterOption newWasteType)
+    {
+        wasteType = newWasteType;
+        await UpdateMap();
+        StateHasChanged();
+    }
+
+    private async Task OnLocationChanged(FilterOption newLocation)
+    {
+        location = newLocation;
+        await UpdateMap();
+        StateHasChanged();
+    }
+
+    private async Task OnShowOnlyCleanedChanged(bool newValue)
+    {
+        showOnlyCleaned = newValue;
+        await UpdateMap();
+        StateHasChanged();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdateMap();
     }
 }
