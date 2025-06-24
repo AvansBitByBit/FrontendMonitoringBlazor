@@ -1,0 +1,53 @@
+@page "/ai-chat"
+@using MudBlazor
+@using System.Net.Http.Json
+@using System.Text.Json
+@using System.Text
+
+
+
+<PageTitle>AI Analyse Chat</PageTitle>
+
+<MudPaper Class="responsive-padding mx-auto fade-in main-home-content" MaxWidth="800px">
+    <MudText Typo="Typo.h3" GutterBottom="true" Class="mb-2 text-gradient text-responsive-h3">AI Analyse Chat</MudText>
+    <MudText Typo="Typo.body1" Class="mb-4 text-responsive-body">
+        Stel een vraag over het afvaldata, kies een periode, of vraag om voorspellingen. De AI analyseert de data en geeft direct antwoord.
+    </MudText>    <MudStack Spacing="2" Class="mb-4">
+        <MudSelect T="FilterOption" @bind-Value="selectedPeriodOption" ToStringFunc="@converter" Label="Periode" Variant="Variant.Outlined" Dense="true" Style="width: 220px;">
+            <MudSelectItem Value="@(new FilterOption() { Name = "Alle tijd", Value = "all" })" />
+            <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 30 dagen", Value = "30days" })" />
+            <MudSelectItem Value="@(new FilterOption() { Name = "Laatste 7 dagen", Value = "7days" })" />
+            <MudSelectItem Value="@(new FilterOption() { Name = "Voorspel morgen", Value = "prediction" })" />
+        </MudSelect>
+        <MudTextField @bind-Value="userPrompt" Label="Je vraag aan de AI" Variant="Variant.Outlined" FullWidth="true" OnKeyDown="OnPromptKeyDown" />        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SendPrompt" Disabled="isLoading || string.IsNullOrWhiteSpace(userPrompt)">
+            @if (isLoading)
+            {
+                <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2" />
+                <span>Versturen...</span>
+            }
+            else
+            {
+                <span>Verstuur</span>
+            }
+        </MudButton>
+    </MudStack>
+    <MudPaper Elevation="2" Class="pa-4 mb-2" Style="min-height: 200px; background: var(--mud-palette-background-paper);">
+        <MudText Typo="Typo.subtitle1" Class="mb-2">AI Antwoord:</MudText>        <MudText Typo="Typo.body1" Class="ai-response-area" Style="white-space: pre-line;">
+            @if (isLoading)
+            {
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudProgressCircular Indeterminate="true" Size="Size.Medium" />
+                    <span>Bezig met analyseren...</span>
+                </MudStack>
+            }
+            else if (!string.IsNullOrWhiteSpace(aiResponse))
+            {
+                @aiResponse
+            }
+            else
+            {
+                <span class="mud-secondary-text">Nog geen antwoord.</span>
+            }
+        </MudText>
+    </MudPaper>
+</MudPaper>
